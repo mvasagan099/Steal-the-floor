@@ -1,0 +1,25 @@
+# Node dependencies
+node_modules/
+.npm/
+
+# Build artifacts
+dist/
+build/
+build-artifacts/
+*.apk
+android/app/build/
+android/build/
+android/.gradle/
+.gradle/
+*.log
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Environment
+.env
+.env.local

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#10182e" />
+  <meta name="description" content="Steal the Floor — a tiny one-finger floor-recycling puzzle prototype" />
+  <title>Steal the Floor — Playable Prototype</title>
+  <style>
+    :root { color-scheme: dark; --ink:#f1f4ff; --muted:#a9b8d8; --bg:#10182e; --panel:#17223d; --green:#64e0aa; --blue:#73a8ff; --gold:#ffca67; }
+    * {box-sizing:border-box} body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at 50% 6%,#253d6a 0%,#141e36 50%,#0b1124 100%);font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);display:flex;justify-content:center}
+    .app{width:min(100%,520px);min-height:100dvh;padding:clamp(12px,3vw,22px);display:flex;flex-direction:column;gap:14px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:10px}.eyebrow{letter-spacing:.18em;font-size:11px;color:#92d9ff;font-weight:800}.title{font-size:clamp(25px,6vw,35px);font-weight:950;letter-spacing:-.05em;line-height:1.08;margin:4px 0}.sub{font-size:12px;color:var(--muted);margin-top:4px}
+    .circle{width:42px;height:42px;flex:none;border-radius:50%;display:grid;place-items:center;background:#253756;border:1px solid #405578;color:#d8e8ff;font-size:21px;cursor:pointer}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.stat{background:linear-gradient(145deg,#263958,#192843);padding:10px 8px;border-radius:14px;text-align:center;border:1px solid #34496f;box-shadow:0 8px 15px #070b1930}.statlabel{display:block;color:#aabbdd;text-transform:uppercase;letter-spacing:.07em;font-size:10px;font-weight:800}.statvalue{display:block;margin-top:3px;font-weight:950;font-size:24px;line-height:1.15}
+    .gameframe{border-radius:23px;padding:13px;background:linear-gradient(135deg,#334d76 0%,#1b2c4b 55%,#172239 100%);border:1px solid #57729e;box-shadow:0 18px 40px #050a1e7a;overflow:hidden}
+    .board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;aspect-ratio:6/7;touch-action:manipulation}
+    .cell{position:relative;min-width:0;border:0;border-radius:12px;display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .1s,filter .12s;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent;font-size:clamp(14px,5vw,22px)}.cell:active{transform:scale(.92)}.void{background:linear-gradient(145deg,#121d35,#0c1429);box-shadow:inset 0 0 0 1px #ffffff0c}.void.legal{background:linear-gradient(145deg,#253c5b,#17294b);box-shadow:inset 0 0 0 2px #6e8fff75}.fixed{background:linear-gradient(135deg,#87e5c2,#3b9c8a);box-shadow:inset 0 -5px 0 #287666,0 3px 10px #0004}.bridge{background:linear-gradient(135deg,#87b8ff,#4b76ce);box-shadow:inset 0 -5px 0 #3559a2,0 3px 10px #0005}.glue{background:repeating-linear-gradient(135deg,#694773,#694773 7px,#784b83 7px,#784b83 14px);box-shadow:inset 0 0 0 2px #d388dd50}.glue.legal{box-shadow:inset 0 0 0 2px #e4b6ff}.bridge.trapped{background:linear-gradient(135deg,#dda4e5,#8d5caa);box-shadow:inset 0 -4px 0 #65417c}.rock{background:linear-gradient(145deg,#526780,#32435a);box-shadow:inset 0 -6px 0 #29374c}.goal{background:linear-gradient(135deg,#ffdf91,#efac5a);box-shadow:inset 0 -5px 0 #bb7636}.start{box-shadow:inset 0 -5px 0 #287666,0 0 0 2px #d1ffdd50}.ch{z-index:2;width:63%;height:63%;border-radius:50%;background:radial-gradient(circle at 35% 27%,#fff7c5,#ffbb43 67%,#e88d3c);border:2px solid #fff0ae;box-shadow:0 4px 10px #0007,0 0 17px #ffd56b85;display:grid;place-items:center;color:#593611;font-weight:900;font-size:clamp(12px,3.5vw,21px);animation:pop .18s ease-out}.symbol{font-size:clamp(13px,4.4vw,25px);filter:drop-shadow(0 2px 1px #0003)}.mini{position:absolute;right:3px;top:2px;font-size:10px}.lock{font-size:clamp(11px,3.6vw,20px);filter:grayscale(.1)}@keyframes pop{from{transform:scale(.68)}to{transform:scale(1)}}
+    .notice{font-size:13px;line-height:1.5;color:#ccdaef;text-align:center;min-height:40px;margin:0 2px}.notice.positive{color:#9df6c6}.notice.error{color:#ffd49c}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{font-family:inherit;font-size:14px;font-weight:850;padding:13px 14px;border:1px solid #49628a;color:#e9f1ff;background:#283c5c;border-radius:13px;cursor:pointer;touch-action:manipulation}.btn.primary{color:#142639;background:#86e5b7;border-color:#b6f9d5}.btn:disabled{opacity:.45;cursor:not-allowed}.instructions{font-size:12px;color:var(--muted);line-height:1.55;text-align:center;padding:0 2px}.legend{display:flex;flex-wrap:wrap;gap:8px 13px;justify-content:center;font-size:11px;color:#bac9e1}.key{display:inline-flex;align-items:center;gap:5px}.swatch{width:12px;height:12px;border-radius:3px;background:#67b2fb}.swatch.s1{background:#65cdaa}.swatch.s2{background:#715083}.swatch.s3{background:#657085}
+    .overlay{position:fixed;inset:0;z-index:10;display:none;align-items:center;justify-content:center;padding:20px;background:#080e1ab9;backdrop-filter:blur(7px)}.overlay.show{display:flex}.modal{width:min(100%,350px);border:1px solid #6884aa;background:linear-gradient(145deg,#2b4064,#182846);padding:28px 22px;text-align:center;border-radius:24px;box-shadow:0 20px 50px #0008}.modal .emoji{font-size:55px;margin-bottom:12px}.modal h2{font-size:27px;margin:0 0 8px}.modal p{font-size:14px;line-height:1.55;color:#c9d7ee}.modal .btn{width:100%;margin-top:10px}
+    @media (max-height:680px){.app{gap:9px}.gameframe{padding:8px}.board{gap:4px}.stat{padding:6px}.notice{min-height:27px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="top"><div><div class="eyebrow">ONE-FINGER PUZZLE</div><h1 class="title">STEAL THE FLOOR</h1><div class="sub" id="levelLabel">Level 1 · First steps</div></div><button class="circle" id="soundBtn" type="button" aria-label="Toggle sound" title="Toggle sound">♫</button></div>
+    <section class="stats" aria-label="Game statistics">
+      <div class="stat"><span class="statlabel">Tiles left</span><strong class="statvalue" id="tileCount">3</strong></div>
+      <div class="stat"><span class="statlabel">Steps</span><strong class="statvalue" id="stepCount">0</strong></div>
+      <div class="stat"><span class="statlabel">Stars</span><strong class="statvalue" id="starCount">0/0</strong></div>
+    </section>
+    <div class="gameframe"><div class="board" id="board" role="group" aria-label="Game board, tap a neighboring cell"></div></div>
+    <p class="notice" id="notice" aria-live="polite">Tap a glowing square to move. The floor behind you comes back!</p>
+    <section class="actions"><button class="btn" id="undoBtn" type="button">↶ Undo</button><button class="btn" id="resetBtn" type="button">⟳ Restart</button></section>
+    <div class="legend"><span class="key"><span class="swatch s1"></span>Safe island</span><span class="key"><span class="swatch"></span>Reusable floor</span><span class="key"><span class="swatch s2"></span>Sticky floor</span><span class="key"><span class="swatch s3"></span>Blocked</span></div>
+    <p class="instructions">Tap an adjacent empty square to drop a tile and walk. Tap an adjacent green island to walk onto it. Reach the flag ★</p>
+  </main>
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><div class="emoji" id="modalEmoji">🎉</div><h2 id="modalTitle">Level complete!</h2><p id="modalText"></p><button type="button" class="btn primary" id="nextBtn">Next level →</button><button type="button" class="btn" id="replayBtn">Replay level</button></div></div>
+  <script>
+    /* Tiny standalone prototype. Each index is row * COLS + col. */
+    const COLS = 6, ROWS = 7, MAX_TILES = 3;
+    const at = (x,y) => y*COLS+x;
+    const pos = ([x,y]) => at(x,y);
+    const list = (arr=[]) => arr.map(pos);
+    const LEVELS = [
+      {name:'First steps',start:[0,3],goal:[5,3],fixed:[],rock:[],stars:[],glue:[],par:5},
+      {name:'Around the rocks',start:[0,3],goal:[5,3],fixed:[[1,3],[4,3]],rock:[[2,3],[3,3],[2,2]],stars:[],glue:[],par:7},
+      {name:'Catch a star',start:[0,3],goal:[5,3],fixed:[[0,2],[5,2]],rock:[[3,3],[3,4]],stars:[[2,1]],glue:[],par:11},
+      {name:'First sticky step',start:[0,3],goal:[5,3],fixed:[[3,3]],rock:[[1,2],[1,4]],stars:[],glue:[[1,3]],par:5},
+      {name:'Three tiles only',start:[0,3],goal:[5,3],fixed:[[2,2],[4,2]],rock:[[1,2],[2,3],[3,3],[4,3],[3,4]],stars:[[5,2]],glue:[[1,3],[2,4],[4,4]],par:9},
+      {name:'The long detour',start:[0,5],goal:[5,1],fixed:[[0,2],[3,1],[5,5]],rock:[[1,5],[1,4],[1,3],[2,3],[3,3],[4,3]],stars:[[2,0]],glue:[],par:12},
+      {name:'Treasure trail',start:[0,3],goal:[5,3],fixed:[[3,1],[2,5]],rock:[[1,3],[4,3],[3,3],[3,4],[1,1]],stars:[[5,0],[0,6]],glue:[[2,2]],par:16},
+      {name:'Final bridge',start:[0,6],goal:[5,0],fixed:[[2,4],[4,2]],rock:[[1,6],[1,5],[3,3],[4,3],[4,4],[5,3],[2,1]],stars:[[1,0],[5,5]],glue:[[0,4],[3,2],[5,1]],par:18}
+    ];
+    // For touch play, early stages always have at least one solution. Later stages are prototypes to playtest and tune.
+    const boardEl=document.querySelector('#board'), levelLabel=document.querySelector('#levelLabel'),tileCount=document.querySelector('#tileCount'),stepCount=document.querySelector('#stepCount'),starCount=document.querySelector('#starCount'),notice=document.querySelector('#notice'),undoBtn=document.querySelector('#undoBtn');
+    const overlay=document.querySelector('#overlay'); let levelIndex=0,state,history=[],soundOn=false,audioCtx;
+    try{levelIndex=Math.min(LEVELS.length-1,Math.max(0,parseInt(localStorage.getItem('steal-floor-level')||'0',10)||0))}catch(_){ }
+    const clone = s => ({...s,player:s.player,tiles:new Set(s.tiles),trapped:new Set(s.trapped),collected:new Set(s.collected)});
+    const current = () => LEVELS[levelIndex];
+    function init(){const l=current();state={player:pos(l.start),tiles:new Set(),trapped:new Set(),collected:new Set(),steps:0};history=[];overlay.classList.remove('show');setNotice('Tap a glowing neighbour to place the floor and walk.');render()}
+    function sets(){const l=current();return {fixed:new Set([pos(l.start),pos(l.goal),...list(l.fixed)]),rock:new Set(list(l.rock)),glue:new Set(list(l.glue)),stars:new Set(list(l.stars))}}
+    function adjacent(a,b){return Math.abs(a%COLS-b%COLS)+Math.abs(Math.floor(a/COLS)-Math.floor(b/COLS))===1}
+    function inventory(){return MAX_TILES-state.tiles.size}
+    function setNotice(msg,kind=''){notice.className='notice '+kind;notice.textContent=msg}
+    function beep(freq=500){if(!soundOn)return;try{audioCtx??=new(window.AudioContext||window.webkitAudioContext)();const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();osc.type='sine';osc.frequency.value=freq;gain.gain.setValueAtTime(.04,audioCtx.currentTime);gain.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.14);osc.connect(gain).connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+.15)}catch(_){}}
+    function move(target){const l=current(),s=sets();if(target===state.player)return;if(!adjacent(state.player,target)){setNotice('Only tap a square beside your character.','error');beep(180);return}if(s.rock.has(target)){setNotice('That rock blocks the path.','error');beep(180);return}
+      const isFloor=s.fixed.has(target)||state.tiles.has(target);if(!isFloor && inventory()<=0){setNotice('No loose tiles left. Undo or restart to try another route.','error');beep(180);return}
+      const previous=state.player;history.push(clone(state));if(!isFloor)state.tiles.add(target);state.player=target;state.steps++;
+      if(state.tiles.has(previous)&&!state.trapped.has(previous)) {if(s.glue.has(previous))state.trapped.add(previous);else state.tiles.delete(previous)}
+      if(s.stars.has(target))state.collected.add(target);
+      beep(s.stars.has(target)?780:480);render();
+      if(target===pos(l.goal)){if(state.collected.size===s.stars.size){win();return}setNotice(`Collect all ${s.stars.size} stars before finishing!`,'error')}
+      else if(state.collected.size===s.stars.size && s.stars.size>0)setNotice('All stars collected! Reach the flag.','positive');
+      else if(s.glue.has(target))setNotice('Sticky square! This tile will stay behind when you leave.','error');
+      else if(state.steps===1)setNotice('Great! Your old tile comes back after you step off it.','positive');
+      else if(inventory()===0)setNotice('All 3 tiles are in use. Plan your next step!','error');
+      else setNotice(`Keep moving towards the flag. ${inventory()} tile${inventory()===1?'':'s'} ready.`)
+    }
+    function render(){const l=current(),s=sets();boardEl.replaceChildren();for(let id=0;id<COLS*ROWS;id++){const btn=document.createElement('button');btn.type='button';btn.className='cell';const fixed=s.fixed.has(id),rock=s.rock.has(id),glue=s.glue.has(id),bridge=state.tiles.has(id),isGoal=id===pos(l.goal),isStart=id===pos(l.start),isPlayer=id===state.player;
+      btn.classList.add(rock?'rock':isGoal?'goal':bridge?'bridge':fixed?'fixed':glue?'glue':'void');if(isStart)btn.classList.add('start');if(state.trapped.has(id))btn.classList.add('trapped');if(adjacent(state.player,id)&&!rock&&!fixed&&!bridge)btn.classList.add('legal');
+      let label=`row ${Math.floor(id/COLS)+1}, column ${id%COLS+1}`;
+      if(isGoal){label+='; goal';btn.innerHTML='<span class="symbol">🏁</span>'}else if(rock){label+='; blocked';btn.innerHTML='<span class="symbol">🪨</span>'}else if(glue&&!bridge){label+='; sticky';btn.innerHTML='<span class="symbol">✦</span>'}else if(fixed){label+='; fixed island';}
+      if(s.stars.has(id)&&!state.collected.has(id)&&!isPlayer){btn.insertAdjacentHTML('beforeend','<span class="symbol">⭐</span>');label+='; collectible star'}
+      if(isPlayer){btn.innerHTML='<span class="ch" aria-hidden="true">•ᴗ•</span>';label+='; player'}
+      if(isStart&&!isPlayer)btn.insertAdjacentHTML('beforeend','<span class="mini">S</span>');
+      if(state.trapped.has(id)&&!isPlayer)btn.insertAdjacentHTML('beforeend','<span class="mini">🔒</span>');
+      btn.setAttribute('aria-label',label);btn.addEventListener('click',()=>move(id));boardEl.appendChild(btn)}
+      levelLabel.textContent=`Level ${levelIndex+1} of ${LEVELS.length} · ${l.name}`;tileCount.textContent=inventory();stepCount.textContent=state.steps;starCount.textContent=`${state.collected.size}/${s.stars.size}`;undoBtn.disabled=history.length===0}
+    function win(){const l=current();document.querySelector('#modalEmoji').textContent=state.steps<=l.par?'🏆':'🎉';document.querySelector('#modalTitle').textContent='Level complete!';document.querySelector('#modalText').textContent=`Finished in ${state.steps} steps ${state.steps<=l.par?'— brilliant route!':'— you made it!'} ${levelIndex===LEVELS.length-1?'You completed the prototype!':'Ready for the next bridge?'}`;document.querySelector('#nextBtn').textContent=levelIndex===LEVELS.length-1?'Play from start ↺':'Next level →';overlay.classList.add('show');beep(980)}
+    document.querySelector('#undoBtn').addEventListener('click',()=>{if(!history.length)return;state=history.pop();setNotice('One step undone.');render()});
+    document.querySelector('#resetBtn').addEventListener('click',init);
+    document.querySelector('#nextBtn').addEventListener('click',()=>{levelIndex=(levelIndex+1)%LEVELS.length;try{localStorage.setItem('steal-floor-level',String(levelIndex))}catch(_){}init()});
+    document.querySelector('#replayBtn').addEventListener('click',init);
+    document.querySelector('#soundBtn').addEventListener('click',()=>{soundOn=!soundOn;document.querySelector('#soundBtn').textContent=soundOn?'♫':'♪';setNotice(soundOn?'Sound on':'Sound off')});
+    init();
+  </script>
+</body>
+</html>
