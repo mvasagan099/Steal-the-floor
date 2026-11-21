@@ -39,6 +39,8 @@ interface GridLevelInput {
   bonusTiles?: Coordinate[];
   /** Optional countdown durations for timed switches (e.g. { g1: 4 }) */
   timedDurations?: Record<string, number>;
+  /** Switch IDs that act as weighted hold-plates (require a crate or Puff to stay open) */
+  holdSwitches?: string[];
   hint: string;
 }
 
@@ -54,6 +56,7 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   const crumbling: Coordinate[] = [];
   const ice: Coordinate[] = [];
   const bonusTiles: Coordinate[] = [...(input.bonusTiles || [])];
+  const crates: Coordinate[] = [];
   const oneWay: OneWayTile[] = [];
   const stars: Coordinate[] = [...(input.stars || [])];
 
@@ -96,6 +99,10 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
         case '+':
           fixed.push(coord);
           bonusTiles.push(coord);
+          break;
+        case 'M':
+          fixed.push(coord);
+          crates.push(coord);
           break;
         case '^':
           oneWay.push({ x, y, direction: 'up' });
@@ -145,17 +152,20 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
     throw new Error(`Level ${input.id} missing Start (S) or Exit (E)`);
   }
 
+  const holdSet = new Set(input.holdSwitches || []);
   const switches: SwitchDoorPair[] = [];
   for (const id of Object.keys(switchPositions)) {
     const door = doorPositions[id];
     if (!door) throw new Error(`Level ${input.id} switch '${id}' missing matching door`);
     const timedDuration = input.timedDurations?.[id];
+    const isHold = holdSet.has(id);
     switches.push({
       id,
       switchPos: switchPositions[id],
       doorPos: door.pos,
       ...(door.initiallyOpen ? { doorInitiallyOpen: true } : {}),
       ...(timedDuration ? { timedDuration } : {}),
+      ...(isHold ? { holdSwitch: true } : {}),
     });
   }
 
@@ -187,6 +197,7 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   if (crumbling.length) level.crumbling = crumbling;
   if (ice.length) level.ice = ice;
   if (bonusTiles.length) level.bonusTiles = bonusTiles;
+  if (crates.length) level.crates = crates;
   if (oneWay.length) level.oneWay = oneWay;
   if (switches.length) level.switches = switches;
   if (teleporters.length) level.teleporters = teleporters;
@@ -2751,11 +2762,309 @@ const world7Drafts: GridLevelInput[] = [
 
 drafts.push(...world7Drafts);
 
+// =========================================================================
+// WORLD 8: OBSIDIAN SANCTUM (Levels 141 - 160) — Pushable Crates & Weighted Plates
+// =========================================================================
+const world8Drafts: GridLevelInput[] = [
+  {
+    id: 141, world: 8, name: 'First Push', maxTiles: 2,
+    grid: [
+      'S#M#a.',
+      '......',
+      'XXXAXX',
+      '...#..',
+      '......',
+      '...#..',
+      '.....E',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Push the heavy crate right onto Weighted Plate A to hold Gate A open while you cross!',
+  },
+  {
+    id: 142, world: 8, name: 'Walk Around', maxTiles: 2,
+    grid: [
+      'S.##..',
+      '..#M..',
+      '..#a..',
+      'XAXXXX',
+      '.#....',
+      '..#...',
+      '...#.E',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Circle above the crate so you can shove it south onto Weighted Plate A, then bridge back to Gate A!',
+  },
+  {
+    id: 143, world: 8, name: 'Bridge to Push', maxTiles: 2,
+    grid: [
+      'S.#...',
+      '..#M#a',
+      '......',
+      'XXAXXX',
+      '..#...',
+      '...#..',
+      '....#E',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Bridge to the west side of the crate, push it east onto Plate A, then pass Gate A!',
+  },
+  {
+    id: 144, world: 8, name: 'Stone Corridor', maxTiles: 2,
+    grid: [
+      'S###..',
+      '.X#M##',
+      '#..#a#',
+      'XAXXXX',
+      '.#....',
+      '..#...',
+      '...#E.',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Guide the crate carefully around the rock wall onto Plate A, then circle back through Gate A!',
+  },
+  {
+    id: 145, world: 8, name: 'Sanctum Gem', maxTiles: 2,
+    grid: [
+      '#..#..',
+      'S.#M#a',
+      '......',
+      'XXXAXX',
+      '...#..',
+      '......',
+      'E..#..',
+    ],
+    stars: [{ x: 0, y: 0 }],
+    holdSwitches: ['g1'],
+    hint: 'Grab the top-west gem, park the crate on Weighted Plate A, and bridge to the exit!',
+  },
+  {
+    id: 146, world: 8, name: 'Ice Shove', maxTiles: 2,
+    grid: [
+      'S#MIIa',
+      '......',
+      'XXXAXX',
+      '...#..',
+      '......',
+      '....#.',
+      '.....E',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Give the crate one shove onto the ice strip — it will glide all the way onto Weighted Plate A!',
+  },
+  {
+    id: 147, world: 8, name: 'Double Weight', maxTiles: 2,
+    grid: [
+      'S#M#a.',
+      'XXAXXX',
+      '..#M#b',
+      'XXBXXX',
+      '..#...',
+      '...#..',
+      '....#E',
+    ],
+    holdSwitches: ['g1', 'g2'],
+    hint: 'Two chambers, two crates! Lock Gate A open first, then drop down and park the second crate on Plate B!',
+  },
+  {
+    id: 148, world: 8, name: 'Crumble Delivery', maxTiles: 2,
+    grid: [
+      'S..C..',
+      '...#..',
+      '..#M#a',
+      'XXXAXX',
+      '...#..',
+      '......',
+      '..#.E.',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Cross the crumbling checkpoint to reach the crate island, push it onto Plate A, and pass Gate A!',
+  },
+  {
+    id: 149, world: 8, name: 'Spark Leverage', maxTiles: 1,
+    grid: [
+      'S.#+..',
+      '......',
+      '..#M#a',
+      'XXAXXX',
+      '..#...',
+      '......',
+      '...E..',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Pick up the +1 Bonus Tile first so your 2-tile bridge can reach the crate island and leap the final chasm!',
+  },
+  {
+    id: 150, world: 8, name: 'Portal Sokoban', maxTiles: 2,
+    grid: [
+      'S..1.X',
+      'XXXXXX',
+      '1#M#a.',
+      'XXAXXX',
+      '..#...',
+      '...#..',
+      '....#E',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Warp into the sealed sanctum via Portal 1, push the crate onto Plate A, and exit through Gate A!',
+  },
+  {
+    id: 151, world: 8, name: 'Honey & Stone', maxTiles: 3,
+    grid: [
+      'S#H.#.',
+      'XXXX#.',
+      'a#M#..',
+      'XXXAXX',
+      '...#..',
+      '....#.',
+      '.....E',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Cross the sticky honey corridor sacrificing 1 tile, push the crate west onto Plate A, and finish with 2 tiles!',
+  },
+  {
+    id: 152, world: 8, name: 'One-Way Shove', maxTiles: 2,
+    grid: [
+      'S>v...',
+      'XX#...',
+      '..#M#a',
+      'XXAXXX',
+      '..#...',
+      '......',
+      'E..#..',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Ride the one-way chute onto the crate platform, push the crate east onto Plate A, and escape via Gate A!',
+  },
+  {
+    id: 153, world: 8, name: 'Weight & Clock', maxTiles: 2,
+    grid: [
+      'S#M#a.',
+      'XXXAXX',
+      '..#.b.',
+      'XXBXXX',
+      '..#...',
+      '...#..',
+      '....#E',
+    ],
+    holdSwitches: ['g1'],
+    timedDurations: { g2: 3 },
+    hint: 'Park the crate on Plate A to unlock the middle hall, then beat the 3-move clock on Timed Gate B!',
+  },
+  {
+    id: 154, world: 8, name: 'Glacier Freight', maxTiles: 2,
+    grid: [
+      'S#MIIa',
+      'XXAXXX',
+      '..#...',
+      '.#MIIb',
+      'XXXXBX',
+      '....#.',
+      '..#.E.',
+    ],
+    holdSwitches: ['g1', 'g2'],
+    hint: 'Slide both crates across consecutive frozen runways to lock Weighted Plates A and B!',
+  },
+  {
+    id: 155, world: 8, name: 'Sanctum Pillars', maxTiles: 2,
+    grid: [
+      'S####.',
+      '.#XM#.',
+      '.###a.',
+      'XXXAXX',
+      '...#..',
+      '.#....',
+      'E.....',
+    ],
+    stars: [{ x: 1, y: 5 }],
+    holdSwitches: ['g1'],
+    hint: 'Approach the crate from above without pinning it against the pillar, push it onto Plate A, and grab the gem!',
+  },
+  {
+    id: 156, world: 8, name: 'Warp & Boost', maxTiles: 1,
+    grid: [
+      'S.#+1X',
+      'XXXXXX',
+      '1#MIIa',
+      'XXAXXX',
+      '..#...',
+      '....#.',
+      '.....E',
+    ],
+    stars: [{ x: 4, y: 5 }],
+    holdSwitches: ['g1'],
+    hint: 'Collect the +1 Bonus Tile, warp through Portal 1, glide the crate onto Plate A, and bridge to the exit!',
+  },
+  {
+    id: 157, world: 8, name: 'Brittle Freight', maxTiles: 2,
+    grid: [
+      'S#..C.',
+      'XXXX#X',
+      'aIIM#.',
+      'XXXAXX',
+      '...#..',
+      '....#.',
+      '..E...',
+    ],
+    stars: [{ x: 4, y: 5 }],
+    holdSwitches: ['g1'],
+    hint: 'Cross the crumbling checkpoint, shove the crate west across ice onto Plate A, and grab the lower gem!',
+  },
+  {
+    id: 158, world: 8, name: 'Clockwork Sanctum', maxTiles: 2,
+    grid: [
+      'S.#M#a',
+      'XXXAXX',
+      '.#..b.',
+      'XXXBXX',
+      '...#..',
+      '......',
+      'E..#..',
+    ],
+    stars: [{ x: 1, y: 2 }],
+    holdSwitches: ['g1'],
+    timedDurations: { g2: 3 },
+    hint: 'Hold Gate A open with the crate, grab the gem first, then sprint from Timed Switch b through Gate B!',
+  },
+  {
+    id: 159, world: 8, name: 'Twin Sanctums', maxTiles: 2,
+    grid: [
+      '1S#M#a',
+      'XXXXXX',
+      '1.#A..',
+      'XXXX#.',
+      'bIIM#.',
+      'XXXBXX',
+      '...#E.',
+    ],
+    stars: [{ x: 2, y: 2 }],
+    holdSwitches: ['g1', 'g2'],
+    hint: 'Park Crate 1 on Plate A, take Portal 1, pass Gate A, then glide Crate 2 west onto Plate B!',
+  },
+  {
+    id: 160, world: 8, name: 'Sanctum Grandmaster', maxTiles: 1,
+    grid: [
+      'S.#+..',
+      '.#MIIa',
+      'XXAXXX',
+      '1.C#.#',
+      'XXXXXX',
+      'X#..b1',
+      'EBXXXX',
+    ],
+    stars: [{ x: 5, y: 3 }],
+    holdSwitches: ['g1'],
+    timedDurations: { g2: 4 },
+    hint: 'The ultimate 160th puzzle! Grab +1, shove the crate across ice onto Plate A, grab the gem, cross crumbling stone to Portal 1, and beat Timed Gate B!',
+  },
+];
+
+drafts.push(...world8Drafts);
+
 console.log(`Validating all ${drafts.length} levels with Solid-Ground Reclamation & Quality Gates...\n`);
 
 const validatedLevels: LevelDefinition[] = [];
 const failures: string[] = [];
-const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [] };
+const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [] };
 
 for (const draft of drafts) {
   const level = parseGridLevel(draft);
@@ -2775,6 +3084,7 @@ for (const draft of drafts) {
   let usedOneWay = false;
   let usedIce = false;
   let usedBonusTile = false;
+  let usedCrate = false;
 
   const oneWayKeys = new Set((level.oneWay || []).map((o) => `${o.x},${o.y}`));
   const crumblingKeys = new Set((level.crumbling || []).map((c) => `${c.x},${c.y}`));
@@ -2788,6 +3098,13 @@ for (const draft of drafts) {
     if (r.trappedTile) hitSticky = true;
     if (r.crumbledTile || crumblingKeys.has(`${step.x},${step.y}`)) usedCrumble = true;
     if (oneWayKeys.has(`${step.x},${step.y}`)) usedOneWay = true;
+    if (r.pushedCrate) {
+      usedCrate = true;
+      const dist =
+        Math.abs(r.pushedCrate.to.x - r.pushedCrate.from.x) +
+        Math.abs(r.pushedCrate.to.y - r.pushedCrate.from.y);
+      if (dist > 1) usedIce = true;
+    }
     if ((r.slidePath && r.slidePath.length > 0) || iceKeys.has(`${step.x},${step.y}`)) usedIce = true;
     if (r.bonusTileCollected) usedBonusTile = true;
   }
@@ -2828,6 +3145,10 @@ for (const draft of drafts) {
         );
       }
     }
+  }
+
+  if (level.crates?.length && !usedCrate) {
+    failures.push(`Level ${level.id} ("${level.name}"): Pushable crate UNUSED in optimal solution!`);
   }
 
   if (level.teleporters?.length && !usedTeleport) {
@@ -2880,7 +3201,7 @@ for (const draft of drafts) {
 }
 
 console.log('\n--- World Par Curve ---');
-for (const w of [1, 2, 3, 4, 5, 6, 7]) {
+for (const w of [1, 2, 3, 4, 5, 6, 7, 8]) {
   const arr = worldPars[w];
   if (arr.length) {
     const avg = (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
@@ -2894,13 +3215,13 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-if (validatedLevels.length !== 140) {
-  console.error(`Expected 140 levels, got ${validatedLevels.length}`);
+if (validatedLevels.length !== 160) {
+  console.error(`Expected 160 levels, got ${validatedLevels.length}`);
   process.exit(1);
 }
 
 const fileContent = `// AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 140 Handcrafted levels across 7 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 160 Handcrafted levels across 8 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = ${JSON.stringify(validatedLevels, null, 2)};
@@ -2913,9 +3234,10 @@ export const WORLDS = [
   { id: 5, name: 'Master Builder', levels: [81, 100], theme: 'forest-adventure', description: 'Combine every mechanic in intricate multi-stage master puzzles.' },
   { id: 6, name: 'Frost & Spark', levels: [101, 120], theme: 'arctic-frost', description: 'Glide across frozen ice rinks and collect +1 Bonus Tiles to expand your reach.' },
   { id: 7, name: 'Clockwork Forge', levels: [121, 140], theme: 'clockwork-forge', description: 'Race countdown switches and timed gates across mechanical gauntlets.' },
+  { id: 8, name: 'Obsidian Sanctum', levels: [141, 160], theme: 'crate-sanctum', description: 'Push heavy crates onto weighted pressure plates to unlock ancient sanctum gates.' },
 ];
 `;
 
 const outputPath = path.resolve(process.cwd(), 'src/levels/levelsData.ts');
 fs.writeFileSync(outputPath, fileContent, 'utf-8');
-console.log(`\n✅ ALL 140 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);
+console.log(`\n✅ ALL 160 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);

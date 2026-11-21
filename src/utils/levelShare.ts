@@ -16,9 +16,10 @@ interface CompactLevelPayload {
   cr?: [number, number][]; // crumbling
   i?: [number, number][]; // ice
   b?: [number, number][]; // bonusTiles
+  k?: [number, number][]; // crates
   g?: [number, number][]; // stars/gems
   o?: [number, number, OneWayTile['direction']][]; // oneWay
-  sw?: [string, [number, number], [number, number], number?, number?][]; // switches (+ optional timedDuration)
+  sw?: [string, [number, number], [number, number], number?, number?, number?][]; // switches (+ timedDuration, holdSwitch)
   tp?: [string, [number, number], [number, number]][]; // teleporters
 }
 
@@ -64,11 +65,14 @@ export function encodeLevelCode(level: LevelDefinition): string {
   if (level.crumbling?.length) payload.cr = level.crumbling.map(toPair);
   if (level.ice?.length) payload.i = level.ice.map(toPair);
   if (level.bonusTiles?.length) payload.b = level.bonusTiles.map(toPair);
+  if (level.crates?.length) payload.k = level.crates.map(toPair);
   if (level.stars?.length) payload.g = level.stars.map(toPair);
   if (level.oneWay?.length) payload.o = level.oneWay.map((o) => [o.x, o.y, o.direction]);
   if (level.switches?.length) {
     payload.sw = level.switches.map((sw) =>
-      sw.timedDuration
+      sw.holdSwitch
+        ? [sw.id, toPair(sw.switchPos), toPair(sw.doorPos), sw.doorInitiallyOpen ? 1 : 0, sw.timedDuration || 0, 1]
+        : sw.timedDuration
         ? [sw.id, toPair(sw.switchPos), toPair(sw.doorPos), sw.doorInitiallyOpen ? 1 : 0, sw.timedDuration]
         : [sw.id, toPair(sw.switchPos), toPair(sw.doorPos), sw.doorInitiallyOpen ? 1 : 0]
     );
@@ -108,12 +112,13 @@ export function decodeLevelCode(
       return { ok: false, error: 'Invalid puzzle dimensions or start/exit data.' };
     }
 
-    const switches: SwitchDoorPair[] | undefined = p.sw?.map(([id, sp, dp, open, timed]) => ({
+    const switches: SwitchDoorPair[] | undefined = p.sw?.map(([id, sp, dp, open, timed, hold]) => ({
       id,
       switchPos: fromPair(sp),
       doorPos: fromPair(dp),
       ...(open ? { doorInitiallyOpen: true } : {}),
       ...(typeof timed === 'number' && timed > 0 ? { timedDuration: timed } : {}),
+      ...(hold ? { holdSwitch: true } : {}),
     }));
 
     const teleporters: TeleporterPair[] | undefined = p.tp?.map(([id, a, b]) => ({
@@ -137,6 +142,7 @@ export function decodeLevelCode(
       crumbling: p.cr?.map(fromPair),
       ice: p.i?.map(fromPair),
       bonusTiles: p.b?.map(fromPair),
+      crates: p.k?.map(fromPair),
       stars: p.g?.map(fromPair),
       oneWay: p.o?.map(([x, y, direction]) => ({ x, y, direction })),
       switches,

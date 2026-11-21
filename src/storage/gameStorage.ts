@@ -61,10 +61,10 @@ export function getLocalDateString(date = new Date()): string {
 
 export type MonthlyMedal = 'none' | 'bronze' | 'silver' | 'gold';
 
-export const TOTAL_CAMPAIGN_LEVELS = 140;
+export const TOTAL_CAMPAIGN_LEVELS = 160;
 export const MAX_CAMPAIGN_STARS = TOTAL_CAMPAIGN_LEVELS * 3;
 const STORAGE_KEY = 'steal_the_floor_save_v1';
-const CURRENT_VERSION = 4;
+const CURRENT_VERSION = 5;
 export const ACHIEVEMENT_REWARD_COINS = 15;
 
 export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
@@ -75,7 +75,8 @@ export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   { id: 'world4_cleared', title: 'Portal Wanderer', description: 'Complete all 20 levels in World 4', unlocked: false, progress: 0, maxProgress: 20, icon: '🌀' },
   { id: 'world6_cleared', title: 'Frost Master', description: 'Complete all 20 levels in World 6', unlocked: false, progress: 0, maxProgress: 20, icon: '❄️' },
   { id: 'world7_cleared', title: 'Clockwork Savant', description: 'Complete all 20 levels in World 7', unlocked: false, progress: 0, maxProgress: 20, icon: '⚙️' },
-  { id: 'grand_master', title: 'Master Builder', description: 'Complete all 140 campaign levels!', unlocked: false, progress: 0, maxProgress: 140, icon: '👑' },
+  { id: 'world8_cleared', title: 'Sanctum Architect', description: 'Complete all 20 levels in World 8', unlocked: false, progress: 0, maxProgress: 20, icon: '📦' },
+  { id: 'grand_master', title: 'Master Builder', description: 'Complete all 160 campaign levels!', unlocked: false, progress: 0, maxProgress: 160, icon: '👑' },
   { id: 'star_collector_50', title: 'Stargazer', description: 'Earn 50 par stars total', unlocked: false, progress: 0, maxProgress: 50, icon: '⭐' },
   { id: 'star_collector_150', title: 'Constellation', description: 'Earn 150 par stars total', unlocked: false, progress: 0, maxProgress: 150, icon: '🌟' },
   { id: 'star_collector_300', title: 'Galactic Brilliance', description: 'Earn 300 par stars across all levels!', unlocked: false, progress: 0, maxProgress: 300, icon: '✨' },
@@ -92,6 +93,7 @@ export const THEMES = [
   { id: 'forest-adventure', name: 'Forest Adventure', price: 80, bg: 'linear-gradient(to bottom, #15803d, #052e16)', tileColor: '#4ade80', previewColor: '#4ade80', unlockedByDefault: false },
   { id: 'arctic-frost', name: 'Arctic Frost', price: 100, bg: 'linear-gradient(to bottom, #0c4a6e, #082f49)', tileColor: '#67e8f9', previewColor: '#67e8f9', unlockedByDefault: false },
   { id: 'clockwork-forge', name: 'Clockwork Forge', price: 120, bg: 'linear-gradient(to bottom, #7c2d12, #1c0a00)', tileColor: '#fb923c', previewColor: '#fb923c', unlockedByDefault: false },
+  { id: 'crate-sanctum', name: 'Obsidian Sanctum', price: 140, bg: 'linear-gradient(to bottom, #1e1b4b, #09090b)', tileColor: '#eab308', previewColor: '#34d399', unlockedByDefault: false },
 ];
 
 export const SKINS = [
@@ -101,6 +103,7 @@ export const SKINS = [
   { id: 'puff-emerald', name: 'Moss Puff', color: '#10b981', price: 45, unlockedByDefault: false },
   { id: 'puff-frost', name: 'Frost Puff', color: '#7dd3fc', price: 70, unlockedByDefault: false },
   { id: 'puff-ember', name: 'Ember Puff', color: '#f97316', price: 90, unlockedByDefault: false },
+  { id: 'puff-jade', name: 'Jade Puff', color: '#34d399', price: 110, unlockedByDefault: false },
   { id: 'puff-gold', name: 'Royal Gold', color: '#fbbf24', price: 100, unlockedByDefault: false },
 ];
 
@@ -109,6 +112,7 @@ export const TRAILS = [
   { id: 'trail-sparkle', name: 'Starlight Dust', preview: 'linear-gradient(135deg, #fef08a, #f59e0b)', price: 35, unlockedByDefault: false },
   { id: 'trail-frost', name: 'Frost Shards', preview: 'linear-gradient(135deg, #e0f2fe, #38bdf8)', price: 50, unlockedByDefault: false },
   { id: 'trail-neon', name: 'Cyber Pulse', preview: 'linear-gradient(135deg, #f472b6, #a855f7)', price: 75, unlockedByDefault: false },
+  { id: 'trail-ember', name: 'Forge Embers', preview: 'linear-gradient(135deg, #fb923c, #f43f5e)', price: 90, unlockedByDefault: false },
   { id: 'trail-rainbow', name: 'Prism Glow', preview: 'linear-gradient(135deg, #f43f5e, #fbbf24, #4ade80, #38bdf8)', price: 120, unlockedByDefault: false },
 ];
 
@@ -501,6 +505,7 @@ export class GameStorage {
     updateProgress('world4_cleared', countRange(61, 80));
     updateProgress('world6_cleared', countRange(101, 120));
     updateProgress('world7_cleared', countRange(121, 140));
+    updateProgress('world8_cleared', countRange(141, 160));
     updateProgress('grand_master', wonCount);
 
     let totalStarsEarned = 0;

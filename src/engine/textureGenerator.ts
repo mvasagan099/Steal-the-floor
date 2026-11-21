@@ -107,6 +107,19 @@ export const THEME_PALETTES: Record<string, ThemeColors> = {
     bgGradBottom: '#1c0a00',
     accent: '#fb923c',
   },
+  'crate-sanctum': {
+    name: 'Obsidian Sanctum',
+    tileFixed: '#eab308',
+    tileFixedSide: '#a16207',
+    tileBridge: '#34d399',
+    tileBridgeSide: '#059669',
+    tileSticky: '#c084fc',
+    tileCrumbling: '#94a3b8',
+    tileRock: '#334155',
+    bgGradTop: '#1e1b4b',
+    bgGradBottom: '#09090b',
+    accent: '#34d399',
+  },
 };
 
 const PAIR_COLORS = [
@@ -679,4 +692,88 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.roundRect(14, 14, S - 28, S - 38, 20);
     ctx.stroke();
   });
+
+  // 16. Weighted Pressure Plates (Hold Switches: require a crate or Puff to stay open)
+  PAIR_COLORS.forEach((pair, idx) => {
+    createTile(
+      `tile_switch_hold_${idx}`,
+      (ctx) => {
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(0, 0, S, S);
+
+        // Recessed square socket frame
+        ctx.strokeStyle = pair.primary;
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.roundRect(22, 18, S - 44, S - 52, 14);
+        ctx.stroke();
+
+        // Inner weighted pad
+        ctx.fillStyle = pair.dark;
+        ctx.beginPath();
+        ctx.roundRect(34, 30, S - 68, S - 76, 10);
+        ctx.fill();
+
+        // Pair letter badge
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 26px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(pair.label, S / 2, S / 2 - 8);
+      },
+      '#1e293b'
+    );
+  });
+
+  // 17. Pushable Crate (unlit wood/bronze & lit emerald-glowing when resting on weighted plate)
+  const drawCrate = (key: string, lit: boolean) => {
+    createCanvas(key, S, S, (ctx) => {
+      // Soft drop shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.38)';
+      ctx.beginPath();
+      ctx.roundRect(20, 26, S - 40, S - 42, 16);
+      ctx.fill();
+
+      // 3D Crate body
+      const topColor = lit ? '#34d399' : '#d97706';
+      const sideColor = lit ? '#059669' : '#92400e';
+      const borderColor = lit ? '#a7f3d0' : '#fcd34d';
+
+      ctx.fillStyle = sideColor;
+      ctx.beginPath();
+      ctx.roundRect(20, 22, S - 40, S - 42, 14);
+      ctx.fill();
+
+      ctx.fillStyle = topColor;
+      ctx.beginPath();
+      ctx.roundRect(20, 14, S - 40, S - 48, 14);
+      ctx.fill();
+
+      // Cross-brace planks
+      ctx.strokeStyle = sideColor;
+      ctx.lineWidth = 7;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(32, 26);
+      ctx.lineTo(S - 32, S - 46);
+      ctx.moveTo(S - 32, 26);
+      ctx.lineTo(32, S - 46);
+      ctx.stroke();
+
+      // Outer metallic frame
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.roundRect(24, 18, S - 48, S - 56, 10);
+      ctx.stroke();
+
+      // Center rivet / crystal
+      ctx.fillStyle = lit ? '#ecfdf5' : '#fef3c7';
+      ctx.beginPath();
+      ctx.arc(S / 2, S / 2 - 10, 9, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  };
+  drawCrate('item_crate', false);
+  drawCrate('item_crate_lit', true);
 }

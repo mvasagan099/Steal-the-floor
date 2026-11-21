@@ -88,6 +88,11 @@ const MECHANIC_INTROS: Record<number, { icon: string; title: string; tip: string
     title: 'Clockwork Timed Gates',
     tip: 'Timed switches hold their gate open for a limited number of moves—watch the countdown badge and sprint through!',
   },
+  141: {
+    icon: '📦',
+    title: 'Pushable Crates & Weighted Plates',
+    tip: 'Shove heavy crates across solid ground (or ice!) onto weighted pressure plates to hold sanctum gates open while you pass!',
+  },
 };
 
 export const App: React.FC = () => {

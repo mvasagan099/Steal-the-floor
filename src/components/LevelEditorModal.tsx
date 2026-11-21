@@ -24,6 +24,7 @@ type BrushType =
   | 'sticky'
   | 'crumbling'
   | 'ice'
+  | 'crate'
   | 'bonus'
   | 'gem'
   | 'switchA'
@@ -34,7 +35,19 @@ const COLS = 6;
 const ROWS = 7;
 
 interface CellData {
-  base: 'void' | 'start' | 'exit' | 'fixed' | 'rock' | 'sticky' | 'crumbling' | 'ice' | 'switchA' | 'doorA' | 'portal1';
+  base:
+    | 'void'
+    | 'start'
+    | 'exit'
+    | 'fixed'
+    | 'rock'
+    | 'sticky'
+    | 'crumbling'
+    | 'ice'
+    | 'crate'
+    | 'switchA'
+    | 'doorA'
+    | 'portal1';
   hasGem: boolean;
   hasBonus: boolean;
 }
@@ -46,6 +59,7 @@ const BRUSHES: Array<{ id: BrushType; label: string; badge: string; color: strin
   { id: 'sticky', label: 'Honey', badge: '🍯', color: 'bg-purple-500/20 border-purple-400/50 text-purple-200' },
   { id: 'crumbling', label: 'Crumble', badge: '🧱', color: 'bg-stone-500/25 border-stone-400/50 text-stone-200' },
   { id: 'ice', label: 'Ice', badge: '❄️', color: 'bg-sky-300/20 border-sky-200/50 text-sky-100' },
+  { id: 'crate', label: 'Crate', badge: '📦', color: 'bg-amber-600/25 border-amber-400/60 text-amber-200' },
   { id: 'bonus', label: '+1 Tile', badge: '➕', color: 'bg-amber-500/20 border-amber-400/50 text-amber-200' },
   { id: 'switchA', label: 'Switch', badge: '🔘', color: 'bg-blue-500/20 border-blue-400/50 text-blue-200' },
   { id: 'doorA', label: 'Gate', badge: '🚧', color: 'bg-rose-500/20 border-rose-400/50 text-rose-200' },
@@ -75,6 +89,7 @@ function levelToGrid(level: LevelDefinition): CellData[][] {
   level.sticky?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'sticky'; });
   level.crumbling?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'crumbling'; });
   level.ice?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'ice'; });
+  level.crates?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'crate'; });
   level.switches?.slice(0, 1).forEach((sw) => {
     if (inBounds(sw.switchPos)) grid[sw.switchPos.y][sw.switchPos.x].base = 'switchA';
     if (inBounds(sw.doorPos)) grid[sw.doorPos.y][sw.doorPos.x].base = 'doorA';
@@ -103,7 +118,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
   const [brush, setBrush] = useState<BrushType>('fixed');
   const [name, setName] = useState('My Custom Puzzle');
   const [maxTiles, setMaxTiles] = useState(2);
-  const [gateTimer, setGateTimer] = useState<number>(0);
+  const [gateTimer, setGateTimer] = useState<number>(0); // -1 = holdSwitch, 0 = toggle, >0 = timedDuration
   const [statusMsg, setStatusMsg] = useState<{ kind: 'info' | 'ok' | 'err'; text: string }>({
     kind: 'info',
     text: 'Paint your puzzle, then tap Verify & Play to solve-check it!',
@@ -183,6 +198,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
     const sticky: Coordinate[] = [];
     const crumbling: Coordinate[] = [];
     const ice: Coordinate[] = [];
+    const crates: Coordinate[] = [];
     const stars: Coordinate[] = [];
     const bonusTiles: Coordinate[] = [];
     let switchPos: Coordinate | null = null;
@@ -200,7 +216,10 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
         else if (cell.base === 'sticky') sticky.push(coord);
         else if (cell.base === 'crumbling') crumbling.push(coord);
         else if (cell.base === 'ice') ice.push(coord);
-        else if (cell.base === 'switchA') switchPos = coord;
+        else if (cell.base === 'crate') {
+          fixed.push(coord);
+          crates.push(coord);
+        } else if (cell.base === 'switchA') switchPos = coord;
         else if (cell.base === 'doorA') doorPos = coord;
         else if (cell.base === 'portal1') portals.push(coord);
 
@@ -242,10 +261,19 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
       crumbling: crumbling.length ? crumbling : undefined,
       ice: ice.length ? ice : undefined,
       bonusTiles: bonusTiles.length ? bonusTiles : undefined,
+      crates: crates.length ? crates : undefined,
       stars: stars.length ? stars : undefined,
       switches:
         switchPos && doorPos
-          ? [{ id: 'g1', switchPos, doorPos, ...(gateTimer > 0 ? { timedDuration: gateTimer } : {}) }]
+          ? [
+              {
+                id: 'g1',
+                switchPos,
+                doorPos,
+                ...(gateTimer === -1 ? { holdSwitch: true } : {}),
+                ...(gateTimer > 0 ? { timedDuration: gateTimer } : {}),
+              },
+            ]
           : undefined,
       teleporters: portals.length === 2 ? [{ id: 'tp-1', posA: portals[0], posB: portals[1] }] : undefined,
       parMoves: 0,
@@ -310,7 +338,8 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
     setGrid(levelToGrid(res.level));
     setName(res.level.name);
     setMaxTiles(res.level.maxTiles);
-    setGateTimer(res.level.switches?.[0]?.timedDuration || 0);
+    const sw = res.level.switches?.[0];
+    setGateTimer(sw?.holdSwitch ? -1 : sw?.timedDuration || 0);
     setImportText('');
     setStatusMsg({
       kind: 'ok',
@@ -329,6 +358,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
       sticky: { bg: 'bg-purple-600/80 border-purple-400', icon: '🍯' },
       crumbling: { bg: 'bg-stone-500/80 border-stone-300', icon: '🧱' },
       ice: { bg: 'bg-cyan-300/80 border-white text-slate-900', icon: '❄️' },
+      crate: { bg: 'bg-amber-600/85 border-amber-300', icon: '📦' },
       switchA: { bg: 'bg-blue-500/80 border-sky-300', icon: '🔘' },
       doorA: { bg: 'bg-rose-600/80 border-rose-300', icon: '🚧' },
       portal1: { bg: 'bg-fuchsia-600/80 border-fuchsia-300', icon: '🌀' },
@@ -388,7 +418,8 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
                       setGrid(levelToGrid(lvl));
                       setName(lvl.name);
                       setMaxTiles(lvl.maxTiles);
-                      setGateTimer(lvl.switches?.[0]?.timedDuration || 0);
+                      const sw = lvl.switches?.[0];
+                      setGateTimer(sw?.holdSwitch ? -1 : sw?.timedDuration || 0);
                       setShowSaved(false);
                     }}
                     className="text-left flex-1 min-w-0"
@@ -449,24 +480,31 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
           </div>
         </div>
 
-        {/* Optional Timed Gate Countdown */}
+        {/* Gate Mode: Toggle, Weighted Hold Plate, or Timed Countdown */}
         <div className="flex items-center justify-between bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-1.5 text-xs font-bold">
-          <span className="text-slate-400 text-[10px] uppercase tracking-wider">⏱️ Gate Timer</span>
+          <span className="text-slate-400 text-[10px] uppercase tracking-wider">🚧 Gate Mode</span>
           <div className="flex items-center gap-1">
-            {[0, 3, 4, 5, 6].map((t) => (
+            {[
+              { val: 0, label: 'Toggle' },
+              { val: -1, label: 'Hold' },
+              { val: 3, label: '3t' },
+              { val: 4, label: '4t' },
+              { val: 5, label: '5t' },
+              { val: 6, label: '6t' },
+            ].map((opt) => (
               <button
-                key={t}
+                key={opt.val}
                 onClick={() => {
                   sound.playTap();
-                  setGateTimer(t);
+                  setGateTimer(opt.val);
                 }}
-                className={`px-2 py-0.5 rounded-lg text-[11px] font-black transition-all ${
-                  gateTimer === t
+                className={`px-2 py-0.5 rounded-lg text-[10px] font-black transition-all ${
+                  gateTimer === opt.val
                     ? 'bg-amber-500 text-slate-950'
                     : 'bg-slate-800 text-slate-400 hover:text-white'
                 }`}
               >
-                {t === 0 ? 'Off' : `${t}t`}
+                {opt.label}
               </button>
             ))}
           </div>

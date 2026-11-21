@@ -454,4 +454,51 @@ describe('PuzzleGame Engine Mechanics', () => {
     expect(winRes.code).toBe('SUCCESS_WIN');
     expect(game.openDoors.has('g1')).toBe(false);
   });
+
+  it('pushes crates across solid ground and ice onto weighted hold-plates and restores on undo', () => {
+    const level: LevelDefinition = {
+      id: 15,
+      world: 8,
+      name: 'Crate & Weighted Plate Test',
+      cols: 6,
+      rows: 3,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 1, y: 2 },
+      fixed: [{ x: 1, y: 0 }],
+      crates: [{ x: 1, y: 0 }],
+      ice: [{ x: 2, y: 0 }, { x: 3, y: 0 }],
+      rocks: [{ x: 0, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 1 }, { x: 5, y: 1 }],
+      switches: [
+        {
+          id: 'g1',
+          switchPos: { x: 4, y: 0 },
+          doorPos: { x: 1, y: 1 },
+          holdSwitch: true,
+        },
+      ],
+      parMoves: 3,
+    };
+
+    const game = new PuzzleGame(level);
+    expect(game.openDoors.has('g1')).toBe(false);
+
+    // Push crate at (1,0) right onto ice (2,0)-(3,0) -> glides onto weighted plate (4,0) and opens gate!
+    const pushRes = game.move({ x: 1, y: 0 });
+    expect(pushRes.success).toBe(true);
+    expect(pushRes.pushedCrate).toEqual({ from: { x: 1, y: 0 }, to: { x: 4, y: 0 } });
+    expect(game.crates.has('4,0')).toBe(true);
+    expect(game.openDoors.has('g1')).toBe(true);
+
+    // Undo restores crate to (1,0) and closes weighted gate
+    game.undo();
+    expect(game.crates.has('1,0')).toBe(true);
+    expect(game.crates.has('4,0')).toBe(false);
+    expect(game.openDoors.has('g1')).toBe(false);
+
+    // Re-push and walk straight through open gate (1,1) to exit (1,2)
+    game.move({ x: 1, y: 0 });
+    expect(game.move({ x: 1, y: 1 }).success).toBe(true);
+    expect(game.move({ x: 1, y: 2 }).code).toBe('SUCCESS_WIN');
+  });
 });

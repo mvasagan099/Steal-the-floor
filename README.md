@@ -20,7 +20,7 @@ In **Steal the Floor**, you guide **Puff** across floating islands suspended ove
 
 ## 🌟 Highlights (v2.0.0)
 
-- **140 Solver-Validated Campaign Levels across 7 Worlds (420 Stars):**
+- **160 Solver-Validated Campaign Levels across 8 Worlds (480 Stars):**
   - **World 1 — First Steps (1–20):** Bridge reach, island reclamation, and gem detours.
   - **World 2 — Think Ahead (21–40):** Granite rock formations, tight corridors, and strict tile budgets.
   - **World 3 — Tricky Tiles (41–60):** Sticky honey traps, crumbling stones, and one-way arrows.
@@ -28,19 +28,20 @@ In **Steal the Floor**, you guide **Puff** across floating islands suspended ove
   - **World 5 — Master Builder (81–100):** Multi-stage spatial trials combining Worlds 1–4.
   - **World 6 — Frost & Spark (101–120):** Continuous **Ice Sliding (`I`)** and permanent **+1 Bonus Tile Pickups (`+`)**.
   - **World 7 — Clockwork Forge (121–140):** **Timed Switches & Countdown Gates** where every move counts down before the gate seals shut.
+  - **World 8 — Obsidian Sanctum (141–160):** **Pushable Crates (`M`) & Weighted Pressure Plates** — shove crates across solid ground or ice to hold sanctum gates open.
 - **Automated Mathematical Quality Gates (BFS Solver):**
-  - Every campaign level is proven solvable, par-calibrated, and verified so no switch, portal, crumbling stone, one-way arrow, ice runway, `+1` bonus tile, sticky trap, or timed gate can be trivially bypassed.
+  - Every campaign level is proven solvable, par-calibrated, and verified so no switch, portal, crumbling stone, one-way arrow, ice runway, `+1` bonus tile, sticky trap, timed gate, or pushable crate can be trivially bypassed.
   - Powers real-time **State-Aware Hints** (`H`) and **Live Deadlock Detection** (pulsing Undo warning when no winning path remains).
 - **Endless Mode — Void Rush:**
   - Infinite stream of solver-verified procedural stages with escalating mechanics, personal-best streaks, and rewards.
 - **Daily Challenge Archive & Monthly Medals:**
   - Deterministic offline daily puzzles seeded by local calendar date, interactive **Monthly Archive Calendar** for replaying past days, **Bronze (5) / Silver (12) / Gold (20)** monthly trophies, and spoiler-free emoji share cards.
 - **Builder Studio (In-Game Level Editor + Offline Share Codes):**
-  - Tap-to-paint `6×7` puzzle creator supporting islands, rocks, gems, sticky honey, crumbling stone, ice, `+1` bonus tiles, portals, switches, and optional timed gate countdowns.
+  - Tap-to-paint `6×7` puzzle creator supporting islands, rocks, gems, sticky honey, crumbling stone, ice, pushable crates, `+1` bonus tiles, portals, and Toggle / Weighted Hold / Timed gates.
   - Built-in BFS solver verification + zero-server `STF1:` Base64URL share & import codes.
 - **World-Themed Atmosphere, Cosmetics & Procedural Web Audio:**
-  - **7 Visual Themes** (*Floating Sky*, *Candy World*, *Ocean Islands*, *Neon Space*, *Forest Adventure*, *Arctic Frost*, *Clockwork Forge*) each with distinct living background particles and custom 4-bar adaptive musical progressions.
-  - **7 Puff Skins**, **5 Jump Particle Trails**, and **14 Achievements** with live unlock toasts and Player Stats.
+  - **8 Visual Themes** (*Floating Sky*, *Candy World*, *Ocean Islands*, *Neon Space*, *Forest Adventure*, *Arctic Frost*, *Clockwork Forge*, *Obsidian Sanctum*) each with distinct living background particles and custom 4-bar adaptive musical progressions.
+  - **8 Puff Skins**, **6 Jump Particle Trails**, and **15 Achievements** with live unlock toasts and Player Stats.
 - **100% Offline, Ad-Free & Private:**
   - Zero ads, zero analytics, zero remote servers, and no `INTERNET` permission in `AndroidManifest.xml`.
   - Offline-first PWA (`public/manifest.json` + `public/sw.js`) and portable `STFSAVE:` backup codes in Settings to transfer saves across devices.

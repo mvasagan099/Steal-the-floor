@@ -18,6 +18,8 @@ export interface SwitchDoorPair {
   doorInitiallyOpen?: boolean;
   /** If set, stepping on the switch opens the gate for N moves before it auto-closes. */
   timedDuration?: number;
+  /** If true, gate stays open ONLY while a crate (or Puff) rests on the weighted plate. */
+  holdSwitch?: boolean;
 }
 
 export interface TeleporterPair {
@@ -28,7 +30,7 @@ export interface TeleporterPair {
 
 export interface LevelDefinition {
   id: number;
-  world: number; // 1 to 6 (0 for daily/endless/custom)
+  world: number; // 1 to 8 (0 for daily/endless/custom)
   name: string;
   cols: number;
   rows: number;
@@ -41,6 +43,7 @@ export interface LevelDefinition {
   crumbling?: Coordinate[];
   ice?: Coordinate[];
   bonusTiles?: Coordinate[];
+  crates?: Coordinate[];
   oneWay?: OneWayTile[];
   switches?: SwitchDoorPair[];
   teleporters?: TeleporterPair[];
@@ -58,7 +61,8 @@ export type MoveResultCode =
   | 'ERR_CLOSED_DOOR'
   | 'ERR_ONE_WAY'
   | 'ERR_NO_TILES'
-  | 'ERR_OUT_OF_BOUNDS';
+  | 'ERR_OUT_OF_BOUNDS'
+  | 'ERR_CRATE_BLOCKED';
 
 export interface MoveResult {
   success: boolean;
@@ -72,6 +76,7 @@ export interface MoveResult {
   teleportedTo?: Coordinate;
   starCollected?: Coordinate;
   bonusTileCollected?: Coordinate;
+  pushedCrate?: { from: Coordinate; to: Coordinate };
   slidePath?: Coordinate[];
   doorToggled?: { id: string; open: boolean };
 }
@@ -83,6 +88,7 @@ export interface GameStateSnapshot {
   crumbled: string[]; // "x,y" keys
   collectedStars: string[]; // "x,y" keys
   collectedBonusTiles: string[]; // "x,y" keys
+  crates?: string[]; // "x,y" keys
   openDoors: string[]; // IDs
   doorTimers?: Record<string, number>; // timed door ID -> remaining moves
   moves: number;

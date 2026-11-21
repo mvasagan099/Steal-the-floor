@@ -250,6 +250,27 @@ export class SoundManager {
     osc.stop(t + 0.13);
   }
 
+  public playPushCrate(): void {
+    if (!this.sfxEnabled) return;
+    const ctx = this.ensureCtx();
+    if (!ctx || !this.sfxGainNode) return;
+
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(160, t);
+    osc.frequency.exponentialRampToValueAtTime(92, t + 0.14);
+
+    gain.gain.setValueAtTime(0.24, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGainNode);
+    osc.start(t);
+    osc.stop(t + 0.16);
+  }
+
   public playCrumble(): void {
     if (!this.sfxEnabled) return;
     const ctx = this.ensureCtx();
@@ -427,6 +448,12 @@ export class SoundManager {
         { pad: [116.54, 146.83, 174.61, 220.0], chime: [349.23, 440.0, 523.25], wave: 'triangle' },
         { pad: [130.81, 164.81, 196.0, 261.63], chime: [392.0, 493.88, 523.25], wave: 'triangle' },
         { pad: [110.0, 138.59, 164.81, 220.0], chime: [440.0, 554.37, 659.25], wave: 'triangle' },
+      ],
+      'crate-sanctum': [
+        { pad: [164.81, 246.94, 293.66, 392.0], chime: [493.88, 587.33, 739.99] },
+        { pad: [146.83, 220.0, 261.63, 329.63], chime: [440.0, 523.25, 659.25] },
+        { pad: [130.81, 196.0, 246.94, 329.63], chime: [392.0, 493.88, 659.25] },
+        { pad: [146.83, 220.0, 293.66, 369.99], chime: [587.33, 659.25, 739.99] },
       ],
     };
 

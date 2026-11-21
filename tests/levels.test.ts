@@ -4,21 +4,21 @@ import { PuzzleGame } from '../src/engine/logic';
 import { solveLevel } from '../src/engine/solver';
 import { LevelDefinition } from '../src/engine/types';
 
-describe('140 Levels Solvability & Mechanic Quality Gate Suite', () => {
-  it('contains exactly 140 levels across 7 worlds', () => {
-    expect(ALL_LEVELS.length).toBe(140);
-    expect(WORLDS.length).toBe(7);
+describe('160 Levels Solvability & Mechanic Quality Gate Suite', () => {
+  it('contains exactly 160 levels across 8 worlds', () => {
+    expect(ALL_LEVELS.length).toBe(160);
+    expect(WORLDS.length).toBe(8);
 
-    for (let w = 1; w <= 7; w++) {
+    for (let w = 1; w <= 8; w++) {
       const worldLevels = ALL_LEVELS.filter((l) => l.world === w);
       expect(worldLevels.length).toBe(20);
     }
   });
 
-  it('validates all 140 levels are solvable with accurate par and active mechanics', () => {
+  it('validates all 160 levels are solvable with accurate par and active mechanics', () => {
     for (const level of ALL_LEVELS) {
       expect(level.id).toBeGreaterThanOrEqual(1);
-      expect(level.id).toBeLessThanOrEqual(140);
+      expect(level.id).toBeLessThanOrEqual(160);
       expect(level.parMoves).toBeGreaterThan(0);
       expect(level.star2Moves).toBeGreaterThan(level.parMoves);
 
@@ -35,6 +35,7 @@ describe('140 Levels Solvability & Mechanic Quality Gate Suite', () => {
       let usedOneWay = false;
       let usedIce = false;
       let usedBonusTile = false;
+      let usedCrate = false;
 
       const oneWayKeys = new Set((level.oneWay || []).map((o) => `${o.x},${o.y}`));
       const crumblingKeys = new Set((level.crumbling || []).map((c) => `${c.x},${c.y}`));
@@ -48,6 +49,13 @@ describe('140 Levels Solvability & Mechanic Quality Gate Suite', () => {
         if (r.trappedTile) hitSticky = true;
         if (r.crumbledTile || crumblingKeys.has(`${step.x},${step.y}`)) usedCrumble = true;
         if (oneWayKeys.has(`${step.x},${step.y}`)) usedOneWay = true;
+        if (r.pushedCrate) {
+          usedCrate = true;
+          const dist =
+            Math.abs(r.pushedCrate.to.x - r.pushedCrate.from.x) +
+            Math.abs(r.pushedCrate.to.y - r.pushedCrate.from.y);
+          if (dist > 1) usedIce = true;
+        }
         if ((r.slidePath && r.slidePath.length > 0) || iceKeys.has(`${step.x},${step.y}`)) usedIce = true;
         if (r.bonusTileCollected) usedBonusTile = true;
       }
@@ -83,6 +91,10 @@ describe('140 Levels Solvability & Mechanic Quality Gate Suite', () => {
             `Level ${level.id}: timed gate '${ts.id}' countdown must have real tension`
           ).toBe(true);
         }
+      }
+
+      if (level.crates?.length) {
+        expect(usedCrate, `Level ${level.id}: pushable crate must be used`).toBe(true);
       }
 
       if (level.teleporters?.length) {

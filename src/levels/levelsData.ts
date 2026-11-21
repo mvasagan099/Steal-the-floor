@@ -1,5 +1,5 @@
 // AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 140 Handcrafted levels across 7 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 160 Handcrafted levels across 8 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = [
@@ -12631,6 +12631,2414 @@ export const ALL_LEVELS: LevelDefinition[] = [
       }
     ],
     "star2Moves": 23
+  },
+  {
+    "id": 141,
+    "world": 8,
+    "name": "First Push",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "Push the heavy crate right onto Weighted Plate A to hold Gate A open while you cross!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 142,
+    "world": 8,
+    "name": "Walk Around",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Circle above the crate so you can shove it south onto Weighted Plate A, then bridge back to Gate A!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 3,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 1,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 143,
+    "world": 8,
+    "name": "Bridge to Push",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Bridge to the west side of the crate, push it east onto Plate A, then pass Gate A!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 1
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 144,
+    "world": 8,
+    "name": "Stone Corridor",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Guide the crate carefully around the rock wall onto Plate A, then circle back through Gate A!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 1,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 145,
+    "world": 8,
+    "name": "Sanctum Gem",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 1
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Grab the top-west gem, park the crate on Weighted Plate A, and bridge to the exit!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 1
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 146,
+    "world": 8,
+    "name": "Ice Shove",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "Give the crate one shove onto the ice strip — it will glide all the way onto Weighted Plate A!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 147,
+    "world": 8,
+    "name": "Double Weight",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Two chambers, two crates! Lock Gate A open first, then drop down and park the second crate on Plate B!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 1
+        },
+        "holdSwitch": true
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 5,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 148,
+    "world": 8,
+    "name": "Crumble Delivery",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 14,
+    "hint": "Cross the crumbling checkpoint to reach the crate island, push it onto Plate A, and pass Gate A!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 18
+  },
+  {
+    "id": 149,
+    "world": 8,
+    "name": "Spark Leverage",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Pick up the +1 Bonus Tile first so your 2-tile bridge can reach the crate island and leap the final chasm!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 150,
+    "world": 8,
+    "name": "Portal Sokoban",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 14,
+    "hint": "Warp into the sealed sanctum via Portal 1, push the crate onto Plate A, and exit through Gate A!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 3,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "star2Moves": 18
+  },
+  {
+    "id": 151,
+    "world": 8,
+    "name": "Honey & Stone",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Cross the sticky honey corridor sacrificing 1 tile, push the crate west onto Plate A, and finish with 2 tiles!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 152,
+    "world": 8,
+    "name": "One-Way Shove",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Ride the one-way chute onto the crate platform, push the crate east onto Plate A, and escape via Gate A!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "down"
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 153,
+    "world": 8,
+    "name": "Weight & Clock",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Park the crate on Plate A to unlock the middle hall, then beat the 3-move clock on Timed Gate B!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 1
+        },
+        "holdSwitch": true
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 4,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        },
+        "timedDuration": 3
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 154,
+    "world": 8,
+    "name": "Glacier Freight",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "Slide both crates across consecutive frozen runways to lock Weighted Plates A and B!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 1
+        },
+        "holdSwitch": true
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 5,
+          "y": 3
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 4
+        },
+        "holdSwitch": true
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 155,
+    "world": 8,
+    "name": "Sanctum Pillars",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 18,
+    "hint": "Approach the crate from above without pinning it against the pillar, push it onto Plate A, and grab the gem!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "star2Moves": 23
+  },
+  {
+    "id": 156,
+    "world": 8,
+    "name": "Warp & Boost",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Collect the +1 Bonus Tile, warp through Portal 1, glide the crate onto Plate A, and bridge to the exit!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 157,
+    "world": 8,
+    "name": "Brittle Freight",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 2,
+      "y": 6
+    },
+    "parMoves": 14,
+    "hint": "Cross the crumbling checkpoint, shove the crate west across ice onto Plate A, and grab the lower gem!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "ice": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "star2Moves": 18
+  },
+  {
+    "id": 158,
+    "world": 8,
+    "name": "Clockwork Sanctum",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 20,
+    "hint": "Hold Gate A open with the crate, grab the gem first, then sprint from Timed Switch b through Gate B!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 1
+        },
+        "holdSwitch": true
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 4,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        },
+        "timedDuration": 3
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "star2Moves": 25
+  },
+  {
+    "id": 159,
+    "world": 8,
+    "name": "Twin Sanctums",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 1,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Park Crate 1 on Plate A, take Portal 1, pass Gate A, then glide Crate 2 west onto Plate B!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "ice": [
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        },
+        "holdSwitch": true
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 0,
+          "y": 4
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 5
+        },
+        "holdSwitch": true
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 0,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 160,
+    "world": 8,
+    "name": "Sanctum Grandmaster",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 23,
+    "hint": "The ultimate 160th puzzle! Grab +1, shove the crate across ice onto Plate A, grab the gem, cross crumbling stone to Portal 1, and beat Timed Gate B!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      },
+      {
+        "x": 4,
+        "y": 6
+      },
+      {
+        "x": 5,
+        "y": 6
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 1
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 1
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 2
+        },
+        "holdSwitch": true
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 4,
+          "y": 5
+        },
+        "doorPos": {
+          "x": 1,
+          "y": 6
+        },
+        "timedDuration": 4
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 0,
+          "y": 3
+        },
+        "posB": {
+          "x": 5,
+          "y": 5
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "star2Moves": 29
   }
 ];
 
@@ -12642,4 +15050,5 @@ export const WORLDS = [
   { id: 5, name: 'Master Builder', levels: [81, 100], theme: 'forest-adventure', description: 'Combine every mechanic in intricate multi-stage master puzzles.' },
   { id: 6, name: 'Frost & Spark', levels: [101, 120], theme: 'arctic-frost', description: 'Glide across frozen ice rinks and collect +1 Bonus Tiles to expand your reach.' },
   { id: 7, name: 'Clockwork Forge', levels: [121, 140], theme: 'clockwork-forge', description: 'Race countdown switches and timed gates across mechanical gauntlets.' },
+  { id: 8, name: 'Obsidian Sanctum', levels: [141, 160], theme: 'crate-sanctum', description: 'Push heavy crates onto weighted pressure plates to unlock ancient sanctum gates.' },
 ];

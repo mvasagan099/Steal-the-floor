@@ -20,7 +20,8 @@ function encodeGameState(game: PuzzleGame): string {
     .sort((a, b2) => a[0].localeCompare(b2[0]))
     .map(([k, v]) => `${k}:${v}`)
     .join(';');
-  return `${p}|${t}|${tr}|${c}|${s}|${b}|${d}|${tm}`;
+  const cr = Array.from(game.crates).sort().join(';');
+  return `${p}|${t}|${tr}|${c}|${s}|${b}|${d}|${tm}|${cr}`;
 }
 
 interface BFSNode {

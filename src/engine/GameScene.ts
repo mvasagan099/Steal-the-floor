@@ -37,6 +37,7 @@ const TRAIL_TINTS: Record<string, number[]> = {
   'trail-sparkle': [0xfef08a, 0xfbbf24, 0xffffff],
   'trail-frost': [0xe0f2fe, 0x67e8f9, 0x38bdf8],
   'trail-neon': [0xf472b6, 0xc084fc, 0x38bdf8],
+  'trail-ember': [0xfb923c, 0xfbbf24, 0xf43f5e],
   'trail-rainbow': [0xf43f5e, 0xfbbf24, 0x4ade80, 0x38bdf8, 0xc084fc],
 };
 
@@ -58,6 +59,8 @@ export class GameScene extends Phaser.Scene {
   private tileSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private starSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private bonusTileSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
+  private crateSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
+  private holdSwitchKeys: Set<string> = new Set();
   private doorSprites: Map<string, DoorEntry> = new Map();
   private highlightSprites: Phaser.GameObjects.Sprite[] = [];
   private hintHighlight: Phaser.GameObjects.Sprite | null = null;
@@ -85,6 +88,8 @@ export class GameScene extends Phaser.Scene {
     this.tileSprites.clear();
     this.starSprites.clear();
     this.bonusTileSprites.clear();
+    this.crateSprites.clear();
+    this.holdSwitchKeys.clear();
     this.doorSprites.clear();
     this.highlightSprites = [];
     this.hintHighlight = null;
@@ -165,6 +170,14 @@ export class GameScene extends Phaser.Scene {
         speedY: { min: -44, max: -20 },
         scale: { min: 0.14, max: 0.3 },
         frequency: 220,
+      },
+      'crate-sanctum': {
+        texture: 'fx_particle',
+        tint: [0xfde047, 0x34d399, 0xa5b4fc],
+        speedX: { min: -10, max: 10 },
+        speedY: { min: -18, max: -6 },
+        scale: { min: 0.12, max: 0.28 },
+        frequency: 280,
       },
     };
     const amb = ambientMap[this.config.themeId] || ambientMap['floating-sky'];
@@ -307,6 +320,13 @@ export class GameScene extends Phaser.Scene {
       this.addStarFloatTween(sprite, pos.y);
     }
 
+    for (const [key, sprite] of this.crateSprites.entries()) {
+      this.tweens.killTweensOf(sprite);
+      const pos = this.gridToScreen(keyToCoord(key));
+      sprite.setPosition(pos.x, pos.y - 2);
+      sprite.setScale(this.baseTileScale * 0.92);
+    }
+
     if (!this.isAnimating) {
       this.stopPlayerIdleTween();
       const pPos = this.gridToScreen(this.gameLogic.player);
@@ -358,10 +378,18 @@ export class GameScene extends Phaser.Scene {
     this.addStaticTile(level.exit, 'tile_exit', 1);
 
     // Fixed islands
-    level.fixed?.forEach((c) => this.addStaticTile(c, 'tile_fixed', 1));
+    const fixedKeys = new Set<string>();
+    level.fixed?.forEach((c) => {
+      fixedKeys.add(coordToKey(c));
+      this.addStaticTile(c, 'tile_fixed', 1);
+    });
 
     // Ice sliding platforms
-    level.ice?.forEach((c) => this.addStaticTile(c, 'tile_ice', 1));
+    const iceKeys = new Set<string>();
+    level.ice?.forEach((c) => {
+      iceKeys.add(coordToKey(c));
+      this.addStaticTile(c, 'tile_ice', 1);
+    });
 
     // Rocks
     level.rocks?.forEach((c) => this.addStaticTile(c, 'tile_rock', 1));
@@ -381,13 +409,23 @@ export class GameScene extends Phaser.Scene {
     // One-way arrow pads
     level.oneWay?.forEach((ow) => this.addStaticTile(ow, `tile_oneway_${ow.direction}`, 1));
 
-    // Color-coded Switches & Doors
+    // Color-coded Switches & Doors (toggle, timed, or weighted hold-switch)
+    const switchKeys = new Set<string>();
     level.switches?.forEach((sw, idx) => {
       const pairIdx = idx % 2;
-      this.addStaticTile(sw.switchPos, `tile_switch_${pairIdx}`, 1);
+      const swKey = coordToKey(sw.switchPos);
+      switchKeys.add(swKey);
+      if (sw.holdSwitch) {
+        this.holdSwitchKeys.add(swKey);
+      }
+      this.addStaticTile(
+        sw.switchPos,
+        sw.holdSwitch ? `tile_switch_hold_${pairIdx}` : `tile_switch_${pairIdx}`,
+        1
+      );
 
       const pos = this.gridToScreen(sw.doorPos);
-      const isInitiallyOpen = !!sw.doorInitiallyOpen;
+      const isInitiallyOpen = this.gameLogic.openDoors.has(sw.id);
       const doorKey = isInitiallyOpen ? `tile_door_open_${pairIdx}` : `tile_door_closed_${pairIdx}`;
       const doorSprite = this.add.sprite(pos.x, pos.y, doorKey);
       doorSprite.setScale(this.baseTileScale);
@@ -432,6 +470,15 @@ export class GameScene extends Phaser.Scene {
       });
     });
 
+    // Pushable Crates (also ensure solid tile visually underneath if not already rendered)
+    level.crates?.forEach((crate) => {
+      const key = coordToKey(crate);
+      if (!fixedKeys.has(key) && !iceKeys.has(key) && !switchKeys.has(key)) {
+        this.addStaticTile(crate, 'tile_fixed', 1);
+      }
+      this.spawnCrateSprite(crate);
+    });
+
     // Collectible Gems
     level.stars?.forEach((gem) => {
       this.spawnStarSprite(gem);
@@ -441,6 +488,17 @@ export class GameScene extends Phaser.Scene {
     level.bonusTiles?.forEach((bonus) => {
       this.spawnBonusTileSprite(bonus);
     });
+  }
+
+  private spawnCrateSprite(coord: Coordinate): void {
+    const key = coordToKey(coord);
+    if (this.crateSprites.has(key)) return;
+    const pos = this.gridToScreen(coord);
+    const tex = this.holdSwitchKeys.has(key) ? 'item_crate_lit' : 'item_crate';
+    const sprite = this.add.sprite(pos.x, pos.y - 2, tex);
+    sprite.setScale(this.baseTileScale * 0.92);
+    sprite.setDepth(5);
+    this.crateSprites.set(key, sprite);
   }
 
   private addStaticTile(
@@ -667,6 +725,33 @@ export class GameScene extends Phaser.Scene {
 
     sound.playTap();
     sound.triggerHaptic('light');
+
+    // 0. Animate pushed crate gliding to its new solid-ground destination
+    if (res.pushedCrate) {
+      sound.playPushCrate();
+      sound.triggerHaptic('medium');
+      const fromKey = coordToKey(res.pushedCrate.from);
+      const toKey = coordToKey(res.pushedCrate.to);
+      const crateSprite = this.crateSprites.get(fromKey);
+      if (crateSprite) {
+        this.crateSprites.delete(fromKey);
+        this.crateSprites.set(toKey, crateSprite);
+        this.tweens.killTweensOf(crateSprite);
+        const destPos = this.gridToScreen(res.pushedCrate.to);
+        const isLit = this.holdSwitchKeys.has(toKey);
+        this.tweens.add({
+          targets: crateSprite,
+          x: destPos.x,
+          y: destPos.y - 2,
+          duration: 155,
+          ease: 'Quad.easeOut',
+          onComplete: () => {
+            crateSprite.setTexture(isLit ? 'item_crate_lit' : 'item_crate');
+            this.spawnBurst(destPos.x, destPos.y, isLit ? 0x34d399 : 0xfbbf24, isLit ? 12 : 6);
+          },
+        });
+      }
+    }
 
     // 1. Bridge tile drop + dust burst
     if (res.placedTile) {
@@ -1155,6 +1240,16 @@ export class GameScene extends Phaser.Scene {
       if (!this.gameLogic.collectedBonusTiles.has(key) && !this.bonusTileSprites.has(key)) {
         this.spawnBonusTileSprite(bonus);
       }
+    });
+
+    // Rebuild crate sprite map cleanly to match current engine crate coordinates
+    for (const sprite of this.crateSprites.values()) {
+      this.tweens.killTweensOf(sprite);
+      sprite.destroy();
+    }
+    this.crateSprites.clear();
+    this.gameLogic.crates.forEach((key) => {
+      this.spawnCrateSprite(keyToCoord(key));
     });
 
     this.syncDoorsVisuals();

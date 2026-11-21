@@ -262,4 +262,34 @@ describe('Game Systems QA Test Suite', () => {
     // Rejects malformed codes
     expect(storage.importSaveCode('BAD_CODE').ok).toBe(false);
   });
+
+  it('tracks World 8 Obsidian Sanctum achievement and STF1 crate/holdSwitch share codes', () => {
+    for (let id = 141; id <= 160; id++) {
+      storage.recordLevelVictory(id, 14, 3, { usedUndo: false });
+    }
+    expect(storage.getData().achievements['world8_cleared'].unlocked).toBe(true);
+
+    const crateLevel: LevelDefinition = {
+      id: 30002,
+      world: 0,
+      name: 'Crate Share Test',
+      cols: 5,
+      rows: 3,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 1, y: 2 },
+      fixed: [{ x: 1, y: 0 }, { x: 2, y: 0 }],
+      crates: [{ x: 1, y: 0 }],
+      rocks: [{ x: 0, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 1 }],
+      switches: [{ id: 'g1', switchPos: { x: 2, y: 0 }, doorPos: { x: 1, y: 1 }, holdSwitch: true }],
+      parMoves: 3,
+    };
+    const code = encodeLevelCode(crateLevel);
+    const dec = decodeLevelCode(code);
+    expect(dec.ok).toBe(true);
+    if (dec.ok) {
+      expect(dec.level.crates).toEqual([{ x: 1, y: 0 }]);
+      expect(dec.level.switches?.[0]?.holdSwitch).toBe(true);
+    }
+  });
 });

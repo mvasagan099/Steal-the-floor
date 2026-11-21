@@ -42,6 +42,7 @@ export class PuzzleGame {
   public crumbled: Set<string>; // Cells that crumbled away
   public collectedStars: Set<string>;
   public collectedBonusTiles: Set<string>; // +1 maxTiles pickups collected
+  public crates: Set<string>; // Pushable crate positions ("x,y")
   public openDoors: Set<string>;
   public doorTimers: Map<string, number>; // timed door ID -> moves remaining before auto-close
   public moves: number;
@@ -58,6 +59,9 @@ export class PuzzleGame {
   private oneWayMap: Map<string, Direction>;
   private switchMap: Map<string, string>; // coordKey -> switchDoorId
   private switchDurationMap: Map<string, number>; // switchDoorId -> timedDuration
+  private holdSwitchSet: Set<string>; // switchDoorIds that stay open only while pressed
+  private switchPosById: Map<string, string>; // switchDoorId -> switch coordKey
+  private doorPosById: Map<string, string>; // switchDoorId -> door coordKey
   private doorMap: Map<string, string>; // coordKey -> switchDoorId
   private teleporterMap: Map<string, Coordinate>; // coordKey -> destCoord
   public totalStars: number;
@@ -70,6 +74,7 @@ export class PuzzleGame {
     this.crumbled = new Set<string>();
     this.collectedStars = new Set<string>();
     this.collectedBonusTiles = new Set<string>();
+    this.crates = new Set<string>();
     this.openDoors = new Set<string>();
     this.doorTimers = new Map<string, number>();
     this.moves = 0;
@@ -102,6 +107,13 @@ export class PuzzleGame {
     this.bonusTileSet = new Set<string>();
     level.bonusTiles?.forEach((c) => this.bonusTileSet.add(coordToKey(c)));
 
+    level.crates?.forEach((c) => {
+      const key = coordToKey(c);
+      this.crates.add(key);
+      // Crates always rest on solid ground
+      this.fixedSet.add(key);
+    });
+
     this.oneWayMap = new Map<string, Direction>();
     level.oneWay?.forEach((ow) => {
       const key = coordToKey(ow);
@@ -111,19 +123,31 @@ export class PuzzleGame {
 
     this.switchMap = new Map<string, string>();
     this.switchDurationMap = new Map<string, number>();
+    this.holdSwitchSet = new Set<string>();
+    this.switchPosById = new Map<string, string>();
+    this.doorPosById = new Map<string, string>();
     this.doorMap = new Map<string, string>();
     level.switches?.forEach((sw) => {
       const swKey = coordToKey(sw.switchPos);
+      const doorKey = coordToKey(sw.doorPos);
       this.switchMap.set(swKey, sw.id);
+      this.switchPosById.set(sw.id, swKey);
+      this.doorPosById.set(sw.id, doorKey);
       if (sw.timedDuration && sw.timedDuration > 0) {
         this.switchDurationMap.set(sw.id, sw.timedDuration);
       }
+      if (sw.holdSwitch) {
+        this.holdSwitchSet.add(sw.id);
+      }
       this.fixedSet.add(swKey);
-      this.doorMap.set(coordToKey(sw.doorPos), sw.id);
+      this.doorMap.set(doorKey, sw.id);
       if (sw.doorInitiallyOpen) {
         this.openDoors.add(sw.id);
       }
     });
+
+    // Ensure any holdSwitch initially pressed by a crate or start opens its gate immediately
+    this.syncHoldSwitches();
 
     this.teleporterMap = new Map<string, Coordinate>();
     level.teleporters?.forEach((tp) => {
@@ -144,6 +168,18 @@ export class PuzzleGame {
 
   public get inventory(): number {
     return this.currentMaxTiles - (this.tiles.size + this.trapped.size);
+  }
+
+  private canCrateEnter(coord: Coordinate): boolean {
+    if (coord.x < 0 || coord.x >= this.level.cols || coord.y < 0 || coord.y >= this.level.rows) {
+      return false;
+    }
+    const key = coordToKey(coord);
+    if (this.rockSet.has(key)) return false;
+    if (this.crates.has(key)) return false;
+    const doorId = this.doorMap.get(key);
+    if (doorId && !this.openDoors.has(doorId)) return false;
+    return this.isSolidGround(key);
   }
 
   public canMoveTo(target: Coordinate): { allowed: boolean; reason?: string } {
@@ -189,6 +225,21 @@ export class PuzzleGame {
     const doorId = this.doorMap.get(targetKey);
     if (doorId && !this.openDoors.has(doorId)) {
       return { allowed: false, reason: 'This gate is closed! Find a switch.' };
+    }
+
+    if (this.crates.has(targetKey)) {
+      const dir = getDirection(this.player, target)!;
+      const pushDest: Coordinate = {
+        x: target.x + DIR_DELTA[dir].x,
+        y: target.y + DIR_DELTA[dir].y,
+      };
+      if (!this.canCrateEnter(pushDest)) {
+        return {
+          allowed: false,
+          reason: 'Crate blocked! Push crates onto open solid ground.',
+        };
+      }
+      return { allowed: true };
     }
 
     const hasFloor = this.hasWalkableFloor(targetKey);
@@ -252,6 +303,7 @@ export class PuzzleGame {
       crumbled: Array.from(this.crumbled),
       collectedStars: Array.from(this.collectedStars),
       collectedBonusTiles: Array.from(this.collectedBonusTiles),
+      crates: Array.from(this.crates),
       openDoors: Array.from(this.openDoors),
       doorTimers: timersObj,
       moves: this.moves,
@@ -266,6 +318,7 @@ export class PuzzleGame {
     this.crumbled = new Set(snapshot.crumbled);
     this.collectedStars = new Set(snapshot.collectedStars);
     this.collectedBonusTiles = new Set(snapshot.collectedBonusTiles || []);
+    this.crates = new Set(snapshot.crates || []);
     this.openDoors = new Set(snapshot.openDoors);
     this.doorTimers = new Map(
       Object.entries(snapshot.doorTimers || {}).map(([k, v]) => [k, Number(v)])
@@ -274,12 +327,31 @@ export class PuzzleGame {
     this.status = snapshot.status;
   }
 
+  private syncHoldSwitches(result?: MoveResult): void {
+    const playerKey = coordToKey(this.player);
+    for (const swId of this.holdSwitchSet) {
+      const swKey = this.switchPosById.get(swId)!;
+      const doorKey = this.doorPosById.get(swId)!;
+      const isPressed = this.crates.has(swKey) || playerKey === swKey;
+      const currentlyOpen = this.openDoors.has(swId);
+
+      if (isPressed && !currentlyOpen) {
+        this.openDoors.add(swId);
+        if (result) result.doorToggled = { id: swId, open: true };
+      } else if (!isPressed && currentlyOpen && playerKey !== doorKey && !this.crates.has(doorKey)) {
+        this.openDoors.delete(swId);
+        if (result) result.doorToggled = { id: swId, open: false };
+      }
+    }
+  }
+
   private canSlideInto(coord: Coordinate): boolean {
     if (coord.x < 0 || coord.x >= this.level.cols || coord.y < 0 || coord.y >= this.level.rows) {
       return false;
     }
     const key = coordToKey(coord);
     if (this.rockSet.has(key)) return false;
+    if (this.crates.has(key)) return false;
     const doorId = this.doorMap.get(key);
     if (doorId && !this.openDoors.has(doorId)) return false;
     return this.hasWalkableFloor(key);
@@ -294,6 +366,7 @@ export class PuzzleGame {
       else if (check.reason?.includes('One-way')) code = 'ERR_ONE_WAY';
       else if (check.reason?.includes('Out of tiles')) code = 'ERR_NO_TILES';
       else if (check.reason?.includes('boundaries')) code = 'ERR_OUT_OF_BOUNDS';
+      else if (check.reason?.includes('Crate blocked')) code = 'ERR_CRATE_BLOCKED';
 
       return {
         success: false,
@@ -314,6 +387,24 @@ export class PuzzleGame {
       code: 'SUCCESS',
       message: 'Moved successfully',
     };
+
+    // 0. Push crate forward if target contains a crate (slides further if pushed onto ice!)
+    if (this.crates.has(targetKey)) {
+      this.crates.delete(targetKey);
+      const delta = DIR_DELTA[moveDir];
+      let cratePos: Coordinate = { x: target.x + delta.x, y: target.y + delta.y };
+
+      let safety = 0;
+      while (this.iceSet.has(coordToKey(cratePos)) && safety < 20) {
+        safety++;
+        const nextCrate: Coordinate = { x: cratePos.x + delta.x, y: cratePos.y + delta.y };
+        if (!this.canCrateEnter(nextCrate)) break;
+        cratePos = nextCrate;
+      }
+
+      this.crates.add(coordToKey(cratePos));
+      result.pushedCrate = { from: { ...target }, to: { ...cratePos } };
+    }
 
     // 1. Place bridge tile if target is empty void
     const targetHadFloor = this.hasWalkableFloor(targetKey);
@@ -366,7 +457,7 @@ export class PuzzleGame {
     };
     reclaimOnSolid(targetKey);
 
-    // Helper to trigger collectibles, bonus tiles, and switches at current cell
+    // Helper to trigger collectibles, bonus tiles, and toggle/timed switches at current cell
     const triggerCellEffects = () => {
       const pKey = coordToKey(this.player);
 
@@ -382,7 +473,7 @@ export class PuzzleGame {
       }
 
       const switchId = this.switchMap.get(pKey);
-      if (switchId) {
+      if (switchId && !this.holdSwitchSet.has(switchId)) {
         const timedDuration = this.switchDurationMap.get(switchId);
         if (timedDuration) {
           // Timed switch always opens/refreshes the countdown timer!
@@ -443,6 +534,9 @@ export class PuzzleGame {
       triggerCellEffects();
     }
 
+    // 7b. Sync weighted hold switches based on final crate & player positions
+    this.syncHoldSwitches(result);
+
     // 8. Win check
     if (areCoordsEqual(this.player, this.level.exit)) {
       if (this.collectedStars.size === this.totalStars) {
@@ -475,11 +569,13 @@ export class PuzzleGame {
       this.crumbled.clear();
       this.collectedStars.clear();
       this.collectedBonusTiles.clear();
+      this.crates = new Set((this.level.crates || []).map(coordToKey));
       this.openDoors.clear();
       this.doorTimers.clear();
       this.level.switches?.forEach((sw) => {
         if (sw.doorInitiallyOpen) this.openDoors.add(sw.id);
       });
+      this.syncHoldSwitches();
       this.moves = 0;
       this.status = 'playing';
     }
