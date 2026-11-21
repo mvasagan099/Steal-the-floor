@@ -1,5 +1,5 @@
 import { Coordinate, LevelDefinition } from './types';
-import { PuzzleGame, coordToKey } from './logic';
+import { PuzzleGame } from './logic';
 
 export interface SolverResult {
   solvable: boolean;
@@ -23,47 +23,58 @@ interface BFSNode {
   path: Coordinate[];
 }
 
-export function solveLevel(level: LevelDefinition, maxDepth = 40): SolverResult {
-  const initialGame = new PuzzleGame(level);
-  const queue: BFSNode[] = [{ game: initialGame, path: [{ ...level.start }] }];
-  const visited = new Set<string>();
+/**
+ * Solves a puzzle starting from any live PuzzleGame state.
+ * Uses an index pointer (O(1) dequeue) and a maxStates budget to stay UI-safe.
+ */
+export function solveFromState(
+  startState: PuzzleGame,
+  maxDepth = 40,
+  maxStates = 25000
+): SolverResult {
+  const rootGame = new PuzzleGame(startState.level);
+  rootGame.restore(startState.snapshot());
 
-  const startHash = encodeGameState(initialGame);
-  visited.add(startHash);
+  if (rootGame.status === 'won') {
+    return {
+      solvable: true,
+      minMoves: 0,
+      solutionPath: [{ ...rootGame.player }],
+      statesExplored: 1,
+    };
+  }
+
+  const queue: BFSNode[] = [{ game: rootGame, path: [{ ...rootGame.player }] }];
+  let head = 0;
+  const visited = new Set<string>();
+  visited.add(encodeGameState(rootGame));
 
   let statesExplored = 0;
 
-  while (queue.length > 0) {
-    const { game, path } = queue.shift()!;
+  while (head < queue.length && statesExplored < maxStates) {
+    const { game, path } = queue[head++];
     statesExplored++;
 
-    if (game.status === 'won') {
-      return {
-        solvable: true,
-        minMoves: game.moves,
-        solutionPath: path,
-        statesExplored,
-      };
-    }
-
-    if (path.length > maxDepth) {
+    // path includes starting position, so moves taken from root is path.length - 1
+    if (path.length - 1 >= maxDepth) {
       continue;
     }
 
     const legalMoves = game.getLegalMoves();
     for (const moveTarget of legalMoves) {
-      // Clone game state to simulate branch
-      const nextGame = new PuzzleGame(level);
+      const nextGame = new PuzzleGame(startState.level);
       nextGame.restore(game.snapshot());
 
       const res = nextGame.move(moveTarget);
       if (!res.success) continue;
 
+      const nextPath = [...path, { ...moveTarget }];
+
       if (nextGame.status === 'won') {
         return {
           solvable: true,
-          minMoves: nextGame.moves,
-          solutionPath: [...path, { ...moveTarget }],
+          minMoves: nextPath.length - 1,
+          solutionPath: nextPath,
           statesExplored,
         };
       }
@@ -73,7 +84,7 @@ export function solveLevel(level: LevelDefinition, maxDepth = 40): SolverResult 
         visited.add(hash);
         queue.push({
           game: nextGame,
-          path: [...path, { ...moveTarget }],
+          path: nextPath,
         });
       }
     }
@@ -85,4 +96,9 @@ export function solveLevel(level: LevelDefinition, maxDepth = 40): SolverResult 
     solutionPath: [],
     statesExplored,
   };
+}
+
+export function solveLevel(level: LevelDefinition, maxDepth = 40): SolverResult {
+  const initialGame = new PuzzleGame(level);
+  return solveFromState(initialGame, maxDepth);
 }

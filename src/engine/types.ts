@@ -62,6 +62,7 @@ export interface MoveResult {
   message: string;
   placedTile?: Coordinate;
   recoveredTile?: Coordinate;
+  recoveredTiles?: Coordinate[];
   trappedTile?: Coordinate;
   crumbledTile?: Coordinate;
   teleportedTo?: Coordinate;

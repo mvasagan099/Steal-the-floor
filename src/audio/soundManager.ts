@@ -9,14 +9,25 @@ export class SoundManager {
   private masterGainNode: GainNode | null = null;
   private isMusicPlaying = false;
   private musicTimer: number | null = null;
+  private chordStep = 0;
 
   public musicEnabled = true;
   public sfxEnabled = true;
+  public hapticsEnabled = true;
   public musicVolume = 0.4;
   public sfxVolume = 0.7;
 
   private constructor() {
-    // Lazy init on first user touch
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (!this.ctx) return;
+        if (document.hidden) {
+          this.ctx.suspend().catch(() => {});
+        } else if (this.musicEnabled || this.sfxEnabled) {
+          this.ctx.resume().catch(() => {});
+        }
+      });
+    }
   }
 
   public static getInstance(): SoundManager {
@@ -363,28 +374,29 @@ export class SoundManager {
     const ctx = this.ensureCtx();
     if (!ctx || !this.musicGainNode) return;
 
-    // Calming lofi chord progressions (Cmaj7, Am7, Fmaj7, G6)
-    const chords = [
-      [261.63, 329.63, 392.0, 493.88], // C E G B
-      [220.0, 261.63, 329.63, 392.0],  // A C E G
-      [174.61, 220.0, 261.63, 329.63], // F A C E
-      [196.0, 246.94, 293.66, 392.0],  // G B D G
+    // Structured relaxing 4-bar lo-fi progression (Cmaj7 -> Am7 -> Fmaj7 -> G6)
+    const progression = [
+      { pad: [261.63, 329.63, 392.0, 493.88], chime: [523.25, 659.25, 783.99] },
+      { pad: [220.0, 261.63, 329.63, 392.0], chime: [440.0, 523.25, 659.25] },
+      { pad: [174.61, 220.0, 261.63, 329.63], chime: [523.25, 587.33, 659.25] },
+      { pad: [196.0, 246.94, 293.66, 392.0], chime: [587.33, 659.25, 783.99] },
     ];
 
-    const chord = chords[Math.floor(Math.random() * chords.length)];
-    const t = ctx.currentTime;
-    const duration = 4.5; // seconds per chord
+    const bar = progression[this.chordStep % progression.length];
+    this.chordStep = (this.chordStep + 1) % progression.length;
 
-    chord.forEach((freq) => {
+    const t = ctx.currentTime;
+    const duration = 4.2;
+
+    bar.pad.forEach((freq) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, t);
 
-      // Gentle attack and slow release
       gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.linearRampToValueAtTime(0.025, t + 1.2);
+      gain.gain.linearRampToValueAtTime(0.022, t + 1.1);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
 
       osc.connect(gain);
@@ -393,13 +405,29 @@ export class SoundManager {
       osc.stop(t + duration);
     });
 
+    // Subtle pentatonic chime accent mid-bar
+    const chimeFreq = bar.chime[this.chordStep % bar.chime.length];
+    const chimeOsc = ctx.createOscillator();
+    const chimeGain = ctx.createGain();
+    const chimeStart = t + 1.6;
+    chimeOsc.type = 'triangle';
+    chimeOsc.frequency.setValueAtTime(chimeFreq, chimeStart);
+    chimeGain.gain.setValueAtTime(0.0001, chimeStart);
+    chimeGain.gain.linearRampToValueAtTime(0.014, chimeStart + 0.08);
+    chimeGain.gain.exponentialRampToValueAtTime(0.0001, chimeStart + 1.6);
+    chimeOsc.connect(chimeGain);
+    chimeGain.connect(this.musicGainNode);
+    chimeOsc.start(chimeStart);
+    chimeOsc.stop(chimeStart + 1.65);
+
     this.musicTimer = window.setTimeout(() => {
       this.playAmbientChordLoop();
-    }, (duration - 0.8) * 1000);
+    }, (duration - 0.6) * 1000);
   }
 
   public triggerHaptic(type: 'light' | 'medium' | 'success' | 'warning' = 'light'): void {
-    if ('vibrate' in navigator) {
+    if (!this.hapticsEnabled) return;
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
       try {
         switch (type) {
           case 'light':

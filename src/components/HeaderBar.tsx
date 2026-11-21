@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pause, Star, RotateCcw } from 'lucide-react';
+import { Pause, Gem, RotateCcw } from 'lucide-react';
 import { sound } from '../audio/soundManager';
 
 interface HeaderBarProps {
@@ -61,11 +61,14 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         )}
       </div>
 
-      {/* Right: Stars & Moves vs Par */}
+      {/* Right: Gems & Moves vs Par */}
       <div className="flex items-center gap-2">
         {totalStars > 0 && (
-          <div className="flex items-center gap-1 px-2 py-1 bg-amber-950/60 border border-amber-600/40 rounded-lg text-amber-300 text-xs font-bold">
-            <Star size={13} className="fill-amber-400 text-amber-400" />
+          <div
+            className="flex items-center gap-1 px-2 py-1 bg-sky-950/70 border border-sky-500/40 rounded-lg text-sky-300 text-xs font-bold"
+            title="Gems collected"
+          >
+            <Gem size={13} className="text-sky-400" />
             <span>
               {starsCollected}/{totalStars}
             </span>

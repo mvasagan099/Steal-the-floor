@@ -1,18 +1,29 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { GameStorage, THEMES, SKINS } from '../src/storage/gameStorage';
-import { getDailyChallenge } from '../src/levels/dailyChallenge';
-import { AdMobService } from '../src/utils/admobService';
+import {
+  GameStorage,
+  THEMES,
+  ACHIEVEMENT_REWARD_COINS,
+} from '../src/storage/gameStorage';
+import { getDailyChallenge, formatDailyShareText } from '../src/levels/dailyChallenge';
+import { solveLevel } from '../src/engine/solver';
 
 if (typeof globalThis.localStorage === 'undefined') {
   const store = new Map<string, string>();
-  // @ts-expect-error polyfill for Node test environment
   globalThis.localStorage = {
     getItem: (k: string) => store.get(k) ?? null,
-    setItem: (k: string, v: string) => { store.set(k, String(v)); },
-    removeItem: (k: string) => { store.delete(k); },
-    clear: () => { store.clear(); },
+    setItem: (k: string, v: string) => {
+      store.set(k, String(v));
+    },
+    removeItem: (k: string) => {
+      store.delete(k);
+    },
+    clear: () => {
+      store.clear();
+    },
     key: (i: number) => Array.from(store.keys())[i] ?? null,
-    get length() { return store.size; },
+    get length() {
+      return store.size;
+    },
   };
 }
 
@@ -25,7 +36,7 @@ describe('Game Systems QA Test Suite', () => {
     storage.resetProgress();
   });
 
-  it('initializes default progress correctly', () => {
+  it('initializes default progress and settings correctly', () => {
     const data = storage.getData();
     expect(data.currentLevel).toBe(1);
     expect(data.highestUnlockedLevel).toBe(1);
@@ -33,36 +44,44 @@ describe('Game Systems QA Test Suite', () => {
     expect(data.coins).toBe(0);
     expect(data.selectedTheme).toBe('floating-sky');
     expect(data.selectedSkin).toBe('puff-yellow');
-    expect(data.unlockedThemes).toContain('floating-sky');
-    expect(data.unlockedSkins).toContain('puff-yellow');
+    expect(data.settings.musicEnabled).toBe(true);
+    expect(data.settings.sfxEnabled).toBe(true);
+    expect(data.settings.hapticsEnabled).toBe(true);
   });
 
-  it('records level victory, unlocks next level, and awards stars & coins', () => {
-    const { newStars, unlockedNext } = storage.recordLevelVictory(1, 4, 3);
-    expect(newStars).toBe(3);
-    expect(unlockedNext).toBe(true);
+  it('awards honest coins on first clear & star upgrades without replay coin farming', () => {
+    // First clear of Level 1 with 2 stars: 5 first-clear + 2*5 stars + 15 achievement ('first_steps') = 30
+    const first = storage.recordLevelVictory(1, 5, 2, { usedUndo: true });
+    expect(first.newStars).toBe(2);
+    expect(first.unlockedNext).toBe(true);
+    expect(first.newlyUnlockedAchievements.map((a) => a.id)).toContain('first_steps');
+    expect(first.coinsAwarded).toBe(5 + 10 + ACHIEVEMENT_REWARD_COINS);
 
-    const data = storage.getData();
-    expect(data.highestUnlockedLevel).toBe(2);
-    expect(data.currentLevel).toBe(2);
-    expect(data.totalStars).toBe(3);
-    expect(data.coins).toBe(15); // 3 stars * 5 coins
+    // Replaying Level 1 with same 2 stars awards 0 coins (no farming exploit!)
+    const replaySame = storage.recordLevelVictory(1, 5, 2, { usedUndo: true });
+    expect(replaySame.newStars).toBe(0);
+    expect(replaySame.coinsAwarded).toBe(0);
 
-    const lvl1Progress = storage.getLevelProgress(1);
-    expect(lvl1Progress.completed).toBe(true);
-    expect(lvl1Progress.stars).toBe(3);
-    expect(lvl1Progress.bestMoves).toBe(4);
+    // Upgrading Level 1 from 2 -> 3 stars awards only the 1-star delta (+5 coins)
+    const upgrade = storage.recordLevelVictory(1, 4, 3, { usedUndo: false });
+    expect(upgrade.newStars).toBe(1);
+    expect(upgrade.coinsAwarded).toBe(5);
+    expect(storage.getData().totalStars).toBe(3);
   });
 
-  it('unlocks achievements upon meeting conditions', () => {
-    storage.recordLevelVictory(1, 4, 3);
+  it('tracks incremental achievement progress and unlocks Decisive Mind (no_undo)', () => {
+    for (let id = 1; id <= 10; id++) {
+      storage.recordLevelVictory(id, 4, 3, { usedUndo: false });
+    }
     const data = storage.getData();
-    const firstSteps = data.achievements['first_steps'];
-    expect(firstSteps.unlocked).toBe(true);
+    expect(data.achievements['world1_cleared'].progress).toBe(10);
+    expect(data.achievements['world1_cleared'].unlocked).toBe(false);
+    expect(data.achievements['star_collector_50'].progress).toBe(30);
+    expect(data.achievements['no_undo'].progress).toBe(10);
+    expect(data.achievements['no_undo'].unlocked).toBe(true);
   });
 
   it('handles theme and skin purchases with coins', () => {
-    // Award 50 coins
     storage.getData().coins = 50;
     storage.save();
 
@@ -76,32 +95,43 @@ describe('Game Systems QA Test Suite', () => {
     expect(data.coins).toBe(50 - candyTheme.price);
   });
 
-  it('generates deterministic daily challenges for given dates', () => {
+  it('generates fresh, deterministic, solver-verified procedural daily challenges & local streaks', () => {
     const date1 = '2026-11-04';
-    const challenge1 = getDailyChallenge(date1);
-    const challenge2 = getDailyChallenge(date1);
+    const date2 = '2026-11-05';
+    const challenge1a = getDailyChallenge(date1);
+    const challenge1b = getDailyChallenge(date1);
+    const challenge2 = getDailyChallenge(date2);
 
-    expect(challenge1.name).toBe(challenge2.name);
-    expect(challenge1.parMoves).toBe(challenge2.parMoves);
-    expect(challenge1.parMoves).toBeGreaterThan(0);
+    // Deterministic for same date
+    expect(challenge1a.name).toBe(challenge1b.name);
+    expect(challenge1a.parMoves).toBe(challenge1b.parMoves);
+    expect(challenge1a.fixed).toEqual(challenge1b.fixed);
 
-    // Recording completion increases streak
-    const recorded = storage.recordDailyCompletion(date1);
-    expect(recorded).toBe(true);
+    // Different dates produce distinct puzzles and both are solvable
+    expect(challenge1a.parMoves).toBeGreaterThanOrEqual(8);
+    expect(solveLevel(challenge1a, 35).solvable).toBe(true);
+    expect(solveLevel(challenge2, 35).solvable).toBe(true);
+
+    // Consecutive day streak increments properly
+    const day1 = storage.recordDailyCompletion(date1);
+    expect(day1.completedNow).toBe(true);
+    expect(day1.coinsAwarded).toBe(25);
     expect(storage.getData().dailyStreak).toBe(1);
 
-    // Same day duplicate does not double reward
-    const duplicate = storage.recordDailyCompletion(date1);
-    expect(duplicate).toBe(false);
-  });
+    // Duplicate same-day does not double reward
+    const dup = storage.recordDailyCompletion(date1);
+    expect(dup.completedNow).toBe(false);
+    expect(dup.coinsAwarded).toBe(0);
 
-  it('enforces conservative ad frequency capping', () => {
-    const ads = AdMobService.getInstance();
-    // Tutorial levels (levels <= 5) never show interstitial
-    expect(ads.canShowInterstitial(1)).toBe(false);
-    expect(ads.canShowInterstitial(5)).toBe(false);
+    // Next calendar day extends streak to 2
+    const day2 = storage.recordDailyCompletion(date2);
+    expect(day2.completedNow).toBe(true);
+    expect(storage.getData().dailyStreak).toBe(2);
 
-    // Levels > 5 can show if time elapsed
-    expect(ads.canShowInterstitial(6)).toBe(true);
+    // Share text formatting
+    const share = formatDailyShareText(date2, 11, 11, 3, 2);
+    expect(share).toContain('⭐⭐⭐');
+    expect(share).toContain('11/11 moves');
+    expect(share).toContain('2-day streak');
   });
 });

@@ -36,8 +36,7 @@
         </provider>
     </application>
 
-    <!-- Permissions -->
+    <!-- Permissions (100% offline — no network permission required) -->
 
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>

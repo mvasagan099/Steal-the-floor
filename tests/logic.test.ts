@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { PuzzleGame } from '../src/engine/logic';
-import { solveLevel } from '../src/engine/solver';
+import { solveLevel, solveFromState } from '../src/engine/solver';
 import { LevelDefinition } from '../src/engine/types';
 
 describe('PuzzleGame Engine Mechanics', () => {
-  it('handles basic movement, tile placement, and tile recovery', () => {
+  it('handles basic movement, tile placement, and solid-ground tile reclamation', () => {
     const level: LevelDefinition = {
       id: 1,
       world: 1,
@@ -20,31 +20,30 @@ describe('PuzzleGame Engine Mechanics', () => {
     const game = new PuzzleGame(level);
     expect(game.inventory).toBe(2);
 
-    // Step 1: move from (0,0) to empty (1,0)
-    // Places a bridge tile at (1,0). (0,0) was fixed start, so nothing recovered.
+    // Step 1: move from (0,0) to void (1,0) -> places bridge tile #1
     const res1 = game.move({ x: 1, y: 0 });
     expect(res1.success).toBe(true);
-    expect(game.inventory).toBe(1); // 1 bridge placed
+    expect(game.inventory).toBe(1);
     expect(game.tiles.has('1,0')).toBe(true);
 
-    // Step 2: move from (1,0) to empty (2,0)
-    // Places a bridge tile at (2,0). Previous tile at (1,0) is recovered!
+    // Step 2: move from (1,0) to void (2,0) -> places bridge tile #2; tile #1 stays down!
     const res2 = game.move({ x: 2, y: 0 });
     expect(res2.success).toBe(true);
-    expect(res2.recoveredTile).toEqual({ x: 1, y: 0 });
-    expect(game.tiles.has('1,0')).toBe(false);
+    expect(res2.recoveredTiles).toBeUndefined();
+    expect(game.tiles.has('1,0')).toBe(true);
     expect(game.tiles.has('2,0')).toBe(true);
-    expect(game.inventory).toBe(1); // Still 1 available!
+    expect(game.inventory).toBe(0);
 
-    // Step 3: move to exit (3,0)
+    // Step 3: step onto solid Exit (3,0) -> BOTH tiles reclaim simultaneously!
     const res3 = game.move({ x: 3, y: 0 });
     expect(res3.success).toBe(true);
     expect(res3.code).toBe('SUCCESS_WIN');
+    expect(res3.recoveredTiles).toHaveLength(2);
     expect(game.status).toBe('won');
-    expect(game.inventory).toBe(2); // All tiles back in inventory
+    expect(game.inventory).toBe(2);
   });
 
-  it('traps bridge tile on sticky floor', () => {
+  it('traps bridge tile on sticky floor while reclaiming other tiles on solid landing', () => {
     const level: LevelDefinition = {
       id: 2,
       world: 1,
@@ -54,23 +53,25 @@ describe('PuzzleGame Engine Mechanics', () => {
       maxTiles: 2,
       start: { x: 0, y: 0 },
       exit: { x: 3, y: 0 },
-      sticky: [{ x: 1, y: 0 }],
+      sticky: [{ x: 2, y: 0 }],
       parMoves: 3,
     };
 
     const game = new PuzzleGame(level);
-    game.move({ x: 1, y: 0 }); // Step onto sticky cell (bridge placed)
-    expect(game.inventory).toBe(1);
-
-    game.move({ x: 2, y: 0 }); // Step onto (2,0)
-    // Previous tile at (1,0) is trapped!
-    expect(game.trapped.has('1,0')).toBe(true);
-    expect(game.tiles.has('1,0')).toBe(false);
-    // Inventory is now 0 because 1 is trapped and 1 is at (2,0)!
+    game.move({ x: 1, y: 0 }); // Bridge #1 at (1,0)
+    game.move({ x: 2, y: 0 }); // Bridge #2 on sticky (2,0), inventory = 0
     expect(game.inventory).toBe(0);
+
+    // Step onto solid Exit (3,0): (2,0) becomes trapped, while (1,0) is reclaimed!
+    const res = game.move({ x: 3, y: 0 });
+    expect(res.trappedTile).toEqual({ x: 2, y: 0 });
+    expect(res.recoveredTiles).toEqual([{ x: 1, y: 0 }]);
+    expect(game.trapped.has('2,0')).toBe(true);
+    expect(game.tiles.size).toBe(0);
+    expect(game.inventory).toBe(1); // 2 max - 1 trapped = 1 left
   });
 
-  it('solves simple puzzle via BFS solver', () => {
+  it('solves puzzle via BFS solver under Solid-Ground Reclamation', () => {
     const level: LevelDefinition = {
       id: 3,
       world: 1,
@@ -80,6 +81,7 @@ describe('PuzzleGame Engine Mechanics', () => {
       maxTiles: 2,
       start: { x: 0, y: 0 },
       exit: { x: 2, y: 2 },
+      fixed: [{ x: 2, y: 0 }],
       rocks: [{ x: 1, y: 1 }],
       parMoves: 4,
     };
@@ -180,5 +182,151 @@ describe('PuzzleGame Engine Mechanics', () => {
     // Step to exit (4,0)
     const winRes = game.move({ x: 4, y: 0 });
     expect(winRes.code).toBe('SUCCESS_WIN');
+  });
+
+  it('collects stars and toggles switches located on a teleporter destination pad', () => {
+    const level: LevelDefinition = {
+      id: 7,
+      world: 4,
+      name: 'Teleport Landing Effects',
+      cols: 5,
+      rows: 1,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 0 },
+      teleporters: [{ id: 'tp-1', posA: { x: 1, y: 0 }, posB: { x: 3, y: 0 } }],
+      stars: [{ x: 3, y: 0 }],
+      switches: [{ id: 'g1', switchPos: { x: 3, y: 0 }, doorPos: { x: 2, y: 0 } }],
+      parMoves: 2,
+    };
+
+    const game = new PuzzleGame(level);
+    const res = game.move({ x: 1, y: 0 });
+    expect(res.teleportedTo).toEqual({ x: 3, y: 0 });
+    expect(res.starCollected).toEqual({ x: 3, y: 0 });
+    expect(game.collectedStars.has('3,0')).toBe(true);
+    expect(game.openDoors.has('g1')).toBe(true);
+  });
+
+  it('computes live-state hints from mid-game positions and detects deadlocks', () => {
+    const level: LevelDefinition = {
+      id: 8,
+      world: 3,
+      name: 'Live Hint Test',
+      cols: 4,
+      rows: 2,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 3, y: 0 },
+      sticky: [{ x: 1, y: 0 }],
+      parMoves: 3,
+    };
+
+    const game = new PuzzleGame(level);
+    // Walk down to (0,1) first — hint should solve from (0,1), not from (0,0)
+    game.move({ x: 0, y: 1 });
+    const midHint = solveFromState(game, 20, 5000);
+    expect(midHint.solvable).toBe(true);
+    expect(midHint.solutionPath[0]).toEqual({ x: 0, y: 1 });
+    expect(midHint.solutionPath[1]).not.toEqual({ x: 0, y: 1 });
+
+    // Trap 1 of 1 tiles on sticky cell to create a deadlocked state
+    const deadlockLevel: LevelDefinition = {
+      id: 9,
+      world: 3,
+      name: 'Deadlock Test',
+      cols: 4,
+      rows: 1,
+      maxTiles: 1,
+      start: { x: 0, y: 0 },
+      exit: { x: 3, y: 0 },
+      sticky: [{ x: 1, y: 0 }],
+      parMoves: 3,
+    };
+    const stuckGame = new PuzzleGame(deadlockLevel);
+    stuckGame.move({ x: 1, y: 0 });
+    // Standing on (1,0) with 0 tiles left in inventory — cannot advance to void (2,0)
+    // and going back to (0,0) traps the only tile on (1,0), leaving 0 tiles forever.
+    stuckGame.move({ x: 0, y: 0 });
+    expect(stuckGame.inventory).toBe(0);
+    const deadResult = solveFromState(stuckGame, 15, 2000);
+    expect(deadResult.solvable).toBe(false);
+  });
+
+  it('restores stars, crumbling tiles, trapped tiles, and doors on undo and restart', () => {
+    const level: LevelDefinition = {
+      id: 10,
+      world: 5,
+      name: 'Undo Integrity Test',
+      cols: 5,
+      rows: 1,
+      maxTiles: 3,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 0 },
+      crumbling: [{ x: 1, y: 0 }],
+      sticky: [{ x: 2, y: 0 }],
+      stars: [{ x: 1, y: 0 }],
+      parMoves: 4,
+    };
+
+    const game = new PuzzleGame(level);
+    game.move({ x: 1, y: 0 }); // Collect star on crumbling cell
+    expect(game.collectedStars.has('1,0')).toBe(true);
+
+    game.move({ x: 2, y: 0 }); // (1,0) crumbles
+    expect(game.crumbled.has('1,0')).toBe(true);
+
+    game.move({ x: 3, y: 0 }); // (2,0) traps tile
+    expect(game.trapped.has('2,0')).toBe(true);
+
+    // Undo step 3 -> trapped cleared
+    game.undo();
+    expect(game.trapped.has('2,0')).toBe(false);
+    expect(game.tiles.has('2,0')).toBe(true);
+
+    // Undo step 2 -> crumbled cleared
+    game.undo();
+    expect(game.crumbled.has('1,0')).toBe(false);
+    expect(game.collectedStars.has('1,0')).toBe(true);
+
+    // Restart -> everything cleanly reset
+    game.restart();
+    expect(game.moves).toBe(0);
+    expect(game.collectedStars.size).toBe(0);
+    expect(game.crumbled.size).toBe(0);
+    expect(game.trapped.size).toBe(0);
+    expect(game.tiles.size).toBe(0);
+    expect(game.inventory).toBe(3);
+  });
+
+  it('enforces one-way exit rules and requires all stars before winning', () => {
+    const level: LevelDefinition = {
+      id: 11,
+      world: 3,
+      name: 'One-Way & Star Gate',
+      cols: 3,
+      rows: 2,
+      maxTiles: 3,
+      start: { x: 0, y: 0 },
+      exit: { x: 2, y: 0 },
+      fixed: [{ x: 1, y: 0 }],
+      oneWay: [{ x: 1, y: 0, direction: 'right' }],
+      stars: [{ x: 0, y: 1 }],
+      parMoves: 5,
+    };
+
+    const game = new PuzzleGame(level);
+    game.move({ x: 1, y: 0 });
+
+    // One-way right blocks going left or down
+    expect(game.canMoveTo({ x: 0, y: 0 }).allowed).toBe(false);
+    expect(game.canMoveTo({ x: 1, y: 1 }).allowed).toBe(false);
+
+    // Moving right onto exit without star succeeds as a move, does NOT win, and returns clear message
+    const exitRes = game.move({ x: 2, y: 0 });
+    expect(exitRes.success).toBe(true);
+    expect(exitRes.code).toBe('SUCCESS');
+    expect(game.status).toBe('playing');
+    expect(exitRes.message).toContain('Collect all 1 stars');
   });
 });

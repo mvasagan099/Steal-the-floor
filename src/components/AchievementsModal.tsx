@@ -34,8 +34,36 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({ onBack }) 
         </div>
       </div>
 
-      {/* List */}
+      {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 safe-bottom">
+        {/* Player Stats Summary */}
+        <div className="grid grid-cols-4 gap-2 bg-slate-900/90 border border-slate-800 rounded-2xl p-3 text-center">
+          <div>
+            <div className="text-sm font-black text-sky-400 font-mono">
+              {Object.values(data.levelProgress).filter((p) => p.completed).length}
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase">Cleared</div>
+          </div>
+          <div>
+            <div className="text-sm font-black text-emerald-400 font-mono">
+              {data.noUndoLevelIds.length}
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase">No-Undo</div>
+          </div>
+          <div>
+            <div className="text-sm font-black text-amber-400 font-mono">
+              {data.stats.totalTilesPlaced}
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase">Tiles</div>
+          </div>
+          <div>
+            <div className="text-sm font-black text-orange-400 font-mono">
+              {data.dailyStreak}d
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase">Streak</div>
+          </div>
+        </div>
+
         {achievements.map((ach) => {
           const percent = Math.min(100, Math.round((ach.progress / ach.maxProgress) * 100));
 

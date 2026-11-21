@@ -7,6 +7,7 @@ interface InventoryBarProps {
   maxTiles: number;
   trappedCount: number;
   canUndo: boolean;
+  isDeadlocked?: boolean;
   notice: string;
   onUndo: () => void;
   onHint: () => void;
@@ -17,6 +18,7 @@ export const InventoryBar: React.FC<InventoryBarProps> = ({
   maxTiles,
   trappedCount,
   canUndo,
+  isDeadlocked = false,
   notice,
   onUndo,
   onHint,
@@ -25,7 +27,11 @@ export const InventoryBar: React.FC<InventoryBarProps> = ({
     <footer className="px-4 py-3 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 text-white z-20 flex flex-col gap-2 safe-bottom">
       {/* Notice Message */}
       <div className="text-center min-h-[24px] flex items-center justify-center">
-        <p className="text-xs font-medium text-slate-300 transition-all truncate px-2">
+        <p
+          className={`text-xs font-medium transition-all truncate px-2 ${
+            isDeadlocked ? 'text-amber-300 font-bold' : 'text-slate-300'
+          }`}
+        >
           {notice}
         </p>
       </div>
@@ -43,7 +49,9 @@ export const InventoryBar: React.FC<InventoryBarProps> = ({
           disabled={!canUndo}
           className={`flex items-center gap-1.5 px-3 py-2.5 rounded-xl font-bold text-xs border transition-all ${
             canUndo
-              ? 'bg-slate-800 border-slate-700 active:scale-95 text-slate-200 hover:bg-slate-700'
+              ? isDeadlocked
+                ? 'bg-amber-500 border-amber-300 text-slate-950 active:scale-95 animate-pulse shadow-lg shadow-amber-500/40'
+                : 'bg-slate-800 border-slate-700 active:scale-95 text-slate-200 hover:bg-slate-700'
               : 'bg-slate-900/50 border-slate-800/40 text-slate-600 cursor-not-allowed'
           }`}
           aria-label="Undo move"

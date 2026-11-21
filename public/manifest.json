@@ -1,0 +1,18 @@
+{
+  "name": "Steal the Floor",
+  "short_name": "Steal Floor",
+  "description": "An offline casual spatial puzzle game — bridge the void, reclaim your tiles on solid islands, and reach the exit flag.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1120",
+  "theme_color": "#10182e",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

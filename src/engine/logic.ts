@@ -79,13 +79,19 @@ export class PuzzleGame {
 
     this.oneWayMap = new Map<string, Direction>();
     level.oneWay?.forEach((ow) => {
-      this.oneWayMap.set(coordToKey(ow), ow.direction);
+      const key = coordToKey(ow);
+      this.oneWayMap.set(key, ow.direction);
+      // One-way arrows are permanent directional platforms
+      this.fixedSet.add(key);
     });
 
     this.switchMap = new Map<string, string>();
     this.doorMap = new Map<string, string>();
     level.switches?.forEach((sw) => {
-      this.switchMap.set(coordToKey(sw.switchPos), sw.id);
+      const swKey = coordToKey(sw.switchPos);
+      this.switchMap.set(swKey, sw.id);
+      // Switch pressure pads are permanent platforms
+      this.fixedSet.add(swKey);
       this.doorMap.set(coordToKey(sw.doorPos), sw.id);
       if (sw.doorInitiallyOpen) {
         this.openDoors.add(sw.id);
@@ -166,23 +172,30 @@ export class PuzzleGame {
     if (!hasFloor && this.inventory <= 0) {
       return {
         allowed: false,
-        reason: 'Out of tiles! Undo or restart to try another route.',
+        reason: 'Out of tiles! Step onto solid ground to reclaim them, or Undo.',
       };
     }
 
     return { allowed: true };
   }
 
-  public hasWalkableFloor(coordKey: string): boolean {
-    if (this.crumbled.has(coordKey)) {
-      // It crumbled into void! Can only be walked on if bridged anew
-      return this.tiles.has(coordKey);
-    }
+  /**
+   * Solid ground platforms reclaim all un-trapped bridge tiles when landed upon.
+   * Includes start, exit, fixed islands, switches, one-way pads, teleporters,
+   * open gates, and intact (not yet crumbled) crumbling stones.
+   */
+  public isSolidGround(coordKey: string): boolean {
     if (this.fixedSet.has(coordKey)) return true;
-    if (this.tiles.has(coordKey)) return true;
-    if (this.trapped.has(coordKey)) return true; // Stuck bridge still acts as floor
+    if (this.crumblingSet.has(coordKey) && !this.crumbled.has(coordKey)) return true;
     const doorId = this.doorMap.get(coordKey);
     if (doorId && this.openDoors.has(doorId)) return true;
+    return false;
+  }
+
+  public hasWalkableFloor(coordKey: string): boolean {
+    if (this.isSolidGround(coordKey)) return true;
+    if (this.tiles.has(coordKey)) return true;
+    if (this.trapped.has(coordKey)) return true; // Stuck bridge still acts as floor
     return false;
   }
 
@@ -258,7 +271,7 @@ export class PuzzleGame {
       message: 'Moved successfully',
     };
 
-    // 1. Place tile if target is empty void
+    // 1. Place bridge tile if target is empty void (or sticky/crumbled void)
     const targetHadFloor = this.hasWalkableFloor(targetKey);
     if (!targetHadFloor) {
       this.tiles.add(targetKey);
@@ -269,57 +282,62 @@ export class PuzzleGame {
     this.player = { ...target };
     this.moves++;
 
-    // 3. Handle tile departure from previous cell
-    const wasPrevBridge = this.tiles.has(prevKey) && !result.placedTile;
+    // 3. Handle departure hazards from previous cell (before any solid-ground reclaim!)
     const isPrevSticky = this.stickySet.has(prevKey);
     const isPrevCrumbling = this.crumblingSet.has(prevKey);
 
-    if (this.tiles.has(prevKey)) {
-      if (isPrevSticky) {
-        // Tile becomes trapped!
-        this.tiles.delete(prevKey);
-        this.trapped.add(prevKey);
-        result.trappedTile = { ...prevCoord };
-      } else if (isPrevCrumbling) {
-        // Tile crumbles into void!
-        this.tiles.delete(prevKey);
-        this.crumbled.add(prevKey);
-        result.crumbledTile = { ...prevCoord };
-      } else {
-        // Recover tile to inventory
-        this.tiles.delete(prevKey);
-        result.recoveredTile = { ...prevCoord };
-      }
-    } else if (isPrevCrumbling && !this.trapped.has(prevKey)) {
-      // Natural crumbling floor breaks!
+    if (isPrevSticky && this.tiles.has(prevKey)) {
+      // Bridge tile left on sticky honey becomes permanently trapped
+      this.tiles.delete(prevKey);
+      this.trapped.add(prevKey);
+      result.trappedTile = { ...prevCoord };
+    } else if (isPrevCrumbling && !this.crumbled.has(prevKey)) {
+      // Natural crumbling stone shatters behind the player into void
       this.crumbled.add(prevKey);
       result.crumbledTile = { ...prevCoord };
     }
 
-    // 4. Star collection
-    const isStar = this.level.stars?.some((s) => areCoordsEqual(s, this.player));
-    if (isStar && !this.collectedStars.has(coordToKey(this.player))) {
-      this.collectedStars.add(coordToKey(this.player));
-      result.starCollected = { ...this.player };
-    }
-
-    // 5. Switches & doors
-    const switchId = this.switchMap.get(coordToKey(this.player));
-    if (switchId) {
-      if (this.openDoors.has(switchId)) {
-        this.openDoors.delete(switchId);
-        result.doorToggled = { id: switchId, open: false };
-      } else {
-        this.openDoors.add(switchId);
-        result.doorToggled = { id: switchId, open: true };
+    // 4. Solid-Ground Reclamation: landing on any solid platform reclaims all active bridge tiles!
+    if (this.isSolidGround(targetKey) && this.tiles.size > 0) {
+      const reclaimed: Coordinate[] = [];
+      for (const key of Array.from(this.tiles)) {
+        this.tiles.delete(key);
+        reclaimed.push(keyToCoord(key));
       }
+      result.recoveredTiles = reclaimed;
+      result.recoveredTile = reclaimed[0];
     }
 
-    // 6. Teleporter
+    // Helper to trigger cell collectibles & switches at current player position
+    const triggerCellEffects = () => {
+      const pKey = coordToKey(this.player);
+      const isStar = this.level.stars?.some((s) => areCoordsEqual(s, this.player));
+      if (isStar && !this.collectedStars.has(pKey)) {
+        this.collectedStars.add(pKey);
+        result.starCollected = { ...this.player };
+      }
+
+      const switchId = this.switchMap.get(pKey);
+      if (switchId) {
+        if (this.openDoors.has(switchId)) {
+          this.openDoors.delete(switchId);
+          result.doorToggled = { id: switchId, open: false };
+        } else {
+          this.openDoors.add(switchId);
+          result.doorToggled = { id: switchId, open: true };
+        }
+      }
+    };
+
+    // 5. Star collection & Switches at stepped cell
+    triggerCellEffects();
+
+    // 6. Teleporter (pads are solid ground; trigger any star/switch on destination pad too)
     const dest = this.teleporterMap.get(coordToKey(this.player));
     if (dest) {
       this.player = { ...dest };
       result.teleportedTo = { ...dest };
+      triggerCellEffects();
     }
 
     // 7. Win check

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Play, Grid, Calendar, Palette, Trophy, Settings, Star } from 'lucide-react';
-import { storage } from '../storage/gameStorage';
+import { storage, THEMES, SKINS } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
 
 interface HomeScreenProps {
@@ -22,17 +22,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 }) => {
   const data = storage.getData();
   const nextLevelId = data.currentLevel || 1;
+  const activeTheme = THEMES.find((t) => t.id === data.selectedTheme) || THEMES[0];
+  const activeSkin = SKINS.find((s) => s.id === data.selectedSkin) || SKINS[0];
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col justify-between items-center p-6 text-white overflow-hidden bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 safe-top safe-bottom">
+    <div
+      className="relative min-h-screen w-full flex flex-col justify-between items-center p-6 text-white overflow-hidden safe-top safe-bottom"
+      style={{ background: activeTheme.bg }}
+    >
       {/* Top Bar: Coins & Stars */}
       <div className="w-full flex items-center justify-between z-10">
-        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-400 font-bold text-xs shadow">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-950/50 backdrop-blur-sm border border-amber-500/30 rounded-2xl text-amber-400 font-bold text-xs shadow">
           <Star size={14} className="fill-amber-400" />
           <span>{data.totalStars} Stars</span>
         </div>
 
-        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-400 font-bold text-xs shadow">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-950/50 backdrop-blur-sm border border-amber-500/30 rounded-2xl text-amber-400 font-bold text-xs shadow">
           <span>{data.coins}</span>
           <span>🪙</span>
         </div>
@@ -40,9 +45,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
       {/* Hero Mascot & Title */}
       <div className="flex flex-col items-center text-center my-auto z-10 max-w-sm">
-        {/* Floating Mascot Avatar */}
+        {/* Floating Mascot Avatar styled with active skin */}
         <div className="relative mb-4">
-          <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 border-4 border-amber-200/50 shadow-2xl shadow-amber-500/30 flex items-center justify-center animate-bounce duration-1000">
+          <div
+            className="w-28 h-28 rounded-full border-4 border-white/30 shadow-2xl flex items-center justify-center animate-bounce duration-1000"
+            style={{
+              background: `radial-gradient(circle at 35% 30%, #ffffff 0%, ${activeSkin.color} 35%, ${activeSkin.color} 100%)`,
+              boxShadow: `0 20px 45px ${activeSkin.color}55`,
+            }}
+          >
             {/* Mascot Face */}
             <div className="relative flex flex-col items-center">
               <div className="flex items-center gap-6 mb-2">
@@ -56,14 +67,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="w-20 h-4 bg-black/40 rounded-full mx-auto blur-sm -mt-1" />
         </div>
 
-        <div className="text-[11px] font-black uppercase tracking-[0.25em] text-sky-400 mb-1">
+        <div className="text-[11px] font-black uppercase tracking-[0.25em] text-sky-300 mb-1">
           Casual Puzzle Strategy
         </div>
         <h1 className="text-4xl font-black tracking-tight text-white drop-shadow-md">
           STEAL THE FLOOR
         </h1>
-        <p className="text-xs text-slate-400 mt-2 max-w-xs leading-relaxed">
-          Drop tiles to bridge the void. Step forward to reclaim your floor. Reach the exit flag!
+        <p className="text-xs text-slate-200/80 mt-2 max-w-xs leading-relaxed">
+          Bridge the void with limited tiles. Reach solid islands to pull your floor back. Claim every gem and hit the flag!
         </p>
       </div>
 

@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import Phaser from 'phaser';
-import { GameScene } from '../engine/GameScene';
-import { LevelDefinition } from '../engine/types';
+import { GameScene, GameSceneConfig } from '../engine/GameScene';
+import { Direction, LevelDefinition } from '../engine/types';
 import { PuzzleGame } from '../engine/logic';
 
 export interface GameCanvasHandle {
   undo: () => void;
   restart: () => void;
   hint: () => void;
+  move: (dir: Direction) => void;
 }
 
 interface GameCanvasProps {
@@ -17,13 +18,64 @@ interface GameCanvasProps {
   onStateChange: (game: PuzzleGame) => void;
   onWin: (moves: number, stars: number, par: number) => void;
   onError: (message: string) => void;
+  onDeadlock?: (isDeadlocked: boolean) => void;
+  onTilePlaced?: () => void;
+  onUndoUsed?: () => void;
 }
 
 export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
-  ({ level, themeId, skinColor, onStateChange, onWin, onError }, ref) => {
+  (
+    {
+      level,
+      themeId,
+      skinColor,
+      onStateChange,
+      onWin,
+      onError,
+      onDeadlock,
+      onTilePlaced,
+      onUndoUsed,
+    },
+    ref
+  ) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const gameInstanceRef = useRef<Phaser.Game | null>(null);
     const sceneRef = useRef<GameScene | null>(null);
+    const isBootedRef = useRef(false);
+
+    // Keep latest React callbacks in a ref so Phaser never invokes stale closures
+    const callbacksRef = useRef({
+      onStateChange,
+      onWin,
+      onError,
+      onDeadlock,
+      onTilePlaced,
+      onUndoUsed,
+    });
+    callbacksRef.current = {
+      onStateChange,
+      onWin,
+      onError,
+      onDeadlock,
+      onTilePlaced,
+      onUndoUsed,
+    };
+
+    const buildSceneData = (
+      lvl: LevelDefinition,
+      theme: string,
+      skin: string
+    ): GameSceneConfig => ({
+      level: lvl,
+      themeId: theme,
+      skinColor: skin,
+      onStateChange: (game) => callbacksRef.current.onStateChange(game),
+      onWin: (moves, stars, par) => callbacksRef.current.onWin(moves, stars, par),
+      onError: (message) => callbacksRef.current.onError(message),
+      onDeadlock: (deadlocked) => callbacksRef.current.onDeadlock?.(deadlocked),
+      onTilePlaced: () => callbacksRef.current.onTilePlaced?.(),
+      onUndoUsed: () => callbacksRef.current.onUndoUsed?.(),
+    });
 
     useImperativeHandle(ref, () => ({
       undo: () => {
@@ -35,13 +87,18 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       hint: () => {
         sceneRef.current?.showHint();
       },
+      move: (dir: Direction) => {
+        sceneRef.current?.moveByDirection(dir);
+      },
     }));
 
+    // Mount Phaser.Game once while GameCanvas is active
     useEffect(() => {
       if (!containerRef.current) return;
 
       const scene = new GameScene();
       sceneRef.current = scene;
+      isBootedRef.current = false;
 
       const config: Phaser.Types.Core.GameConfig = {
         type: Phaser.AUTO,
@@ -55,29 +112,29 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
         transparent: true,
         backgroundColor: '#00000000',
         scene: [scene],
-        physics: {
-          default: 'arcade',
-        },
       };
 
       const game = new Phaser.Game(config);
       gameInstanceRef.current = game;
 
-      game.scene.start('GameScene', {
-        level,
-        themeId,
-        skinColor,
-        onStateChange,
-        onWin,
-        onError,
-      });
+      game.scene.start('GameScene', buildSceneData(level, themeId, skinColor));
+      isBootedRef.current = true;
 
       return () => {
+        isBootedRef.current = false;
         game.destroy(true);
         gameInstanceRef.current = null;
         sceneRef.current = null;
       };
-    }, [level.id, themeId, skinColor]);
+      // Intentionally mount Phaser once; level/theme/skin changes restart the scene below.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Restart GameScene cleanly when level, theme, or skin changes (no WebGL context churn)
+    useEffect(() => {
+      if (!isBootedRef.current || !sceneRef.current) return;
+      sceneRef.current.scene.restart(buildSceneData(level, themeId, skinColor));
+    }, [level, themeId, skinColor]);
 
     return (
       <div

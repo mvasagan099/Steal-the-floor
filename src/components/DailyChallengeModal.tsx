@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft, Calendar, Flame, Play, CheckCircle2 } from 'lucide-react';
-import { storage } from '../storage/gameStorage';
+import { storage, getLocalDateString } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
 
 interface DailyChallengeModalProps {
@@ -13,7 +13,7 @@ export const DailyChallengeModal: React.FC<DailyChallengeModalProps> = ({
   onStartDaily,
 }) => {
   const data = storage.getData();
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getLocalDateString();
   const isCompletedToday = data.lastDailyCompletedDate === todayStr;
 
   return (

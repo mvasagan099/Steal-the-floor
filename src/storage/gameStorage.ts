@@ -21,6 +21,7 @@ export interface PlayerData {
   currentLevel: number;
   highestUnlockedLevel: number;
   levelProgress: Record<number, LevelProgress>;
+  noUndoLevelIds: number[];
   selectedTheme: string;
   unlockedThemes: string[];
   selectedSkin: string;
@@ -28,10 +29,12 @@ export interface PlayerData {
   coins: number;
   totalStars: number;
   dailyStreak: number;
-  lastDailyCompletedDate: string; // YYYY-MM-DD
+  lastDailyCompletedDate: string; // Local YYYY-MM-DD
   settings: {
     musicVolume: number;
     sfxVolume: number;
+    musicEnabled: boolean;
+    sfxEnabled: boolean;
     hapticsEnabled: boolean;
   };
   achievements: Record<string, Achievement>;
@@ -43,8 +46,16 @@ export interface PlayerData {
   };
 }
 
+export function getLocalDateString(date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 const STORAGE_KEY = 'steal_the_floor_save_v1';
-const CURRENT_VERSION = 1;
+const CURRENT_VERSION = 2;
+export const ACHIEVEMENT_REWARD_COINS = 15;
 
 export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   { id: 'first_steps', title: 'First Steps', description: 'Complete level 1', unlocked: false, progress: 0, maxProgress: 1, icon: '👟' },
@@ -53,11 +64,11 @@ export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   { id: 'world3_cleared', title: 'Hazard Master', description: 'Complete all 20 levels in World 3', unlocked: false, progress: 0, maxProgress: 20, icon: '⚡' },
   { id: 'world4_cleared', title: 'Portal Wanderer', description: 'Complete all 20 levels in World 4', unlocked: false, progress: 0, maxProgress: 20, icon: '🌀' },
   { id: 'grand_master', title: 'Master Builder', description: 'Complete all 100 levels!', unlocked: false, progress: 0, maxProgress: 100, icon: '👑' },
-  { id: 'star_collector_50', title: 'Stargazer', description: 'Collect 50 stars total', unlocked: false, progress: 0, maxProgress: 50, icon: '⭐' },
-  { id: 'star_collector_150', title: 'Constellation', description: 'Collect 150 stars total', unlocked: false, progress: 0, maxProgress: 150, icon: '🌟' },
-  { id: 'star_collector_300', title: 'Galactic Brilliance', description: 'Earn 300 stars across all levels!', unlocked: false, progress: 0, maxProgress: 300, icon: '✨' },
+  { id: 'star_collector_50', title: 'Stargazer', description: 'Earn 50 par stars total', unlocked: false, progress: 0, maxProgress: 50, icon: '⭐' },
+  { id: 'star_collector_150', title: 'Constellation', description: 'Earn 150 par stars total', unlocked: false, progress: 0, maxProgress: 150, icon: '🌟' },
+  { id: 'star_collector_300', title: 'Galactic Brilliance', description: 'Earn 300 par stars across all levels!', unlocked: false, progress: 0, maxProgress: 300, icon: '✨' },
   { id: 'daily_challenger', title: 'Daily Devotee', description: 'Complete 3 daily challenges', unlocked: false, progress: 0, maxProgress: 3, icon: '📅' },
-  { id: 'no_undo', title: 'Decisive Mind', description: 'Complete 10 levels without using Undo', unlocked: false, progress: 0, maxProgress: 10, icon: '🧠' },
+  { id: 'no_undo', title: 'Decisive Mind', description: 'Complete 10 unique levels without Undo', unlocked: false, progress: 0, maxProgress: 10, icon: '🧠' },
 ];
 
 export const THEMES = [
@@ -102,6 +113,7 @@ export class GameStorage {
       currentLevel: 1,
       highestUnlockedLevel: 1,
       levelProgress: {},
+      noUndoLevelIds: [],
       selectedTheme: 'floating-sky',
       unlockedThemes: ['floating-sky'],
       selectedSkin: 'puff-yellow',
@@ -113,6 +125,8 @@ export class GameStorage {
       settings: {
         musicVolume: 0.4,
         sfxVolume: 0.7,
+        musicEnabled: true,
+        sfxEnabled: true,
         hapticsEnabled: true,
       },
       achievements: achMap,
@@ -138,12 +152,13 @@ export class GameStorage {
     return this.getDefaultData();
   }
 
-  private migrate(parsed: PlayerData): PlayerData {
+  private migrate(parsed: Partial<PlayerData>): PlayerData {
     const base = this.getDefaultData();
-    // Merge base defaults for any new properties
     const merged: PlayerData = {
       ...base,
       ...parsed,
+      version: CURRENT_VERSION,
+      noUndoLevelIds: Array.isArray(parsed.noUndoLevelIds) ? parsed.noUndoLevelIds : [],
       settings: { ...base.settings, ...(parsed.settings || {}) },
       stats: { ...base.stats, ...(parsed.stats || {}) },
       achievements: { ...base.achievements, ...(parsed.achievements || {}) },
@@ -167,8 +182,29 @@ export class GameStorage {
     return this.data.levelProgress[levelId] || { completed: false, stars: 0, bestMoves: 0 };
   }
 
-  public recordLevelVictory(levelId: number, moves: number, starsEarned: number): { newStars: number; unlockedNext: boolean } {
+  public recordTilePlaced(): void {
+    this.data.stats.totalTilesPlaced++;
+    this.save();
+  }
+
+  public recordUndo(): void {
+    this.data.stats.totalUndos++;
+    this.save();
+  }
+
+  public recordLevelVictory(
+    levelId: number,
+    moves: number,
+    starsEarned: number,
+    options?: { usedUndo?: boolean; gemsCollected?: number }
+  ): {
+    newStars: number;
+    unlockedNext: boolean;
+    coinsAwarded: number;
+    newlyUnlockedAchievements: Achievement[];
+  } {
     const current = this.getLevelProgress(levelId);
+    const isFirstClear = !current.completed;
     const starDelta = Math.max(0, starsEarned - current.stars);
 
     const updated: LevelProgress = {
@@ -179,8 +215,19 @@ export class GameStorage {
 
     this.data.levelProgress[levelId] = updated;
     this.data.totalStars += starDelta;
-    this.data.coins += starsEarned * 5; // 5 coins per star
     this.data.stats.totalLevelsWon++;
+    if (options?.gemsCollected) {
+      this.data.stats.totalStarsCollected += options.gemsCollected;
+    }
+
+    // Track unique levels cleared without using Undo
+    if (!options?.usedUndo && !this.data.noUndoLevelIds.includes(levelId)) {
+      this.data.noUndoLevelIds.push(levelId);
+    }
+
+    // Anti-farming coin economy: award 5 coins per newly earned star (+5 bonus on first clear)
+    let coinsAwarded = starDelta * 5 + (isFirstClear ? 5 : 0);
+    this.data.coins += coinsAwarded;
 
     let unlockedNext = false;
     if (levelId === this.data.highestUnlockedLevel && levelId < 100) {
@@ -189,11 +236,16 @@ export class GameStorage {
       unlockedNext = true;
     }
 
-    // Update achievements
-    this.checkAchievements();
+    const newlyUnlockedAchievements = this.checkAchievements();
+    if (newlyUnlockedAchievements.length > 0) {
+      const achBonus = newlyUnlockedAchievements.length * ACHIEVEMENT_REWARD_COINS;
+      this.data.coins += achBonus;
+      coinsAwarded += achBonus;
+    }
+
     this.save();
 
-    return { newStars: starDelta, unlockedNext };
+    return { newStars: starDelta, unlockedNext, coinsAwarded, newlyUnlockedAchievements };
   }
 
   public setCurrentLevel(id: number): void {
@@ -239,73 +291,89 @@ export class GameStorage {
     }
   }
 
-  public recordDailyCompletion(todayStr: string): boolean {
+  public recordDailyCompletion(todayStr = getLocalDateString()): {
+    completedNow: boolean;
+    coinsAwarded: number;
+    newlyUnlockedAchievements: Achievement[];
+  } {
     if (this.data.lastDailyCompletedDate === todayStr) {
-      return false; // Already completed today
+      return { completedNow: false, coinsAwarded: 0, newlyUnlockedAchievements: [] };
     }
 
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    if (this.data.lastDailyCompletedDate === yesterday) {
+    // Compute local yesterday string from todayStr
+    const [y, m, d] = todayStr.split('-').map(Number);
+    const yesterdayDate = new Date(y, m - 1, d - 1);
+    const yesterdayStr = getLocalDateString(yesterdayDate);
+
+    if (this.data.lastDailyCompletedDate === yesterdayStr) {
       this.data.dailyStreak++;
     } else {
       this.data.dailyStreak = 1;
     }
 
     this.data.lastDailyCompletedDate = todayStr;
-    this.data.coins += 25; // Bonus coins for daily
+    let coinsAwarded = 25;
+    this.data.coins += coinsAwarded;
 
+    const newlyUnlockedAchievements: Achievement[] = [];
     const ach = this.data.achievements['daily_challenger'];
-    if (ach && !ach.unlocked) {
-      ach.progress++;
-      if (ach.progress >= ach.maxProgress) ach.unlocked = true;
+    if (ach) {
+      ach.progress = Math.min(ach.maxProgress, ach.progress + 1);
+      if (!ach.unlocked && ach.progress >= ach.maxProgress) {
+        ach.unlocked = true;
+        this.data.coins += ACHIEVEMENT_REWARD_COINS;
+        coinsAwarded += ACHIEVEMENT_REWARD_COINS;
+        newlyUnlockedAchievements.push({ ...ach });
+      }
     }
 
     this.save();
-    return true;
+    return { completedNow: true, coinsAwarded, newlyUnlockedAchievements };
   }
 
-  private checkAchievements(): void {
+  private checkAchievements(): Achievement[] {
+    const newlyUnlocked: Achievement[] = [];
+
+    const updateProgress = (id: string, progress: number) => {
+      const ach = this.data.achievements[id];
+      if (!ach) return;
+      ach.progress = Math.min(ach.maxProgress, Math.max(ach.progress, progress));
+      if (!ach.unlocked && ach.progress >= ach.maxProgress) {
+        ach.unlocked = true;
+        ach.progress = ach.maxProgress;
+        newlyUnlocked.push({ ...ach });
+      }
+    };
+
     const wonCount = Object.values(this.data.levelProgress).filter((p) => p.completed).length;
 
-    // Check level achievements
-    if (this.data.levelProgress[1]?.completed) {
-      this.unlockAchievement('first_steps');
-    }
+    updateProgress('first_steps', this.data.levelProgress[1]?.completed ? 1 : 0);
 
-    // World milestones
-    const w1Cleared = Array.from({ length: 20 }, (_, i) => i + 1).every((id) => this.data.levelProgress[id]?.completed);
-    if (w1Cleared) this.unlockAchievement('world1_cleared');
+    const countRange = (start: number, end: number) => {
+      let c = 0;
+      for (let id = start; id <= end; id++) {
+        if (this.data.levelProgress[id]?.completed) c++;
+      }
+      return c;
+    };
 
-    const w2Cleared = Array.from({ length: 20 }, (_, i) => i + 21).every((id) => this.data.levelProgress[id]?.completed);
-    if (w2Cleared) this.unlockAchievement('world2_cleared');
+    updateProgress('world1_cleared', countRange(1, 20));
+    updateProgress('world2_cleared', countRange(21, 40));
+    updateProgress('world3_cleared', countRange(41, 60));
+    updateProgress('world4_cleared', countRange(61, 80));
+    updateProgress('grand_master', wonCount);
 
-    const w3Cleared = Array.from({ length: 20 }, (_, i) => i + 41).every((id) => this.data.levelProgress[id]?.completed);
-    if (w3Cleared) this.unlockAchievement('world3_cleared');
-
-    const w4Cleared = Array.from({ length: 20 }, (_, i) => i + 61).every((id) => this.data.levelProgress[id]?.completed);
-    if (w4Cleared) this.unlockAchievement('world4_cleared');
-
-    if (wonCount >= 100) {
-      this.unlockAchievement('grand_master');
-    }
-
-    // Stars achievements
     let totalStarsEarned = 0;
     Object.values(this.data.levelProgress).forEach((p) => {
       totalStarsEarned += p.stars;
     });
 
-    if (totalStarsEarned >= 50) this.unlockAchievement('star_collector_50');
-    if (totalStarsEarned >= 150) this.unlockAchievement('star_collector_150');
-    if (totalStarsEarned >= 300) this.unlockAchievement('star_collector_300');
-  }
+    updateProgress('star_collector_50', totalStarsEarned);
+    updateProgress('star_collector_150', totalStarsEarned);
+    updateProgress('star_collector_300', totalStarsEarned);
+    updateProgress('no_undo', this.data.noUndoLevelIds.length);
 
-  private unlockAchievement(id: string): void {
-    const ach = this.data.achievements[id];
-    if (ach && !ach.unlocked) {
-      ach.unlocked = true;
-      ach.progress = ach.maxProgress;
-    }
+    return newlyUnlocked;
   }
 
   public resetProgress(): void {

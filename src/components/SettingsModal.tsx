@@ -32,6 +32,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onBack, onReset })
     sound.playTap();
     const updated = storage.getData();
     updated.settings.hapticsEnabled = !updated.settings.hapticsEnabled;
+    sound.hapticsEnabled = updated.settings.hapticsEnabled;
     storage.save();
     setData({ ...updated });
     if (updated.settings.hapticsEnabled) {

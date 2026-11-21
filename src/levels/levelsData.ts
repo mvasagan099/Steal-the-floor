@@ -1,15 +1,15 @@
 // AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 100 Handcrafted & procedurally assisted levels across 5 worlds
+// 100 Handcrafted levels across 5 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = [
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 1,
     "world": 1,
     "name": "First Steps",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
     "start": {
       "x": 2,
       "y": 1
@@ -18,1034 +18,179 @@ export const ALL_LEVELS: LevelDefinition[] = [
       "x": 2,
       "y": 5
     },
+    "parMoves": 4,
+    "hint": "Step into the void to drop bridge tiles. Reach the island to reclaim them!",
     "fixed": [
       {
         "x": 2,
         "y": 3
       }
     ],
-    "hint": "Tap the empty space ahead to drop a floor tile and walk.",
-    "parMoves": 4,
     "star2Moves": 6
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 2,
     "world": 1,
-    "name": "Crossing the Gap",
-    "start": {
-      "x": 1,
-      "y": 2
-    },
-    "exit": {
-      "x": 4,
-      "y": 2
-    },
-    "hint": "You have 3 reusable tiles. Bridge the void between the islands.",
-    "parMoves": 3,
-    "star2Moves": 5
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 3,
-    "world": 1,
-    "name": "The Corner",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 4
-    },
-    "fixed": [
-      {
-        "x": 1,
-        "y": 4
-      }
-    ],
-    "hint": "Turn the corner! As you leave your old tile, it returns to your inventory.",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 4,
-    "world": 1,
-    "name": "First Star",
-    "start": {
-      "x": 1,
-      "y": 5
-    },
-    "exit": {
-      "x": 4,
-      "y": 1
-    },
-    "stars": [
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "hint": "Collect the star on your way to the exit flag.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 5,
-    "world": 1,
-    "name": "Zigzag Meadow",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
-    "fixed": [
-      {
-        "x": 4,
-        "y": 1
-      },
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "hint": "Hop from island to island.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 6,
-    "world": 1,
-    "name": "Two Bridges",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "fixed": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 1,
-        "y": 3
-      }
-    ],
-    "hint": "Visit the left island to collect the star before crossing.",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
+    "name": "Bridge & Reclaim",
     "cols": 6,
     "rows": 7,
     "maxTiles": 2,
-    "id": 7,
-    "world": 1,
-    "name": "Stash & Fetch",
     "start": {
-      "x": 1,
+      "x": 0,
       "y": 2
     },
     "exit": {
-      "x": 4,
-      "y": 4
+      "x": 3,
+      "y": 6
     },
+    "parMoves": 7,
+    "hint": "With 2 tiles you can cross 2 void squares before needing a solid island.",
     "fixed": [
       {
-        "x": 2,
-        "y": 3
+        "x": 3,
+        "y": 2
       },
       {
         "x": 3,
-        "y": 3
+        "y": 4
       }
     ],
-    "hint": "With only 2 tiles, plan each step so you never get stranded.",
-    "parMoves": 5,
-    "star2Moves": 7
+    "star2Moves": 9
   },
   {
+    "id": 3,
+    "world": 1,
+    "name": "Island Detour",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 8,
-    "world": 1,
-    "name": "Star Collector",
-    "start": {
-      "x": 2,
-      "y": 5
-    },
-    "exit": {
-      "x": 2,
-      "y": 1
-    },
-    "fixed": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "hint": "Collect both stars before reaching the goal!",
-    "parMoves": 8,
-    "star2Moves": 10
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 9,
-    "world": 1,
-    "name": "Wide River",
-    "start": {
-      "x": 0,
-      "y": 3
-    },
-    "exit": {
-      "x": 5,
-      "y": 3
-    },
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "hint": "The central islands give you a safe resting spot.",
-    "parMoves": 5,
-    "star2Moves": 7
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 10,
-    "world": 1,
-    "name": "Spiral Walk",
+    "maxTiles": 2,
     "start": {
       "x": 1,
       "y": 1
     },
     "exit": {
       "x": 3,
-      "y": 3
+      "y": 6
     },
+    "parMoves": 9,
+    "hint": "The direct route is too wide! Hop between islands to recharge your tiles.",
     "fixed": [
       {
-        "x": 4,
-        "y": 1
+        "x": 3,
+        "y": 2
       },
       {
-        "x": 4,
-        "y": 5
-      },
-      {
-        "x": 1,
-        "y": 5
+        "x": 2,
+        "y": 4
       }
     ],
-    "stars": [
-      {
-        "x": 4,
-        "y": 5
-      }
-    ],
-    "hint": "Follow the outer perimeter around to the center.",
-    "parMoves": 10,
     "star2Moves": 12
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 11,
+    "id": 4,
     "world": 1,
-    "name": "Island Hopping",
-    "start": {
-      "x": 0,
-      "y": 1
-    },
-    "exit": {
-      "x": 5,
-      "y": 5
-    },
-    "fixed": [
-      {
-        "x": 1,
-        "y": 2
-      },
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 4
-      },
-      {
-        "x": 4,
-        "y": 5
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "Step across the stepping stones diagonally.",
-    "parMoves": 9,
-    "star2Moves": 11
-  },
-  {
+    "name": "First Star",
     "cols": 6,
     "rows": 7,
     "maxTiles": 2,
-    "id": 12,
-    "world": 1,
-    "name": "Double Trouble",
     "start": {
       "x": 1,
-      "y": 3
+      "y": 5
     },
     "exit": {
       "x": 4,
-      "y": 3
+      "y": 1
     },
+    "parMoves": 9,
+    "hint": "Grab the star between the central islands before heading to the exit!",
     "fixed": [
       {
         "x": 2,
         "y": 2
       },
       {
-        "x": 3,
+        "x": 2,
         "y": 4
       }
     ],
     "stars": [
       {
-        "x": 2,
-        "y": 2
+        "x": 3,
+        "y": 3
       }
     ],
-    "hint": "2 tiles are enough if you reuse each tile immediately.",
-    "parMoves": 5,
-    "star2Moves": 7
+    "star2Moves": 12
   },
   {
+    "id": 5,
+    "world": 1,
+    "name": "Stepping Stones",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 13,
-    "world": 1,
-    "name": "The Bridge Loop",
+    "maxTiles": 1,
     "start": {
-      "x": 2,
+      "x": 1,
       "y": 1
     },
     "exit": {
-      "x": 3,
-      "y": 5
-    },
-    "fixed": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "hint": "Visit both wings before proceeding south.",
-    "parMoves": 9,
-    "star2Moves": 11
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 14,
-    "world": 1,
-    "name": "Narrow Passage",
-    "start": {
-      "x": 2,
-      "y": 0
-    },
-    "exit": {
-      "x": 2,
+      "x": 1,
       "y": 6
     },
-    "fixed": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 2,
-        "y": 4
-      }
-    ],
-    "hint": "A direct north-south crossing.",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 15,
-    "world": 1,
-    "name": "Diamond Route",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "fixed": [
-      {
-        "x": 0,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 0,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "hint": "Branch out to both tips of the diamond.",
-    "parMoves": 12,
-    "star2Moves": 14
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 16,
-    "world": 1,
-    "name": "T-Junction",
-    "start": {
-      "x": 0,
-      "y": 3
-    },
-    "exit": {
-      "x": 5,
-      "y": 3
-    },
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 2,
-        "y": 1
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 1
-      }
-    ],
-    "hint": "Take a short detour north to grab the shiny star.",
     "parMoves": 9,
-    "star2Moves": 11
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 17,
-    "world": 1,
-    "name": "Crossing the Chasm",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "Build a bridge to the center, rest, then bridge to the goal.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 18,
-    "world": 1,
-    "name": "Three Steps Ahead",
-    "start": {
-      "x": 0,
-      "y": 2
-    },
-    "exit": {
-      "x": 5,
-      "y": 4
-    },
-    "fixed": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "hint": "Grab both stars on your way across.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 19,
-    "world": 1,
-    "name": "The Crossroads",
-    "start": {
-      "x": 2,
-      "y": 0
-    },
-    "exit": {
-      "x": 2,
-      "y": 6
-    },
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 0,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 0,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "hint": "From the central hub, explore the side wings.",
-    "parMoves": 14,
-    "star2Moves": 16
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 20,
-    "world": 1,
-    "name": "World 1 Graduation",
-    "start": {
-      "x": 1,
-      "y": 5
-    },
-    "exit": {
-      "x": 4,
-      "y": 1
-    },
-    "fixed": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 4
-      }
-    ],
-    "stars": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "hint": "Show your mastery of tile reclamation and star collection!",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 21,
-    "world": 2,
-    "name": "First Boulder",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "A rock blocks the direct route. Bridge around it.",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 22,
-    "world": 2,
-    "name": "Stone Barrier",
-    "start": {
-      "x": 1,
-      "y": 2
-    },
-    "exit": {
-      "x": 4,
-      "y": 2
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 2
-      }
-    ],
-    "hint": "Curve your bridge around the wall of rocks.",
-    "parMoves": 5,
-    "star2Moves": 7
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 23,
-    "world": 2,
-    "name": "Rock Maze",
-    "start": {
-      "x": 0,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
-    "rocks": [
-      {
-        "x": 1,
-        "y": 1
-      },
-      {
-        "x": 1,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      },
-      {
-        "x": 3,
-        "y": 5
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "Weave between the obstacles.",
-    "parMoves": 8,
-    "star2Moves": 10
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 2,
-    "id": 24,
-    "world": 2,
-    "name": "Tight Budget",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 4
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 2
-      }
-    ],
+    "hint": "Only 1 tile! Every void step must land right onto the next island.",
     "fixed": [
       {
         "x": 3,
-        "y": 2
-      },
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "Plan each tile carefully with only 2 tiles in hand.",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 25,
-    "world": 2,
-    "name": "Twin Pillars",
-    "start": {
-      "x": 1,
-      "y": 0
-    },
-    "exit": {
-      "x": 4,
-      "y": 6
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "Navigate the passage between the stone pillars.",
-    "parMoves": 9,
-    "star2Moves": 11
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 26,
-    "world": 2,
-    "name": "The Horseshoe",
-    "start": {
-      "x": 1,
-      "y": 4
-    },
-    "exit": {
-      "x": 4,
-      "y": 4
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 4
-      },
-      {
-        "x": 3,
-        "y": 4
-      },
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
         "y": 1
       },
       {
         "x": 3,
-        "y": 1
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 1
-      }
-    ],
-    "hint": "Travel north around the horseshoe reef.",
-    "parMoves": 9,
-    "star2Moves": 11
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 27,
-    "world": 2,
-    "name": "Rocky Archipelago",
-    "start": {
-      "x": 0,
-      "y": 2
-    },
-    "exit": {
-      "x": 5,
-      "y": 4
-    },
-    "rocks": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "hint": "Island-hop between the reefs.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 28,
-    "world": 2,
-    "name": "The Gauntlet",
-    "start": {
-      "x": 2,
-      "y": 0
-    },
-    "exit": {
-      "x": 2,
-      "y": 6
-    },
-    "rocks": [
-      {
-        "x": 1,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 2
-      },
-      {
-        "x": 1,
-        "y": 4
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "Pass through the central corridor.",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 29,
-    "world": 2,
-    "name": "Two Paths",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "fixed": [
-      {
-        "x": 0,
         "y": 3
       },
       {
         "x": 5,
         "y": 3
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "star2Moves": 12
+  },
+  {
+    "id": 6,
+    "world": 1,
+    "name": "Twin Wings",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 2,
+      "y": 1
+    },
+    "exit": {
+      "x": 5,
+      "y": 5
+    },
+    "parMoves": 15,
+    "hint": "Swing west to grab the star, recharge on the island, then cross east.",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 5
       }
     ],
     "stars": [
@@ -1054,203 +199,58 @@ export const ALL_LEVELS: LevelDefinition[] = [
         "y": 3
       }
     ],
-    "hint": "The western path holds the golden star.",
-    "parMoves": 9,
-    "star2Moves": 11
+    "star2Moves": 19
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 30,
-    "world": 2,
-    "name": "Fortress Wall",
-    "start": {
-      "x": 0,
-      "y": 3
-    },
-    "exit": {
-      "x": 5,
-      "y": 3
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 1
-      },
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 2,
-        "y": 4
-      },
-      {
-        "x": 2,
-        "y": 5
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "There is a breach in the center of the wall.",
-    "parMoves": 5,
-    "star2Moves": 7
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 31,
-    "world": 2,
-    "name": "Pebble Trail",
-    "start": {
-      "x": 1,
-      "y": 5
-    },
-    "exit": {
-      "x": 4,
-      "y": 1
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 4
-      },
-      {
-        "x": 3,
-        "y": 2
-      }
-    ],
-    "fixed": [
-      {
-        "x": 3,
-        "y": 4
-      },
-      {
-        "x": 2,
-        "y": 2
-      }
-    ],
-    "stars": [
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "hint": "Step carefully around the boulders.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 32,
-    "world": 2,
-    "name": "The Snaking Gorge",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 1
-      },
-      {
-        "x": 3,
-        "y": 1
-      },
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 5
-      }
-    ],
-    "fixed": [
-      {
-        "x": 4,
-        "y": 2
-      },
-      {
-        "x": 1,
-        "y": 4
-      }
-    ],
-    "stars": [
-      {
-        "x": 4,
-        "y": 2
-      }
-    ],
-    "hint": "Snake through the winding gorge.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 33,
-    "world": 2,
-    "name": "Star Fortress",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "rocks": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "Claim the star nestled between the rocks.",
-    "parMoves": 4,
-    "star2Moves": 6
-  },
-  {
+    "id": 7,
+    "world": 1,
+    "name": "Diagonal Hop",
     "cols": 6,
     "rows": 7,
     "maxTiles": 2,
-    "id": 34,
-    "world": 2,
-    "name": "Strict Allocation",
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "Use the stepping islands diagonally so your 2 tiles never run dry.",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 8,
+    "world": 1,
+    "name": "Star Arch",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
     "start": {
       "x": 0,
       "y": 3
@@ -1259,49 +259,1077 @@ export const ALL_LEVELS: LevelDefinition[] = [
       "x": 5,
       "y": 3
     },
+    "parMoves": 13,
+    "hint": "Climb over the northern arch to collect the star before landing on the exit.",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 9,
+    "world": 1,
+    "name": "Zigzag Lagoon",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Weave across the archipelago to collect the western star.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 10,
+    "world": 1,
+    "name": "The Spiral",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 2,
+      "y": 2
+    },
+    "parMoves": 18,
+    "hint": "Loop clockwise around the outer islands to grab the star and enter the center.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "star2Moves": 23
+  },
+  {
+    "id": 11,
+    "world": 1,
+    "name": "One-Tile Tightrope",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "With 1 tile, each gap can be at most 1 square wide. Plan your star order!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 12,
+    "world": 1,
+    "name": "Out and Back",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 4
+    },
+    "exit": {
+      "x": 5,
+      "y": 4
+    },
+    "parMoves": 13,
+    "hint": "Venture north into the void to snag the star, then walk back onto your laid bridge!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 13,
+    "world": 1,
+    "name": "Forked Isles",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 2,
+      "y": 6
+    },
+    "exit": {
+      "x": 2,
+      "y": 0
+    },
+    "parMoves": 18,
+    "hint": "From the central hub, visit both outer islands to collect both stars.",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "star2Moves": 23
+  },
+  {
+    "id": 14,
+    "world": 1,
+    "name": "Three-Tile Chasm",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "With 3 tiles you can cross 3 void cells at once—stretch every single bridge!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 15,
+    "world": 1,
+    "name": "Diamond Archipelago",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 2,
+      "y": 0
+    },
+    "exit": {
+      "x": 2,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Use the twin central islands to reach opposite wings of the diamond.",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 16,
+    "world": 1,
+    "name": "Northern Outpost",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 4
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Climb to both northern outposts before descending to the exit.",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 17,
+    "world": 1,
+    "name": "Corner Harvest",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 6
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 31,
+    "hint": "Scale the central pillars to reach both top corners.",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      }
+    ],
+    "star2Moves": 39
+  },
+  {
+    "id": 18,
+    "world": 1,
+    "name": "Minimalist Run",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "One tile only! Chart an island chain that collects all three stars.",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "star2Moves": 27
+  },
+  {
+    "id": 19,
+    "world": 1,
+    "name": "Starlight Crossroads",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 4
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 25,
+    "hint": "Visit every wing around the hub without wasting moves.",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "star2Moves": 32
+  },
+  {
+    "id": 20,
+    "world": 1,
+    "name": "World 1 Graduation",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 5
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 24,
+    "hint": "Prove your mastery of island hopping and tile reclamation!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "star2Moves": 30
+  },
+  {
+    "id": 21,
+    "world": 2,
+    "name": "First Boulder",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 2,
+      "y": 1
+    },
+    "exit": {
+      "x": 2,
+      "y": 5
+    },
+    "parMoves": 8,
+    "hint": "Rocks block the middle—bridge to a flanking island to get around!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
     "rocks": [
+      {
+        "x": 1,
+        "y": 2
+      },
       {
         "x": 2,
         "y": 2
       },
       {
         "x": 3,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
         "y": 4
       }
     ],
+    "star2Moves": 10
+  },
+  {
+    "id": 22,
+    "world": 2,
+    "name": "The Reef Wall",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 5,
+      "y": 2
+    },
+    "parMoves": 13,
+    "hint": "The reef splits the map. Bridge around the southern tip via the islands!",
     "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
       {
         "x": 2,
         "y": 3
       },
       {
-        "x": 3,
-        "y": 3
+        "x": 2,
+        "y": 4
       }
     ],
-    "hint": "No wasted tiles! Recover and advance.",
-    "parMoves": 5,
-    "star2Moves": 7
+    "star2Moves": 17
   },
   {
+    "id": 23,
+    "world": 2,
+    "name": "Canyon Switchback",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 35,
-    "world": 2,
-    "name": "Boulder Alley",
+    "maxTiles": 2,
     "start": {
-      "x": 1,
+      "x": 0,
       "y": 0
     },
     "exit": {
-      "x": 4,
+      "x": 5,
       "y": 6
     },
+    "parMoves": 21,
+    "hint": "Snake around each canyon wall using the islands at the turns.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
     "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
       {
         "x": 2,
         "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 27
+  },
+  {
+    "id": 24,
+    "world": 2,
+    "name": "Boulder Pocket",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Rock pillars carve narrow lanes—check your tile reach before committing.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 6
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 25,
+    "world": 2,
+    "name": "The Horseshoe",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 4
+    },
+    "exit": {
+      "x": 3,
+      "y": 4
+    },
+    "parMoves": 13,
+    "hint": "Loop up and over the horseshoe reef to enter the exit pocket from below!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      },
+      {
+        "x": 5,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
       },
       {
         "x": 1,
@@ -1312,49 +1340,61 @@ export const ALL_LEVELS: LevelDefinition[] = [
         "y": 3
       },
       {
-        "x": 3,
-        "y": 5
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
+        "x": 4,
+        "y": 4
       },
       {
-        "x": 3,
-        "y": 3
+        "x": 4,
+        "y": 5
       }
     ],
     "stars": [
       {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
+        "x": 1,
+        "y": 0
       }
     ],
-    "hint": "Grab both stars in the central clearing.",
-    "parMoves": 9,
-    "star2Moves": 11
+    "star2Moves": 17
   },
   {
+    "id": 26,
+    "world": 2,
+    "name": "Tight Alcove",
     "cols": 6,
     "rows": 7,
     "maxTiles": 3,
-    "id": 36,
-    "world": 2,
-    "name": "Zigzag Reef",
     "start": {
       "x": 0,
-      "y": 1
+      "y": 0
     },
     "exit": {
       "x": 5,
-      "y": 5
+      "y": 6
     },
+    "parMoves": 17,
+    "hint": "Cross under the rock divider, recharge on the southern island, then climb north for the star!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
     "rocks": [
       {
         "x": 2,
@@ -1365,6 +1405,770 @@ export const ALL_LEVELS: LevelDefinition[] = [
         "y": 1
       },
       {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 27,
+    "world": 2,
+    "name": "Twin Pillars",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 1,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Weave left and right between staggered stone barriers.",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 28,
+    "world": 2,
+    "name": "Stone Courtyard",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "Enter the courtyard from an island edge so you can grab the center star and exit.",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "star2Moves": 27
+  },
+  {
+    "id": 29,
+    "world": 2,
+    "name": "The Breach",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 4,
+      "y": 5
+    },
+    "parMoves": 15,
+    "hint": "Collect both western stars before crossing the central breach.",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 30,
+    "world": 2,
+    "name": "One-Tile Maze",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 31,
+    "hint": "With just 1 tile, every detour around the rocks must hop island-to-island!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 2,
+        "y": 6
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "star2Moves": 39
+  },
+  {
+    "id": 31,
+    "world": 2,
+    "name": "Quarry Crossing",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Harvest both left corners while navigating the quarry walls.",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 32,
+    "world": 2,
+    "name": "S-Curve Gorge",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Follow the winding S-curve gorge and pick up both alcove stars.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 33,
+    "world": 2,
+    "name": "Fortress Moat",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 3
+    },
+    "parMoves": 22,
+    "hint": "Circle the fortress moat to find the southern gate into the inner keep.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "star2Moves": 28
+  },
+  {
+    "id": 34,
+    "world": 2,
+    "name": "Three-Way Divide",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 3
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 26,
+    "hint": "The single central island connects west and east—sweep the west side first!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
         "x": 3,
         "y": 5
       },
@@ -1373,281 +2177,809 @@ export const ALL_LEVELS: LevelDefinition[] = [
         "y": 6
       }
     ],
-    "fixed": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 1,
-        "y": 3
-      }
-    ],
-    "hint": "Use the reefs to cross the lagoon.",
-    "parMoves": 9,
-    "star2Moves": 11
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 37,
-    "world": 2,
-    "name": "Stone Divide",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 3,
-      "y": 5
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "fixed": [
-      {
-        "x": 0,
-        "y": 3
-      },
-      {
-        "x": 5,
-        "y": 3
-      }
-    ],
     "stars": [
       {
         "x": 0,
-        "y": 3
+        "y": 0
       },
       {
         "x": 5,
-        "y": 3
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 6
       }
     ],
-    "hint": "Visit both flanking islands to gather all stars.",
-    "parMoves": 15,
-    "star2Moves": 17
+    "star2Moves": 33
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 38,
+    "id": 35,
     "world": 2,
-    "name": "The Quarry",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 4
-    },
-    "rocks": [
-      {
-        "x": 2,
-        "y": 1
-      },
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "fixed": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 2
-      }
-    ],
-    "stars": [
-      {
-        "x": 1,
-        "y": 3
-      }
-    ],
-    "hint": "A staggered pathway through the rocks.",
-    "parMoves": 8,
-    "star2Moves": 10
-  },
-  {
+    "name": "Boulder Spiral",
     "cols": 6,
     "rows": 7,
     "maxTiles": 2,
-    "id": 39,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 3
+    },
+    "parMoves": 20,
+    "hint": "Loop around the outside to enter the inner chamber from below.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      },
+      {
+        "x": 4,
+        "y": 6
+      },
+      {
+        "x": 5,
+        "y": 6
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 25
+  },
+  {
+    "id": 36,
     "world": 2,
-    "name": "Narrow Margin",
+    "name": "Narrow Pass",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 30,
+    "hint": "Thread through the narrow rock gates to gather all three stars.",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "star2Moves": 38
+  },
+  {
+    "id": 37,
+    "world": 2,
+    "name": "The Vault",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
     "start": {
       "x": 0,
       "y": 4
     },
     "exit": {
       "x": 5,
-      "y": 2
+      "y": 0
     },
+    "parMoves": 23,
+    "hint": "Cross east around the wall, climb into the upper vault, grab the star, and finish!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
     "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
       {
         "x": 1,
         "y": 3
       },
       {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "fixed": [
-      {
         "x": 2,
-        "y": 4
+        "y": 3
       },
       {
         "x": 3,
-        "y": 2
+        "y": 3
       }
     ],
-    "hint": "Leap precisely with only 2 tiles.",
-    "parMoves": 7,
-    "star2Moves": 9
+    "stars": [
+      {
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "star2Moves": 29
   },
   {
+    "id": 38,
+    "world": 2,
+    "name": "Reef Islands",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 40,
-    "world": 2,
-    "name": "World 2 Finale",
+    "maxTiles": 2,
     "start": {
-      "x": 1,
-      "y": 5
+      "x": 0,
+      "y": 0
     },
     "exit": {
-      "x": 4,
-      "y": 1
+      "x": 5,
+      "y": 6
     },
-    "rocks": [
-      {
-        "x": 1,
-        "y": 2
-      },
+    "parMoves": 23,
+    "hint": "Every rock forces a specific island step—map both star loops first.",
+    "fixed": [
       {
         "x": 2,
-        "y": 4
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
       },
       {
         "x": 3,
         "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "star2Moves": 29
+  },
+  {
+    "id": 39,
+    "world": 2,
+    "name": "Double Moat",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Use the central island as your anchor between both stone moats.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
       },
       {
         "x": 4,
         "y": 4
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 2
       },
       {
-        "x": 3,
-        "y": 4
+        "x": 2,
+        "y": 6
       }
     ],
     "stars": [
       {
         "x": 2,
-        "y": 2
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 40,
+    "world": 2,
+    "name": "World 2 Finale",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 25,
+    "hint": "Navigate the entire granite labyrinth with only 2 tiles in hand!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
       },
       {
         "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 1,
         "y": 4
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
       }
     ],
-    "hint": "Master the rock obstacles and collect both trophies!",
-    "parMoves": 9,
-    "star2Moves": 11
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 41,
-    "world": 3,
-    "name": "Honey Trap",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "sticky": [
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
       {
         "x": 2,
         "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
       }
     ],
-    "hint": "Stepping off a bridge tile on sticky honey traps that tile permanently! You can avoid it or sacrifice a tile.",
-    "parMoves": 4,
-    "star2Moves": 6
+    "stars": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "star2Moves": 32
   },
   {
+    "id": 41,
+    "world": 3,
+    "name": "Honey Trap",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Honey sits in the direct shortcut—taking it leaves only 1 tile, unable to cross the 2-tile gap! Detour north!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "sticky": [
+      {
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 42,
+    "world": 3,
+    "name": "Sticky Shortcut",
     "cols": 6,
     "rows": 7,
     "maxTiles": 3,
-    "id": 42,
-    "world": 3,
-    "name": "Stick or Detour",
     "start": {
-      "x": 1,
+      "x": 0,
       "y": 2
     },
     "exit": {
       "x": 4,
-      "y": 2
+      "y": 6
     },
+    "parMoves": 8,
+    "hint": "The only corridor runs straight through sticky honey! Lose 1 tile, then finish with your remaining 2!",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
     "sticky": [
       {
         "x": 2,
         "y": 2
       }
     ],
-    "hint": "Bridge around the purple sticky tile to save your tiles, or step right through!",
-    "parMoves": 3,
-    "star2Moves": 5
+    "star2Moves": 10
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 43,
     "world": 3,
     "name": "The Weak Beam",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
     "start": {
       "x": 2,
       "y": 1
@@ -1656,110 +2988,137 @@ export const ALL_LEVELS: LevelDefinition[] = [
       "x": 2,
       "y": 5
     },
+    "parMoves": 4,
+    "hint": "Crumbling stone recharges your tiles once, then shatters behind you!",
     "crumbling": [
       {
         "x": 2,
         "y": 3
       }
     ],
-    "hint": "Crumbling floors break once you step off. Do not turn back!",
-    "parMoves": 4,
     "star2Moves": 6
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 44,
     "world": 3,
-    "name": "One Way North",
+    "name": "One-Way Chute",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
     "start": {
       "x": 2,
-      "y": 5
+      "y": 6
     },
     "exit": {
       "x": 2,
-      "y": 1
+      "y": 0
     },
+    "parMoves": 12,
+    "hint": "You can only exit the arrow going UP—grab the star before committing!",
     "fixed": [
       {
         "x": 2,
-        "y": 3
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
       }
     ],
     "oneWay": [
       {
         "x": 2,
-        "y": 3,
+        "y": 2,
         "direction": "up"
       }
     ],
-    "hint": "The arrow indicates you can only leave this tile going UP.",
-    "parMoves": 4,
-    "star2Moves": 6
+    "stars": [
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "star2Moves": 15
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 45,
     "world": 3,
-    "name": "Sticky Crossing",
+    "name": "No Turning Back",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
     "start": {
-      "x": 1,
-      "y": 1
+      "x": 0,
+      "y": 0
     },
     "exit": {
-      "x": 4,
-      "y": 5
+      "x": 0,
+      "y": 6
     },
-    "sticky": [
+    "parMoves": 16,
+    "hint": "Cross the upper crumbling stone, loop east, and return via the lower fragile bridge!",
+    "fixed": [
       {
-        "x": 2,
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
         "y": 3
       },
       {
-        "x": 3,
-        "y": 3
+        "x": 0,
+        "y": 4
       }
     ],
-    "fixed": [
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
       {
         "x": 1,
         "y": 3
       },
       {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "hint": "The side islands provide safe footing without sticky honey.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 46,
-    "world": 3,
-    "name": "Brittle Steps",
-    "start": {
-      "x": 1,
-      "y": 2
-    },
-    "exit": {
-      "x": 4,
-      "y": 4
-    },
-    "crumbling": [
-      {
         "x": 2,
         "y": 3
       },
@@ -1768,199 +3127,593 @@ export const ALL_LEVELS: LevelDefinition[] = [
         "y": 3
       }
     ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
     "stars": [
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 46,
+    "world": 3,
+    "name": "Sticky Chasm",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 0
+    },
+    "parMoves": 13,
+    "hint": "Watch your tile budget: stepping into honey shrinks your reach from 3 down to 2.",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
       {
         "x": 2,
         "y": 3
       }
     ],
-    "hint": "Move forward steadily across the crumbling stones.",
-    "parMoves": 5,
-    "star2Moves": 7
+    "sticky": [
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "star2Moves": 17
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 47,
     "world": 3,
-    "name": "One-Way Labyrinth",
+    "name": "Arrow Loop",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
     "start": {
-      "x": 1,
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Ride the clockwise one-way conveyor around the rock core.",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "direction": "left"
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 48,
+    "world": 3,
+    "name": "Fragile Star Run",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Each crumbling stone only holds once—route from top-right down to the exit.",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 49,
+    "world": 3,
+    "name": "Cross-Bridge Honey",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "Detour north around the honey so both tiles survive for the western star and exit chasm!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "sticky": [
+      {
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "star2Moves": 27
+  },
+  {
+    "id": 50,
+    "world": 3,
+    "name": "Brittle Archipelago",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 23,
+    "hint": "Plan which crumbling stone you break first—once gone, you cannot rest there again!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 29
+  },
+  {
+    "id": 51,
+    "world": 3,
+    "name": "Directional Divide",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 3
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "Ride the upper arrow left to grab the star, then weave back via the center!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 5,
+        "y": 0,
+        "direction": "left"
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "direction": "right"
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "star2Moves": 27
+  },
+  {
+    "id": 52,
+    "world": 3,
+    "name": "Honey Gauntlet",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
       "y": 1
     },
     "exit": {
-      "x": 4,
-      "y": 4
+      "x": 5,
+      "y": 6
     },
+    "parMoves": 20,
+    "hint": "Both eastern shortcuts are glazed in sticky honey—weave around them to keep both tiles for the exit!",
     "fixed": [
       {
         "x": 3,
         "y": 1
       },
       {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "oneWay": [
+        "x": 5,
+        "y": 1
+      },
       {
-        "x": 3,
-        "y": 1,
-        "direction": "down"
-      }
-    ],
-    "hint": "Follow the directional arrows.",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 48,
-    "world": 3,
-    "name": "Sacrificial Bridge",
-    "start": {
-      "x": 1,
-      "y": 2
-    },
-    "exit": {
-      "x": 4,
-      "y": 4
-    },
-    "sticky": [
-      {
-        "x": 2,
+        "x": 0,
         "y": 3
-      }
-    ],
-    "fixed": [
+      },
       {
-        "x": 3,
+        "x": 5,
         "y": 3
-      }
-    ],
-    "hint": "Sometimes sacrificing one tile on sticky ground is the only way across.",
-    "parMoves": 5,
-    "star2Moves": 7
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 49,
-    "world": 3,
-    "name": "Arrow Crossroads",
-    "start": {
-      "x": 2,
-      "y": 0
-    },
-    "exit": {
-      "x": 2,
-      "y": 6
-    },
-    "fixed": [
+      },
       {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "oneWay": [
+        "x": 1,
+        "y": 5
+      },
       {
-        "x": 2,
-        "y": 3,
-        "direction": "down"
+        "x": 4,
+        "y": 5
       }
     ],
     "rocks": [
       {
+        "x": 0,
+        "y": 0
+      },
+      {
         "x": 1,
-        "y": 3
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
       },
       {
         "x": 3,
-        "y": 3
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
       }
     ],
-    "hint": "You can only exit the crossroads downward.",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 50,
-    "world": 3,
-    "name": "Quicksand Field",
-    "start": {
-      "x": 0,
-      "y": 3
-    },
-    "exit": {
-      "x": 5,
-      "y": 3
-    },
     "sticky": [
       {
         "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 4
-      },
-      {
-        "x": 3,
-        "y": 2
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 4
-      }
-    ],
-    "hint": "Rest on the solid islands to avoid the quicksand.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 51,
-    "world": 3,
-    "name": "Falling Bridges",
-    "start": {
-      "x": 1,
-      "y": 0
-    },
-    "exit": {
-      "x": 4,
-      "y": 6
-    },
-    "crumbling": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
+        "y": 1
       },
       {
         "x": 3,
@@ -1969,79 +3722,185 @@ export const ALL_LEVELS: LevelDefinition[] = [
     ],
     "stars": [
       {
-        "x": 2,
-        "y": 3
+        "x": 5,
+        "y": 1
       }
     ],
-    "hint": "Don't look back as the bridge collapses behind you.",
-    "parMoves": 9,
-    "star2Moves": 11
+    "star2Moves": 25
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 52,
-    "world": 3,
-    "name": "Sticky Fork",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "sticky": [
-      {
-        "x": 1,
-        "y": 3
-      }
-    ],
-    "rocks": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "fixed": [
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "hint": "The right branch has solid ground and a star!",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 53,
     "world": 3,
-    "name": "One-Way Express",
+    "name": "One-Shot Bridge",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
     "start": {
       "x": 0,
-      "y": 1
+      "y": 0
     },
     "exit": {
       "x": 5,
-      "y": 5
+      "y": 6
     },
+    "parMoves": 21,
+    "hint": "Cross the top crumbling stone, grab the west star, then take the lower fragile stone home.",
     "fixed": [
       {
         "x": 2,
+        "y": 0
+      },
+      {
+        "x": 0,
         "y": 2
       },
       {
         "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      }
+    ],
+    "star2Moves": 27
+  },
+  {
+    "id": 54,
+    "world": 3,
+    "name": "Arrow Crossroads",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 3
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 23,
+    "hint": "Climb the east side to collect both northern stars, then ride the downward chute to exit!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
         "y": 4
       }
     ],
@@ -2049,530 +3908,734 @@ export const ALL_LEVELS: LevelDefinition[] = [
       {
         "x": 2,
         "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 3,
+        "y": 3,
         "direction": "right"
       },
+      {
+        "x": 2,
+        "y": 4,
+        "direction": "down"
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "star2Moves": 29
+  },
+  {
+    "id": 55,
+    "world": 3,
+    "name": "Honey Cost",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 1
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 20,
+    "hint": "One sticky crossing is affordable with 3 tiles, but hitting both honey traps leaves you short!",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 25
+  },
+  {
+    "id": 56,
+    "world": 3,
+    "name": "Crumble & Commit",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Ride the crumbling entry down the one-way chute, sweep both stars, then exit.",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "down"
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 57,
+    "world": 3,
+    "name": "Honey vs Crumble",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Skip the sticky top shortcut—take the crumbling west lane to keep both bridge tiles!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 58,
+    "world": 3,
+    "name": "Conveyor Canyon",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "Follow the one-way arrows down the canyon terraces without breaking stride.",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "direction": "down"
+      },
+      {
+        "x": 0,
+        "y": 6,
+        "direction": "right"
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      }
+    ],
+    "star2Moves": 27
+  },
+  {
+    "id": 59,
+    "world": 3,
+    "name": "Tri-Hazard Trial",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "Sacrifice 1 tile on honey across the crumbling stone, collect the west star, and ride the arrow east!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "oneWay": [
       {
         "x": 3,
         "y": 4,
         "direction": "right"
       }
     ],
-    "hint": "Ride the one-way arrows towards the east.",
-    "parMoves": 9,
-    "star2Moves": 11
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 54,
-    "world": 3,
-    "name": "Brittle Shortcut",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
-    "crumbling": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "rocks": [
-      {
-        "x": 3,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "fixed": [
-      {
-        "x": 1,
-        "y": 4
-      }
-    ],
     "stars": [
       {
-        "x": 1,
+        "x": 0,
         "y": 4
       }
     ],
-    "hint": "A crumbling tile opens a quick route.",
-    "parMoves": 7,
-    "star2Moves": 9
+    "star2Moves": 27
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 55,
-    "world": 3,
-    "name": "Sticky Perimeter",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "sticky": [
-      {
-        "x": 1,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 2
-      },
-      {
-        "x": 1,
-        "y": 4
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "Stay down the center channel.",
-    "parMoves": 4,
-    "star2Moves": 6
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 56,
-    "world": 3,
-    "name": "Directional Steps",
-    "start": {
-      "x": 1,
-      "y": 4
-    },
-    "exit": {
-      "x": 4,
-      "y": 1
-    },
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 2
-      }
-    ],
-    "oneWay": [
-      {
-        "x": 2,
-        "y": 3,
-        "direction": "right"
-      },
-      {
-        "x": 3,
-        "y": 2,
-        "direction": "up"
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "hint": "Follow the directional arrows up and right.",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 57,
-    "world": 3,
-    "name": "Crumbly Corridor",
-    "start": {
-      "x": 0,
-      "y": 3
-    },
-    "exit": {
-      "x": 5,
-      "y": 3
-    },
-    "crumbling": [
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "rocks": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "hint": "Step across without backtracking.",
-    "parMoves": 5,
-    "star2Moves": 7
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 58,
-    "world": 3,
-    "name": "Sticky Conundrum",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 4
-    },
-    "sticky": [
-      {
-        "x": 2,
-        "y": 2
-      }
-    ],
-    "fixed": [
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "hint": "Stepping into sticky honey will cost 1 tile. Make sure 2 are enough to finish!",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 59,
-    "world": 3,
-    "name": "Tri-Hazard Trail",
-    "start": {
-      "x": 1,
-      "y": 5
-    },
-    "exit": {
-      "x": 4,
-      "y": 1
-    },
-    "sticky": [
-      {
-        "x": 2,
-        "y": 4
-      }
-    ],
-    "crumbling": [
-      {
-        "x": 3,
-        "y": 2
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 3
-      },
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "oneWay": [
-      {
-        "x": 2,
-        "y": 3,
-        "direction": "right"
-      }
-    ],
-    "stars": [
-      {
-        "x": 3,
-        "y": 3
-      }
-    ],
-    "hint": "Avoid the sticky honey and ride the arrow across.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 60,
     "world": 3,
     "name": "World 3 Finale",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
     "start": {
       "x": 0,
-      "y": 2
+      "y": 0
     },
     "exit": {
       "x": 5,
-      "y": 4
+      "y": 6
     },
-    "sticky": [
-      {
-        "x": 2,
-        "y": 2
-      }
-    ],
-    "crumbling": [
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
+    "parMoves": 21,
+    "hint": "Combine crumbling checkpoints, sticky avoidance, and one-way arrows to clear World 3!",
     "fixed": [
       {
-        "x": 2,
-        "y": 3
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
       },
       {
         "x": 3,
-        "y": 3
-      }
-    ],
-    "rocks": [
+        "y": 2
+      },
       {
-        "x": 1,
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
         "y": 4
       },
       {
         "x": 4,
-        "y": 2
+        "y": 6
       }
     ],
-    "stars": [
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
       {
         "x": 2,
         "y": 3
       },
       {
-        "x": 3,
+        "x": 4,
         "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 5
       }
     ],
-    "hint": "Combine all your knowledge of sticky, crumbling, and one-way tiles!",
-    "parMoves": 7,
-    "star2Moves": 9
+    "sticky": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 3,
+        "y": 4,
+        "direction": "right"
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      }
+    ],
+    "star2Moves": 27
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 61,
     "world": 4,
     "name": "The First Button",
-    "start": {
-      "x": 1,
-      "y": 2
-    },
-    "exit": {
-      "x": 4,
-      "y": 2
-    },
-    "switches": [
-      {
-        "id": "gate-1",
-        "switchPos": {
-          "x": 2,
-          "y": 4
-        },
-        "doorPos": {
-          "x": 3,
-          "y": 2
-        }
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 4
-      }
-    ],
-    "hint": "Step on the blue pressure plate to open the gate.",
-    "parMoves": 5,
-    "star2Moves": 7
-  },
-  {
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 62,
-    "world": 4,
-    "name": "First Warp",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 2,
-          "y": 2
-        },
-        "posB": {
-          "x": 4,
-          "y": 3
-        }
-      }
-    ],
-    "hint": "Step onto the swirling portal to warp across the void!",
-    "parMoves": 4,
-    "star2Moves": 6
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 63,
-    "world": 4,
-    "name": "Key and Lock",
-    "start": {
-      "x": 2,
-      "y": 0
-    },
-    "exit": {
-      "x": 2,
-      "y": 6
-    },
-    "switches": [
-      {
-        "id": "gate-1",
-        "switchPos": {
-          "x": 0,
-          "y": 3
-        },
-        "doorPos": {
-          "x": 2,
-          "y": 3
-        }
-      }
-    ],
-    "fixed": [
-      {
-        "x": 0,
-        "y": 3
-      }
-    ],
-    "hint": "Take a trip to the west wing to step on the switch.",
-    "parMoves": 8,
-    "star2Moves": 10
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 64,
-    "world": 4,
-    "name": "Portal Hop",
+    "maxTiles": 2,
     "start": {
       "x": 0,
-      "y": 3
+      "y": 2
     },
     "exit": {
       "x": 5,
-      "y": 3
+      "y": 0
     },
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 1,
-          "y": 3
-        },
-        "posB": {
-          "x": 4,
-          "y": 3
-        }
-      }
-    ],
-    "hint": "Teleporters act as solid permanent platforms.",
-    "parMoves": 2,
-    "star2Moves": 4
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 65,
-    "world": 4,
-    "name": "Gatekeeper",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 4
-    },
-    "switches": [
-      {
-        "id": "gate-1",
-        "switchPos": {
-          "x": 1,
-          "y": 4
-        },
-        "doorPos": {
-          "x": 3,
-          "y": 2
-        }
-      }
-    ],
+    "parMoves": 11,
+    "hint": "The rock wall seals the exit behind a laser gate. Step on the blue switch to open it!",
     "fixed": [
       {
-        "x": 1,
-        "y": 4
+        "x": 2,
+        "y": 2
       }
     ],
     "rocks": [
       {
-        "x": 2,
-        "y": 2
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 4
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 2
+        }
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 62,
+    "world": 4,
+    "name": "First Warp",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 5
+    },
+    "parMoves": 6,
+    "hint": "No bridge can cross the solid stone wall—step onto the swirling portal to warp through!",
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
       },
       {
         "x": 3,
@@ -2580,179 +4643,254 @@ export const ALL_LEVELS: LevelDefinition[] = [
       },
       {
         "x": 3,
+        "y": 2
+      },
+      {
+        "x": 3,
         "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
       }
     ],
-    "hint": "Unlock the gate to pass through the rock fortress.",
-    "parMoves": 6,
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 1,
+          "y": 2
+        },
+        "posB": {
+          "x": 5,
+          "y": 2
+        }
+      }
+    ],
     "star2Moves": 8
   },
   {
+    "id": 63,
+    "world": 4,
+    "name": "Key and Lock",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 66,
-    "world": 4,
-    "name": "Two Portals",
+    "maxTiles": 2,
     "start": {
-      "x": 1,
+      "x": 2,
       "y": 0
     },
     "exit": {
-      "x": 4,
+      "x": 2,
       "y": 6
     },
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 2,
-          "y": 1
-        },
-        "posB": {
-          "x": 2,
-          "y": 4
-        }
-      },
-      {
-        "id": "tp-2",
-        "posA": {
-          "x": 3,
-          "y": 4
-        },
-        "posB": {
-          "x": 4,
-          "y": 5
-        }
-      }
-    ],
-    "hint": "Chain the teleporters together.",
-    "parMoves": 4,
-    "star2Moves": 6
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 67,
-    "world": 4,
-    "name": "Toggle Trap",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "switches": [
-      {
-        "id": "gate-1",
-        "switchPos": {
-          "x": 4,
-          "y": 3
-        },
-        "doorPos": {
-          "x": 2,
-          "y": 3
-        }
-      }
-    ],
+    "parMoves": 12,
+    "hint": "Take the western island to press the switch, then march through the unlocked gate.",
     "fixed": [
       {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
-    "hint": "Hit the switch once to open the door, then march straight to the exit.",
-    "parMoves": 8,
-    "star2Moves": 10
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 68,
-    "world": 4,
-    "name": "Warp to Star",
-    "start": {
-      "x": 1,
-      "y": 3
-    },
-    "exit": {
-      "x": 4,
-      "y": 3
-    },
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 2,
-          "y": 1
-        },
-        "posB": {
-          "x": 2,
-          "y": 5
-        }
-      }
-    ],
-    "stars": [
+        "x": 3,
+        "y": 2
+      },
       {
         "x": 2,
         "y": 5
       }
     ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        }
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 64,
+    "world": 4,
+    "name": "Portal Island",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 0
+    },
+    "parMoves": 17,
+    "hint": "Warp into the southern cavern, grab the star, and climb the eastern passage!",
     "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
       {
         "x": 3,
         "y": 3
       }
     ],
-    "hint": "Warp south to fetch the star, then return.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 69,
-    "world": 4,
-    "name": "Switch & Wall",
-    "start": {
-      "x": 0,
-      "y": 1
-    },
-    "exit": {
-      "x": 5,
-      "y": 5
-    },
-    "switches": [
+    "teleporters": [
       {
-        "id": "gate-1",
-        "switchPos": {
+        "id": "tp-1",
+        "posA": {
           "x": 2,
-          "y": 1
+          "y": 2
         },
-        "doorPos": {
-          "x": 4,
-          "y": 3
+        "posB": {
+          "x": 0,
+          "y": 4
         }
       }
     ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 65,
+    "world": 4,
+    "name": "Gatekeeper",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Press the western switch, cross the eastern laser gate, and sweep the lower cavern!",
     "fixed": [
       {
-        "x": 2,
-        "y": 1
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
       }
     ],
     "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
       {
         "x": 3,
         "y": 3
@@ -2762,25 +4900,271 @@ export const ALL_LEVELS: LevelDefinition[] = [
         "y": 3
       }
     ],
-    "hint": "Press the button before heading south.",
-    "parMoves": 9,
-    "star2Moves": 11
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 3
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 24
   },
   {
+    "id": 66,
+    "world": 4,
+    "name": "Twin Portals",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 70,
-    "world": 4,
-    "name": "The Isolated Island",
+    "maxTiles": 2,
     "start": {
       "x": 0,
-      "y": 2
+      "y": 0
     },
     "exit": {
       "x": 5,
-      "y": 4
+      "y": 6
     },
+    "parMoves": 9,
+    "hint": "Chain Portal 1 into Portal 2 to cross both granite walls!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 2,
+          "y": 0
+        },
+        "posB": {
+          "x": 4,
+          "y": 2
+        }
+      },
+      {
+        "id": "tp-2",
+        "posA": {
+          "x": 5,
+          "y": 3
+        },
+        "posB": {
+          "x": 0,
+          "y": 5
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "star2Moves": 12
+  },
+  {
+    "id": 67,
+    "world": 4,
+    "name": "Star Behind Bars",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Unlock the laser barrier, drop through, snag the star, and finish.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 68,
+    "world": 4,
+    "name": "Warp to Star",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 2
+    },
+    "parMoves": 15,
+    "hint": "Warp south to grab the isolated star, then climb the eastern passage to the exit!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
     "teleporters": [
       {
         "id": "tp-1",
@@ -2789,42 +5173,266 @@ export const ALL_LEVELS: LevelDefinition[] = [
           "y": 2
         },
         "posB": {
-          "x": 4,
+          "x": 3,
           "y": 4
         }
       }
     ],
     "stars": [
       {
-        "x": 1,
+        "x": 0,
         "y": 4
       }
     ],
-    "hint": "Collect the star before jumping into the portal.",
-    "parMoves": 6,
-    "star2Moves": 8
+    "star2Moves": 19
   },
   {
+    "id": 69,
+    "world": 4,
+    "name": "Vault Switch",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 71,
-    "world": 4,
-    "name": "Dual Gates",
+    "maxTiles": 2,
     "start": {
-      "x": 2,
-      "y": 0
+      "x": 0,
+      "y": 4
     },
     "exit": {
-      "x": 2,
-      "y": 6
+      "x": 5,
+      "y": 0
     },
+    "parMoves": 17,
+    "hint": "Climb north to hit the pressure plate, return south through the unlocked gate, and grab the star.",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
     "switches": [
       {
         "id": "g1",
         "switchPos": {
           "x": 0,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 70,
+    "world": 4,
+    "name": "Isolated Star",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 23,
+    "hint": "Warp across the northern barrier, snag the star, then loop down into the southern cavern.",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 1,
           "y": 2
+        },
+        "posB": {
+          "x": 5,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "star2Moves": 29
+  },
+  {
+    "id": 71,
+    "world": 4,
+    "name": "Dual Gates",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "Open Gate 1 to reach Switch 2, then unlock Gate 2 to reach the exit!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
         },
         "doorPos": {
           "x": 2,
@@ -2834,141 +5442,511 @@ export const ALL_LEVELS: LevelDefinition[] = [
       {
         "id": "g2",
         "switchPos": {
-          "x": 4,
-          "y": 4
+          "x": 5,
+          "y": 3
         },
         "doorPos": {
-          "x": 2,
+          "x": 3,
           "y": 4
         }
       }
     ],
+    "star2Moves": 27
+  },
+  {
+    "id": 72,
+    "world": 4,
+    "name": "Portal Crossing",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 1,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Jump between twin portals to traverse all four quadrants of the stone cross.",
     "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 5,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      },
+      {
+        "id": "tp-2",
+        "posA": {
+          "x": 0,
+          "y": 4
+        },
+        "posB": {
+          "x": 5,
+          "y": 6
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 73,
+    "world": 4,
+    "name": "The Closed Exit",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 4
+    },
+    "exit": {
+      "x": 5,
+      "y": 3
+    },
+    "parMoves": 18,
+    "hint": "The exit chamber is sealed! Climb north to unlock the gate.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 4
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "star2Moves": 23
+  },
+  {
+    "id": 74,
+    "world": 4,
+    "name": "Teleport Relay",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Warp across the diagonal reef, then swing west to grab the hidden star.",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
       {
         "x": 0,
         "y": 2
       },
       {
-        "x": 4,
-        "y": 4
-      }
-    ],
-    "hint": "Unlock the north gate, then the south gate.",
-    "parMoves": 8,
-    "star2Moves": 10
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 72,
-    "world": 4,
-    "name": "Warp Maze",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 3,
-          "y": 1
-        },
-        "posB": {
-          "x": 2,
-          "y": 4
-        }
-      }
-    ],
-    "rocks": [
+        "x": 1,
+        "y": 2
+      },
       {
         "x": 2,
         "y": 2
       },
       {
         "x": 3,
-        "y": 3
-      }
-    ],
-    "hint": "Portals bypass impassable rock formations.",
-    "parMoves": 5,
-    "star2Moves": 7
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 73,
-    "world": 4,
-    "name": "The Closed Exit",
-    "start": {
-      "x": 1,
-      "y": 3
-    },
-    "exit": {
-      "x": 4,
-      "y": 3
-    },
-    "switches": [
+        "y": 2
+      },
       {
-        "id": "gate-exit",
-        "switchPos": {
-          "x": 1,
-          "y": 1
-        },
-        "doorPos": {
-          "x": 3,
-          "y": 3
-        }
-      }
-    ],
-    "fixed": [
+        "x": 3,
+        "y": 4
+      },
       {
-        "x": 1,
-        "y": 1
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
       }
     ],
-    "hint": "The gate right in front of the exit is sealed tight. Find the switch!",
-    "parMoves": 5,
-    "star2Moves": 7
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 74,
-    "world": 4,
-    "name": "Teleport Swap",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
     "teleporters": [
       {
         "id": "tp-1",
         "posA": {
-          "x": 1,
-          "y": 3
+          "x": 2,
+          "y": 1
         },
         "posB": {
-          "x": 3,
+          "x": 4,
           "y": 3
         }
       }
     ],
-    "rocks": [
+    "stars": [
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 75,
+    "world": 4,
+    "name": "Switch & Star",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 25,
+    "hint": "Press the switch, pass through the gate, and sweep both lower islands!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
       {
         "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
         "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "star2Moves": 32
+  },
+  {
+    "id": 76,
+    "world": 4,
+    "name": "Warp Over Reef",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Chain both portals to leap across two solid granite ridges!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 3
+        }
+      },
+      {
+        "id": "tp-2",
+        "posA": {
+          "x": 5,
+          "y": 3
+        },
+        "posB": {
+          "x": 0,
+          "y": 5
+        }
       }
     ],
     "stars": [
@@ -2977,130 +5955,99 @@ export const ALL_LEVELS: LevelDefinition[] = [
         "y": 3
       }
     ],
-    "hint": "Warp across the center divider.",
-    "parMoves": 6,
-    "star2Moves": 8
+    "star2Moves": 19
   },
   {
+    "id": 77,
+    "world": 4,
+    "name": "Switch & Warp Combo",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 75,
-    "world": 4,
-    "name": "Pressure Circuit",
+    "maxTiles": 2,
     "start": {
-      "x": 1,
-      "y": 1
+      "x": 0,
+      "y": 0
     },
     "exit": {
-      "x": 4,
-      "y": 4
+      "x": 5,
+      "y": 6
     },
-    "switches": [
-      {
-        "id": "g1",
-        "switchPos": {
-          "x": 4,
-          "y": 1
-        },
-        "doorPos": {
-          "x": 2,
-          "y": 3
-        }
-      }
-    ],
+    "parMoves": 15,
+    "hint": "Hit the switch BEFORE stepping into the portal, or the lower gate will still be sealed!",
     "fixed": [
       {
+        "x": 3,
+        "y": 4
+      },
+      {
         "x": 4,
-        "y": 1
+        "y": 6
       }
     ],
     "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
       {
         "x": 1,
         "y": 3
       },
       {
-        "x": 3,
+        "x": 2,
         "y": 3
-      }
-    ],
-    "hint": "Reach the switch on the northeast island.",
-    "parMoves": 6,
-    "star2Moves": 8
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 76,
-    "world": 4,
-    "name": "Warp to Safety",
-    "start": {
-      "x": 0,
-      "y": 3
-    },
-    "exit": {
-      "x": 5,
-      "y": 3
-    },
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 2,
-          "y": 3
-        },
-        "posB": {
-          "x": 4,
-          "y": 2
-        }
-      }
-    ],
-    "rocks": [
+      },
       {
         "x": 3,
         "y": 3
-      }
-    ],
-    "hint": "Teleport over the gap.",
-    "parMoves": 4,
-    "star2Moves": 6
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 77,
-    "world": 4,
-    "name": "Switch & Warp Combo",
-    "start": {
-      "x": 1,
-      "y": 0
-    },
-    "exit": {
-      "x": 4,
-      "y": 6
-    },
-    "teleporters": [
+      },
       {
-        "id": "tp-1",
-        "posA": {
-          "x": 2,
-          "y": 2
-        },
-        "posB": {
-          "x": 3,
-          "y": 4
-        }
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
       }
     ],
     "switches": [
       {
         "id": "g1",
         "switchPos": {
-          "x": 1,
-          "y": 2
+          "x": 3,
+          "y": 0
         },
         "doorPos": {
           "x": 4,
@@ -3108,389 +6055,294 @@ export const ALL_LEVELS: LevelDefinition[] = [
         }
       }
     ],
-    "fixed": [
+    "teleporters": [
       {
-        "x": 1,
-        "y": 2
+        "id": "tp-1",
+        "posA": {
+          "x": 1,
+          "y": 2
+        },
+        "posB": {
+          "x": 1,
+          "y": 4
+        }
       }
     ],
-    "hint": "Hit the switch, enter the portal, and walk through the unlocked gate.",
-    "parMoves": 6,
-    "star2Moves": 8
+    "star2Moves": 19
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 78,
     "world": 4,
     "name": "Inverted Gate",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
     "start": {
-      "x": 1,
-      "y": 3
+      "x": 0,
+      "y": 0
     },
     "exit": {
-      "x": 4,
-      "y": 3
+      "x": 5,
+      "y": 6
     },
+    "parMoves": 15,
+    "hint": "The gate starts OPEN, but grabbing the star on the switch closes it! Step on the switch again to reopen it!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
     "switches": [
       {
         "id": "g1",
         "switchPos": {
-          "x": 2,
-          "y": 1
+          "x": 3,
+          "y": 2
         },
         "doorPos": {
-          "x": 3,
+          "x": 2,
           "y": 3
         },
         "doorInitiallyOpen": true
       }
     ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 1
-      }
-    ],
     "stars": [
       {
-        "x": 2,
-        "y": 1
+        "x": 3,
+        "y": 2
       }
     ],
-    "hint": "The gate is already open! But stepping on the switch closes it. Plan wisely!",
-    "parMoves": 7,
-    "star2Moves": 9
+    "star2Moves": 19
   },
   {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
     "id": 79,
     "world": 4,
     "name": "Cosmic Hub",
-    "start": {
-      "x": 2,
-      "y": 0
-    },
-    "exit": {
-      "x": 2,
-      "y": 6
-    },
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 1,
-          "y": 2
-        },
-        "posB": {
-          "x": 4,
-          "y": 4
-        }
-      }
-    ],
-    "switches": [
-      {
-        "id": "g1",
-        "switchPos": {
-          "x": 4,
-          "y": 2
-        },
-        "doorPos": {
-          "x": 2,
-          "y": 4
-        }
-      }
-    ],
-    "fixed": [
-      {
-        "x": 4,
-        "y": 2
-      }
-    ],
-    "hint": "A multi-stage spatial puzzle.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 80,
-    "world": 4,
-    "name": "World 4 Finale",
-    "start": {
-      "x": 1,
-      "y": 5
-    },
-    "exit": {
-      "x": 4,
-      "y": 1
-    },
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 2,
-          "y": 4
-        },
-        "posB": {
-          "x": 3,
-          "y": 2
-        }
-      }
-    ],
-    "switches": [
-      {
-        "id": "g1",
-        "switchPos": {
-          "x": 1,
-          "y": 2
-        },
-        "doorPos": {
-          "x": 4,
-          "y": 2
-        }
-      }
-    ],
-    "fixed": [
-      {
-        "x": 1,
-        "y": 2
-      }
-    ],
-    "stars": [
-      {
-        "x": 1,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 2
-      }
-    ],
-    "hint": "Coordinate switches, teleporters, and stars to claim victory!",
-    "parMoves": 9,
-    "star2Moves": 11
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 81,
-    "world": 5,
-    "name": "The Grand Entrance",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
-    "fixed": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "crumbling": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "sticky": [
-      {
-        "x": 3,
-        "y": 2
-      }
-    ],
-    "stars": [
-      {
-        "x": 2,
-        "y": 2
-      }
-    ],
-    "hint": "The ultimate trial begins. Watch your footing on crumbling and sticky tiles.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 82,
-    "world": 5,
-    "name": "Portal & Honey",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 1,
-          "y": 2
-        },
-        "posB": {
-          "x": 3,
-          "y": 4
-        }
-      }
-    ],
-    "sticky": [
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "stars": [
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "hint": "Bypass the sticky trap by taking the teleporter.",
-    "parMoves": 8,
-    "star2Moves": 10
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 83,
-    "world": 5,
-    "name": "One-Way Gate",
-    "start": {
-      "x": 1,
-      "y": 0
-    },
-    "exit": {
-      "x": 4,
-      "y": 6
-    },
-    "switches": [
-      {
-        "id": "g1",
-        "switchPos": {
-          "x": 1,
-          "y": 3
-        },
-        "doorPos": {
-          "x": 3,
-          "y": 3
-        }
-      }
-    ],
-    "fixed": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 2,
-        "y": 3
-      }
-    ],
-    "oneWay": [
-      {
-        "x": 2,
-        "y": 3,
-        "direction": "right"
-      }
-    ],
-    "hint": "Ride the arrow through the unlocked gate.",
-    "parMoves": 9,
-    "star2Moves": 11
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 84,
-    "world": 5,
-    "name": "Crumbling Causeway",
+    "maxTiles": 2,
     "start": {
       "x": 0,
-      "y": 3
+      "y": 0
     },
     "exit": {
       "x": 5,
-      "y": 3
+      "y": 6
     },
-    "crumbling": [
-      {
-        "x": 1,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 3
-      }
-    ],
+    "parMoves": 19,
+    "hint": "Warp east to hit the switch, then descend through the unlocked gate!",
     "fixed": [
       {
-        "x": 2,
-        "y": 3
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
       },
       {
         "x": 3,
-        "y": 3
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
       }
     ],
     "rocks": [
       {
-        "x": 2,
-        "y": 2
+        "x": 3,
+        "y": 0
       },
       {
         "x": 3,
-        "y": 4
-      }
-    ],
-    "stars": [
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
       {
         "x": 2,
         "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
       }
     ],
-    "hint": "Cross the bridge before it collapses beneath you.",
-    "parMoves": 5,
-    "star2Moves": 7
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 85,
-    "world": 5,
-    "name": "Switchboard",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
     "switches": [
       {
         "id": "g1",
         "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 3
+        }
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 1
+        },
+        "posB": {
           "x": 1,
-          "y": 4
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 80,
+    "world": 4,
+    "name": "World 4 Finale",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Unlock Gate 1, hit Switch 2, and use the portal + Gate 2 to claim World 4 victory!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 3,
+          "y": 0
         },
         "doorPos": {
           "x": 3,
@@ -3500,8 +6352,8 @@ export const ALL_LEVELS: LevelDefinition[] = [
       {
         "id": "g2",
         "switchPos": {
-          "x": 4,
-          "y": 2
+          "x": 5,
+          "y": 3
         },
         "doorPos": {
           "x": 3,
@@ -3509,82 +6361,89 @@ export const ALL_LEVELS: LevelDefinition[] = [
         }
       }
     ],
-    "fixed": [
-      {
-        "x": 1,
-        "y": 4
-      },
-      {
-        "x": 4,
-        "y": 2
-      }
-    ],
-    "hint": "Sequence both switches in the right order.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 86,
-    "world": 5,
-    "name": "Sticky Portal",
-    "start": {
-      "x": 1,
-      "y": 2
-    },
-    "exit": {
-      "x": 4,
-      "y": 4
-    },
-    "sticky": [
-      {
-        "x": 2,
-        "y": 2
-      }
-    ],
     "teleporters": [
       {
         "id": "tp-1",
         "posA": {
-          "x": 3,
-          "y": 2
+          "x": 0,
+          "y": 3
         },
         "posB": {
-          "x": 2,
-          "y": 4
+          "x": 0,
+          "y": 5
         }
       }
     ],
     "stars": [
       {
         "x": 3,
-        "y": 2
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
       }
     ],
-    "hint": "Don't drop a bridge tile on sticky honey if you need it later!",
-    "parMoves": 4,
-    "star2Moves": 6
+    "star2Moves": 19
   },
   {
+    "id": 81,
+    "world": 5,
+    "name": "The Grand Entrance",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 87,
-    "world": 5,
-    "name": "The Fragile Loop",
+    "maxTiles": 2,
     "start": {
-      "x": 2,
+      "x": 0,
       "y": 0
     },
     "exit": {
-      "x": 2,
+      "x": 5,
       "y": 6
     },
-    "crumbling": [
+    "parMoves": 17,
+    "hint": "Use the crumbling bridge, skirt around the sticky honey, and gather both stars.",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
       {
         "x": 1,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 2,
         "y": 3
       },
       {
@@ -3592,48 +6451,212 @@ export const ALL_LEVELS: LevelDefinition[] = [
         "y": 3
       }
     ],
-    "fixed": [
+    "sticky": [
       {
-        "x": 2,
-        "y": 3
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 4
       }
     ],
     "stars": [
       {
-        "x": 1,
-        "y": 3
+        "x": 0,
+        "y": 2
       },
       {
-        "x": 3,
-        "y": 3
+        "x": 5,
+        "y": 2
       }
     ],
-    "hint": "Plan your route so you never step onto a broken tile.",
-    "parMoves": 10,
-    "star2Moves": 12
+    "star2Moves": 22
   },
   {
+    "id": 82,
+    "world": 5,
+    "name": "Portal & Honey",
     "cols": 6,
     "rows": 7,
     "maxTiles": 3,
-    "id": 88,
-    "world": 5,
-    "name": "Arrow Matrix",
     "start": {
       "x": 0,
-      "y": 1
+      "y": 0
     },
     "exit": {
       "x": 5,
-      "y": 5
+      "y": 6
     },
+    "parMoves": 15,
+    "hint": "Cross the sticky honey to reach the portal, then use your remaining 2 tiles to claim the star and exit!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 83,
+    "world": 5,
+    "name": "One-Way Gate",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Press the switch BEFORE riding the one-way arrow down—there is no climbing back up!",
     "fixed": [
       {
         "x": 2,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
         "y": 2
       },
       {
         "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
         "y": 4
       }
     ],
@@ -3642,45 +6665,350 @@ export const ALL_LEVELS: LevelDefinition[] = [
         "x": 2,
         "y": 2,
         "direction": "down"
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 3,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 4
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 84,
+    "world": 5,
+    "name": "Crumbling Vault",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 23,
+    "hint": "Cross the crumbling stone to hit the switch, then drop through the unlocked gate!",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
       },
       {
         "x": 3,
-        "y": 4,
-        "direction": "right"
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
       }
     ],
     "rocks": [
       {
+        "x": 0,
+        "y": 2
+      },
+      {
         "x": 1,
-        "y": 3
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
       },
       {
         "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
         "y": 3
       }
     ],
-    "hint": "Trust the directional flow of the arrows.",
-    "parMoves": 9,
-    "star2Moves": 11
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 1
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 29
   },
   {
+    "id": 85,
+    "world": 5,
+    "name": "Switchboard",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 89,
-    "world": 5,
-    "name": "Sacrifice and Teleport",
+    "maxTiles": 2,
     "start": {
-      "x": 1,
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 25,
+    "hint": "Unlock both gates in sequence while collecting both western stars.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 2
+        }
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 3,
+          "y": 3
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 4
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 32
+  },
+  {
+    "id": 86,
+    "world": 5,
+    "name": "Sticky Portal",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
       "y": 1
     },
     "exit": {
-      "x": 4,
-      "y": 5
+      "x": 5,
+      "y": 6
     },
-    "sticky": [
+    "parMoves": 15,
+    "hint": "Avoid the sticky shortcut above—detour south to keep both tiles for the portal cavern!",
+    "fixed": [
       {
         "x": 2,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "sticky": [
+      {
+        "x": 1,
         "y": 1
       }
     ],
@@ -3692,144 +7020,291 @@ export const ALL_LEVELS: LevelDefinition[] = [
           "y": 1
         },
         "posB": {
-          "x": 3,
-          "y": 4
+          "x": 0,
+          "y": 5
         }
       }
     ],
-    "hint": "Sacrifice one tile to reach the warp pad.",
-    "parMoves": 4,
-    "star2Moves": 6
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 90,
-    "world": 5,
-    "name": "Chamber of Trials",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "switches": [
+    "stars": [
       {
-        "id": "g1",
-        "switchPos": {
-          "x": 4,
-          "y": 3
-        },
-        "doorPos": {
-          "x": 2,
-          "y": 3
-        }
-      }
-    ],
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 1,
-          "y": 3
-        },
-        "posB": {
-          "x": 3,
-          "y": 3
-        }
-      }
-    ],
-    "fixed": [
-      {
-        "x": 4,
+        "x": 0,
         "y": 3
       }
     ],
-    "hint": "Warp across to access the switch chamber.",
-    "parMoves": 6,
-    "star2Moves": 8
+    "star2Moves": 19
   },
   {
+    "id": 87,
+    "world": 5,
+    "name": "The Fragile Loop",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 91,
-    "world": 5,
-    "name": "The Broken Spiral",
+    "maxTiles": 2,
     "start": {
-      "x": 1,
-      "y": 1
+      "x": 0,
+      "y": 0
     },
     "exit": {
-      "x": 3,
-      "y": 3
+      "x": 0,
+      "y": 6
     },
-    "crumbling": [
+    "parMoves": 16,
+    "hint": "Three crumbling stones form a fragile ring—trace a single unbroken path!",
+    "fixed": [
       {
-        "x": 4,
-        "y": 2
+        "x": 5,
+        "y": 0
       },
       {
         "x": 2,
-        "y": 5
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
       }
     ],
-    "fixed": [
+    "rocks": [
       {
         "x": 4,
         "y": 1
       },
       {
-        "x": 4,
-        "y": 4
+        "x": 0,
+        "y": 2
       },
       {
-        "x": 1,
-        "y": 5
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
       }
     ],
     "stars": [
       {
-        "x": 4,
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
         "y": 4
       }
     ],
-    "hint": "Follow the crumbling spiral towards the center.",
-    "parMoves": 8,
-    "star2Moves": 10
+    "star2Moves": 20
   },
   {
+    "id": 88,
+    "world": 5,
+    "name": "Arrow Matrix",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 92,
-    "world": 5,
-    "name": "Double Locked",
+    "maxTiles": 2,
     "start": {
       "x": 0,
-      "y": 2
+      "y": 0
     },
     "exit": {
       "x": 5,
-      "y": 4
+      "y": 6
     },
+    "parMoves": 21,
+    "hint": "Obey the directional arrows while collecting both central stars.",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "direction": "down"
+      },
+      {
+        "x": 0,
+        "y": 6,
+        "direction": "right"
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 3
+      }
+    ],
+    "star2Moves": 27
+  },
+  {
+    "id": 89,
+    "world": 5,
+    "name": "Honey & Gate",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Cross the honey trench to reach the warp pad, unlock the gate, and finish with 2 tiles!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
     "switches": [
       {
         "id": "g1",
-        "switchPos": {
-          "x": 1,
-          "y": 4
-        },
-        "doorPos": {
-          "x": 2,
-          "y": 3
-        }
-      },
-      {
-        "id": "g2",
         "switchPos": {
           "x": 4,
           "y": 2
@@ -3840,88 +7315,647 @@ export const ALL_LEVELS: LevelDefinition[] = [
         }
       }
     ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 90,
+    "world": 5,
+    "name": "Chamber of Trials",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Warp into the switch room, open the gate, ride the arrow south, grab the star, and finish!",
     "fixed": [
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
       {
         "x": 1,
         "y": 4
       },
       {
+        "x": 3,
+        "y": 4
+      },
+      {
         "x": 4,
-        "y": 2
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
       }
     ],
-    "hint": "Both sides hold keys to the inner corridor.",
-    "parMoves": 7,
-    "star2Moves": 9
+    "oneWay": [
+      {
+        "x": 2,
+        "y": 5,
+        "direction": "down"
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 3,
+          "y": 3
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 4
+        }
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 3,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 3
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "star2Moves": 22
   },
   {
+    "id": 91,
+    "world": 5,
+    "name": "The Broken Spiral",
     "cols": 6,
     "rows": 7,
-    "maxTiles": 3,
-    "id": 93,
-    "world": 5,
-    "name": "One-Way Bridge",
+    "maxTiles": 2,
     "start": {
-      "x": 1,
-      "y": 5
+      "x": 0,
+      "y": 0
     },
     "exit": {
-      "x": 4,
-      "y": 1
+      "x": 3,
+      "y": 3
     },
+    "parMoves": 18,
+    "hint": "Trace the crumbling spiral clockwise into the exit sanctuary.",
     "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      },
+      {
+        "x": 4,
+        "y": 6
+      },
+      {
+        "x": 5,
+        "y": 6
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 23
+  },
+  {
+    "id": 92,
+    "world": 5,
+    "name": "Double Locked",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 18,
+    "hint": "Open Gate 1, grab the star, warp south to hit Switch 2, and unlock the exit gate!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
       {
         "x": 2,
         "y": 4
       },
       {
         "x": 3,
-        "y": 2
-      }
-    ],
-    "oneWay": [
-      {
-        "x": 2,
-        "y": 4,
-        "direction": "up"
+        "y": 4
       },
       {
-        "x": 3,
-        "y": 2,
-        "direction": "right"
-      }
-    ],
-    "sticky": [
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 1,
+        "y": 6
+      },
       {
         "x": 2,
-        "y": 2
+        "y": 6
       }
     ],
-    "hint": "Steer clear of the sticky patch while obeying the arrows.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 94,
-    "world": 5,
-    "name": "Portal Labyrinth",
-    "start": {
-      "x": 1,
-      "y": 0
-    },
-    "exit": {
-      "x": 4,
-      "y": 6
-    },
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 3,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 2
+        }
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 2,
+          "y": 5
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 6
+        }
+      }
+    ],
     "teleporters": [
       {
         "id": "tp-1",
         "posA": {
-          "x": 1,
-          "y": 2
+          "x": 3,
+          "y": 3
+        },
+        "posB": {
+          "x": 0,
+          "y": 5
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 3
+      }
+    ],
+    "star2Moves": 23
+  },
+  {
+    "id": 93,
+    "world": 5,
+    "name": "One-Way Honey",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Ride the top arrow, sacrifice 1 tile in the honey chute, then clear the lower terrace with 2 tiles!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      }
+    ],
+    "sticky": [
+      {
+        "x": 4,
+        "y": 1
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "direction": "down"
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 94,
+    "world": 5,
+    "name": "Portal Labyrinth",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "Warp east, hit the switch, take Portal 2, and cross the unlocked gate to the exit!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 1,
+        "y": 6
+      },
+      {
+        "x": 2,
+        "y": 6
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 3
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 5
+        }
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 3,
+          "y": 0
         },
         "posB": {
           "x": 4,
@@ -3931,236 +7965,438 @@ export const ALL_LEVELS: LevelDefinition[] = [
       {
         "id": "tp-2",
         "posA": {
-          "x": 4,
-          "y": 4
-        },
-        "posB": {
-          "x": 1,
-          "y": 4
-        }
-      }
-    ],
-    "rocks": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "hint": "Criss-cross the map via twin portals.",
-    "parMoves": 8,
-    "star2Moves": 10
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 95,
-    "world": 5,
-    "name": "The Crucible",
-    "start": {
-      "x": 2,
-      "y": 1
-    },
-    "exit": {
-      "x": 2,
-      "y": 5
-    },
-    "switches": [
-      {
-        "id": "g1",
-        "switchPos": {
-          "x": 0,
+          "x": 3,
           "y": 3
-        },
-        "doorPos": {
-          "x": 2,
-          "y": 3
-        }
-      }
-    ],
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 4,
-          "y": 1
         },
         "posB": {
           "x": 0,
-          "y": 1
-        }
-      }
-    ],
-    "fixed": [
-      {
-        "x": 0,
-        "y": 3
-      },
-      {
-        "x": 4,
-        "y": 1
-      }
-    ],
-    "stars": [
-      {
-        "x": 0,
-        "y": 3
-      }
-    ],
-    "hint": "Warp across to hit the switch and rescue the star.",
-    "parMoves": 8,
-    "star2Moves": 10
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 96,
-    "world": 5,
-    "name": "Clockwork Maze",
-    "start": {
-      "x": 0,
-      "y": 3
-    },
-    "exit": {
-      "x": 5,
-      "y": 3
-    },
-    "switches": [
-      {
-        "id": "g1",
-        "switchPos": {
-          "x": 2,
-          "y": 1
-        },
-        "doorPos": {
-          "x": 3,
-          "y": 3
-        }
-      }
-    ],
-    "fixed": [
-      {
-        "x": 2,
-        "y": 1
-      }
-    ],
-    "crumbling": [
-      {
-        "x": 2,
-        "y": 2
-      },
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "hint": "Race across the crumbling stones to the pressure pad.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 97,
-    "world": 5,
-    "name": "Perilous Passage",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
-    "sticky": [
-      {
-        "x": 2,
-        "y": 2
-      }
-    ],
-    "crumbling": [
-      {
-        "x": 3,
-        "y": 4
-      }
-    ],
-    "switches": [
-      {
-        "id": "g1",
-        "switchPos": {
-          "x": 1,
-          "y": 4
-        },
-        "doorPos": {
-          "x": 3,
-          "y": 3
-        }
-      }
-    ],
-    "fixed": [
-      {
-        "x": 1,
-        "y": 4
-      }
-    ],
-    "hint": "Navigate sticky honey, crumbling tiles, and locking gates.",
-    "parMoves": 7,
-    "star2Moves": 9
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 98,
-    "world": 5,
-    "name": "The Quantum Leap",
-    "start": {
-      "x": 2,
-      "y": 0
-    },
-    "exit": {
-      "x": 2,
-      "y": 6
-    },
-    "teleporters": [
-      {
-        "id": "tp-1",
-        "posA": {
-          "x": 1,
-          "y": 2
-        },
-        "posB": {
-          "x": 3,
-          "y": 4
-        }
-      }
-    ],
-    "switches": [
-      {
-        "id": "g1",
-        "switchPos": {
-          "x": 4,
-          "y": 4
-        },
-        "doorPos": {
-          "x": 2,
           "y": 5
         }
       }
     ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "star2Moves": 27
+  },
+  {
+    "id": 95,
+    "world": 5,
+    "name": "The Crucible",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 22,
+    "hint": "Wait—make sure Switch a is reachable and Gate A blocks the exit cleanly!",
     "fixed": [
       {
         "x": 4,
+        "y": 2
+      },
+      {
+        "x": 3,
         "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 1,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 5
+        }
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 5,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 4
+        }
       }
     ],
     "stars": [
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "star2Moves": 28
+  },
+  {
+    "id": 96,
+    "world": 5,
+    "name": "Clockwork Maze",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Open the gate, descend across the fragile stepping stones, and sweep the lower star.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 97,
+    "world": 5,
+    "name": "Perilous Passage",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 23,
+    "hint": "Step around the sticky honey to keep both tiles for the crumbling lower hall and star!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 29
+  },
+  {
+    "id": 98,
+    "world": 5,
+    "name": "Quantum Leap",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Warp into the central chamber, press the switch, grab the star, take Portal 2, and pass Gate A!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
       {
         "x": 3,
         "y": 4
@@ -4168,87 +8404,180 @@ export const ALL_LEVELS: LevelDefinition[] = [
       {
         "x": 4,
         "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 1,
+        "y": 6
+      },
+      {
+        "x": 2,
+        "y": 6
       }
     ],
-    "hint": "Teleport deep into the eastern wing, unlock the southern barrier, and claim both stars.",
-    "parMoves": 10,
-    "star2Moves": 12
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 99,
-    "world": 5,
-    "name": "The Penultimate Riddle",
-    "start": {
-      "x": 1,
-      "y": 5
-    },
-    "exit": {
-      "x": 4,
-      "y": 1
-    },
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 3
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 6
+        }
+      }
+    ],
     "teleporters": [
       {
         "id": "tp-1",
         "posA": {
-          "x": 2,
-          "y": 4
+          "x": 3,
+          "y": 0
         },
         "posB": {
-          "x": 3,
-          "y": 2
+          "x": 0,
+          "y": 3
+        }
+      },
+      {
+        "id": "tp-2",
+        "posA": {
+          "x": 4,
+          "y": 3
+        },
+        "posB": {
+          "x": 0,
+          "y": 5
         }
       }
     ],
-    "crumbling": [
+    "stars": [
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 99,
+    "world": 5,
+    "name": "The Penultimate Riddle",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 20,
+    "hint": "Sacrifice 1 tile on the sticky bridge to cross the crumbling stone into Portal 1, flip Switch a, and finish with 2 tiles!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
       {
         "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
         "y": 3
       }
     ],
     "sticky": [
       {
-        "x": 4,
-        "y": 3
+        "x": 2,
+        "y": 0
       }
     ],
-    "stars": [
+    "crumbling": [
       {
         "x": 3,
-        "y": 2
+        "y": 0
       }
     ],
-    "hint": "One final test of all mechanics before the master trial.",
-    "parMoves": 8,
-    "star2Moves": 10
-  },
-  {
-    "cols": 6,
-    "rows": 7,
-    "maxTiles": 3,
-    "id": 100,
-    "world": 5,
-    "name": "Steal the Floor Master",
-    "start": {
-      "x": 1,
-      "y": 1
-    },
-    "exit": {
-      "x": 4,
-      "y": 5
-    },
     "switches": [
       {
-        "id": "g-final",
+        "id": "g1",
         "switchPos": {
-          "x": 4,
-          "y": 1
+          "x": 2,
+          "y": 2
         },
         "doorPos": {
           "x": 3,
-          "y": 4
+          "y": 3
         }
       }
     ],
@@ -4256,47 +8585,195 @@ export const ALL_LEVELS: LevelDefinition[] = [
       {
         "id": "tp-1",
         "posA": {
-          "x": 2,
-          "y": 2
+          "x": 5,
+          "y": 0
         },
         "posB": {
-          "x": 1,
-          "y": 4
+          "x": 0,
+          "y": 2
         }
       }
     ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 25
+  },
+  {
+    "id": 100,
+    "world": 5,
+    "name": "Steal the Floor Master",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "The ultimate trial! Sacrifice 1 tile on honey, cross the crumbling stone to Switch a, warp south, unlock both gates, and claim the crown!",
     "fixed": [
       {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
         "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
         "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 1,
+        "y": 6
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 0
       }
     ],
     "crumbling": [
       {
         "x": 3,
-        "y": 2
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 4
+        }
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 0,
+          "y": 5
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 6
+        }
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 1
+        },
+        "posB": {
+          "x": 0,
+          "y": 3
+        }
       }
     ],
     "stars": [
       {
-        "x": 4,
-        "y": 1
+        "x": 5,
+        "y": 0
       },
       {
-        "x": 1,
-        "y": 4
+        "x": 0,
+        "y": 5
       }
     ],
-    "hint": "Congratulations on reaching level 100! Prove your strategic genius by unlocking the grand exit!",
-    "parMoves": 10,
-    "star2Moves": 12
+    "star2Moves": 27
   }
 ];
 
 export const WORLDS = [
-  { id: 1, name: 'First Steps', levels: [1, 20], theme: 'floating-sky', description: 'Master basic movement, tile placement, and reclamation.' },
-  { id: 2, name: 'Think Ahead', levels: [21, 40], theme: 'candy-world', description: 'Navigate rocks and tight tile budgets.' },
-  { id: 3, name: 'Tricky Tiles', levels: [41, 60], theme: 'ocean-islands', description: 'Overcome sticky honey, crumbling tiles, and one-way arrows.' },
-  { id: 4, name: 'Open the Way', levels: [61, 80], theme: 'neon-space', description: 'Trigger switches to open gates and step into teleporters.' },
-  { id: 5, name: 'Master Builder', levels: [81, 100], theme: 'forest-adventure', description: 'Combine all mechanics in intricate master puzzles.' },
+  { id: 1, name: 'First Steps', levels: [1, 20], theme: 'floating-sky', description: 'Master bridge reach, island reclamation, and star detours.' },
+  { id: 2, name: 'Think Ahead', levels: [21, 40], theme: 'candy-world', description: 'Navigate rock walls, tight corridors, and limited tile budgets.' },
+  { id: 3, name: 'Tricky Tiles', levels: [41, 60], theme: 'ocean-islands', description: 'Master sticky honey sacrifices, crumbling checkpoints, and one-way arrows.' },
+  { id: 4, name: 'Open the Way', levels: [61, 80], theme: 'neon-space', description: 'Unlock enclosed laser gates and warp across impassable divides.' },
+  { id: 5, name: 'Master Builder', levels: [81, 100], theme: 'forest-adventure', description: 'Combine every mechanic in intricate multi-stage master puzzles.' },
 ];

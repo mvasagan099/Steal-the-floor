@@ -83,45 +83,76 @@ export const THEME_PALETTES: Record<string, ThemeColors> = {
   },
 };
 
+const PAIR_COLORS = [
+  { primary: '#38bdf8', dark: '#0284c7', barrier: '#f43f5e', barrierGlow: '#fda4af', label: 'A' },
+  { primary: '#f59e0b', dark: '#b45309', barrier: '#fb923c', barrierGlow: '#fed7aa', label: 'B' },
+];
+
+const PORTAL_COLORS = [
+  { outer: '#c084fc', inner: '#f472b6', core: '#f0abfc', bg: '#2e1065', side: '#1e053a', label: 'I' },
+  { outer: '#2dd4bf', inner: '#38bdf8', core: '#a7f3d0', bg: '#042f2e', side: '#021d1c', label: 'II' },
+];
+
 export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky', skinColor = '#f59e0b'): void {
   const palette = THEME_PALETTES[themeId] || THEME_PALETTES['floating-sky'];
-  const S = 128; // 128x128 crisp texture size
+  const S = 128;
+
+  const createCanvas = (key: string, width: number, height: number, draw: (ctx: CanvasRenderingContext2D) => void) => {
+    if (scene.textures.exists(key)) scene.textures.remove(key);
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d')!;
+    draw(ctx);
+    scene.textures.addCanvas(key, canvas);
+  };
 
   const createTile = (
     key: string,
     drawFace: (ctx: CanvasRenderingContext2D, s: number) => void,
     sideColor = '#1e293b'
   ) => {
-    if (scene.textures.exists(key)) scene.textures.remove(key);
-    const canvas = document.createElement('canvas');
-    canvas.width = S;
-    canvas.height = S;
-    const ctx = canvas.getContext('2d')!;
+    createCanvas(key, S, S, (ctx) => {
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetY = 10;
 
-    // Soft drop shadow
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-    ctx.shadowBlur = 12;
-    ctx.shadowOffsetY = 10;
+      const r = 24;
+      const topHeight = S - 20;
 
-    // 3D side edge bevel
-    const r = 24;
-    const topHeight = S - 20;
+      ctx.fillStyle = sideColor;
+      ctx.beginPath();
+      ctx.roundRect(8, 12, S - 16, topHeight + 10, r);
+      ctx.fill();
 
-    ctx.fillStyle = sideColor;
+      ctx.shadowColor = 'transparent';
+      ctx.beginPath();
+      ctx.roundRect(8, 8, S - 16, topHeight - 8, r);
+      ctx.clip();
+
+      drawFace(ctx, S);
+    });
+  };
+
+  // 0. Subtle Void Grid Slot (visualizes board dimensions & touch targets)
+  createCanvas('tile_void', S, S, (ctx) => {
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
     ctx.beginPath();
-    ctx.roundRect(8, 12, S - 16, topHeight + 10, r);
+    ctx.roundRect(14, 14, S - 28, S - 36, 20);
     ctx.fill();
 
-    // Top face
-    ctx.shadowColor = 'transparent';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.roundRect(8, 8, S - 16, topHeight - 8, r);
-    ctx.clip();
+    ctx.roundRect(14, 14, S - 28, S - 36, 20);
+    ctx.stroke();
 
-    drawFace(ctx, S);
-
-    scene.textures.addCanvas(key, canvas);
-  };
+    // Faint center dot
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.beginPath();
+    ctx.arc(S / 2, S / 2 - 4, 4, 0, Math.PI * 2);
+    ctx.fill();
+  });
 
   // 1. Fixed Platform
   createTile('tile_fixed', (ctx) => {
@@ -131,10 +162,33 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, S, S);
 
-    // Subtle edge highlight
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
     ctx.lineWidth = 4;
     ctx.strokeRect(10, 10, S - 20, S - 32);
+  }, palette.tileFixedSide);
+
+  // 1b. Start Island (fixed platform with subtle spawn emblem)
+  createTile('tile_start', (ctx) => {
+    const grad = ctx.createLinearGradient(0, 0, S, S);
+    grad.addColorStop(0, palette.tileFixed);
+    grad.addColorStop(1, palette.tileFixedSide);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, S, S);
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(10, 10, S - 20, S - 32);
+
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.24)';
+    ctx.beginPath();
+    ctx.arc(64, 52, 22, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.font = '900 28px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('S', 64, 54);
   }, palette.tileFixedSide);
 
   // 2. Bridge / Reusable Tile
@@ -145,15 +199,13 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, S, S);
 
-    // Plank / grid pattern
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.32)';
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(35, 12); ctx.lineTo(35, S - 20);
     ctx.moveTo(S - 35, 12); ctx.lineTo(S - 35, S - 20);
     ctx.stroke();
 
-    // Highlight
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2;
     ctx.strokeRect(12, 12, S - 24, S - 34);
@@ -164,7 +216,6 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.fillStyle = palette.tileSticky;
     ctx.fillRect(0, 0, S, S);
 
-    // Honey / Goo bubbles
     ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
     ctx.beginPath();
     ctx.arc(36, 36, 14, 0, Math.PI * 2);
@@ -172,7 +223,6 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.arc(50, 75, 10, 0, Math.PI * 2);
     ctx.fill();
 
-    // Honey drop symbol
     ctx.fillStyle = '#fef08a';
     ctx.beginPath();
     ctx.arc(64, 52, 12, 0, Math.PI * 2);
@@ -184,13 +234,13 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.fillStyle = palette.tileCrumbling;
     ctx.fillRect(0, 0, S, S);
 
-    // Cracks
     ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.moveTo(25, 20); ctx.lineTo(55, 50); ctx.lineTo(40, 80);
-    ctx.moveTo(55, 50); ctx.lineTo(100, 45);
-    ctx.moveTo(60, 70); ctx.lineTo(95, 90);
+    ctx.moveTo(24, 18); ctx.lineTo(56, 48); ctx.lineTo(38, 82);
+    ctx.moveTo(56, 48); ctx.lineTo(102, 42);
+    ctx.moveTo(62, 66); ctx.lineTo(96, 88);
     ctx.stroke();
   }, '#334155');
 
@@ -199,7 +249,6 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.fillStyle = '#475569';
     ctx.fillRect(0, 0, S, S);
 
-    // Jagged facets
     ctx.fillStyle = '#334155';
     ctx.beginPath();
     ctx.moveTo(20, 20); ctx.lineTo(70, 15); ctx.lineTo(110, 40); ctx.lineTo(90, 85); ctx.lineTo(30, 80);
@@ -227,88 +276,127 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
 
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.moveTo(0, -22);
-      ctx.lineTo(24, 12);
-      ctx.lineTo(10, 12);
-      ctx.lineTo(10, 26);
-      ctx.lineTo(-10, 26);
-      ctx.lineTo(-10, 12);
-      ctx.lineTo(-24, 12);
+      ctx.moveTo(0, -24);
+      ctx.lineTo(26, 10);
+      ctx.lineTo(11, 10);
+      ctx.lineTo(11, 26);
+      ctx.lineTo(-11, 26);
+      ctx.lineTo(-11, 10);
+      ctx.lineTo(-26, 10);
       ctx.closePath();
       ctx.fill();
       ctx.restore();
     }, palette.tileFixedSide);
   });
 
-  // 7. Switch Button
-  createTile('tile_switch', (ctx) => {
-    ctx.fillStyle = '#334155';
-    ctx.fillRect(0, 0, S, S);
+  // 7, 8, 9. Color-coded Switch & Door Pairs (Pair 0 = Cyan/A, Pair 1 = Amber/B)
+  PAIR_COLORS.forEach((pair, idx) => {
+    createTile(`tile_switch_${idx}`, (ctx) => {
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(0, 0, S, S);
 
-    // Circular button base
-    ctx.fillStyle = '#0284c7';
-    ctx.beginPath();
-    ctx.arc(64, 50, 28, 0, Math.PI * 2);
-    ctx.fill();
+      ctx.fillStyle = pair.dark;
+      ctx.beginPath();
+      ctx.arc(64, 50, 30, 0, Math.PI * 2);
+      ctx.fill();
 
-    ctx.fillStyle = '#38bdf8';
-    ctx.beginPath();
-    ctx.arc(64, 47, 24, 0, Math.PI * 2);
-    ctx.fill();
-  }, '#0f172a');
+      ctx.fillStyle = pair.primary;
+      ctx.beginPath();
+      ctx.arc(64, 46, 24, 0, Math.PI * 2);
+      ctx.fill();
 
-  // 8. Door / Gate (Closed)
-  createTile('tile_door_closed', (ctx) => {
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(0, 0, S, S);
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '900 22px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(pair.label, 64, 48);
+    }, '#0f172a');
 
-    // Barrier bars
-    ctx.fillStyle = '#f43f5e';
-    ctx.fillRect(20, 20, S - 40, 12);
-    ctx.fillRect(20, 42, S - 40, 12);
-    ctx.fillRect(20, 64, S - 40, 12);
+    createTile(`tile_door_closed_${idx}`, (ctx) => {
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(0, 0, S, S);
 
-    ctx.strokeStyle = '#fda4af';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(25, 15); ctx.lineTo(S - 25, 78);
-    ctx.stroke();
-  }, '#0f172a');
+      ctx.fillStyle = pair.barrier;
+      ctx.fillRect(20, 20, S - 40, 11);
+      ctx.fillRect(20, 42, S - 40, 11);
+      ctx.fillRect(20, 64, S - 40, 11);
 
-  // 9. Door / Gate (Open)
-  createTile('tile_door_open', (ctx) => {
-    ctx.fillStyle = 'rgba(14, 165, 233, 0.3)';
-    ctx.fillRect(0, 0, S, S);
+      // Pair badge pill
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(64, 48, 16, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = pair.primary;
+      ctx.lineWidth = 3;
+      ctx.stroke();
 
-    ctx.strokeStyle = '#38bdf8';
-    ctx.setLineDash([8, 6]);
-    ctx.lineWidth = 4;
-    ctx.strokeRect(16, 16, S - 32, S - 40);
-  }, '#0f172a');
+      ctx.fillStyle = pair.primary;
+      ctx.font = '900 18px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(pair.label, 64, 49);
+    }, '#0f172a');
 
-  // 10. Teleporter
-  createTile('tile_teleporter', (ctx) => {
-    ctx.fillStyle = '#2e1065';
-    ctx.fillRect(0, 0, S, S);
+    createTile(`tile_door_open_${idx}`, (ctx) => {
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.5)';
+      ctx.fillRect(0, 0, S, S);
 
-    // Swirling portal rings
-    ctx.strokeStyle = '#c084fc';
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.arc(64, 50, 28, 0, Math.PI * 2);
-    ctx.stroke();
+      ctx.strokeStyle = pair.primary;
+      ctx.setLineDash([8, 6]);
+      ctx.lineWidth = 5;
+      ctx.strokeRect(16, 16, S - 32, S - 40);
 
-    ctx.strokeStyle = '#f472b6';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.arc(64, 50, 16, 0, Math.PI * 2);
-    ctx.stroke();
+      ctx.fillStyle = pair.primary;
+      ctx.globalAlpha = 0.65;
+      ctx.font = '900 20px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(pair.label, 64, 50);
+    }, '#0f172a');
+  });
 
-    ctx.fillStyle = '#e879f9';
-    ctx.beginPath();
-    ctx.arc(64, 50, 7, 0, Math.PI * 2);
-    ctx.fill();
-  }, '#1e053a');
+  // Backwards-compatible aliases
+  if (scene.textures.exists('tile_switch_0')) {
+    createTile('tile_switch', (ctx) => {
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(0, 0, S, S);
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(64, 48, 24, 0, Math.PI * 2);
+      ctx.fill();
+    }, '#0f172a');
+  }
+
+  // 10. Color-coded Teleporter Pairs (Pair 0 = Violet/I, Pair 1 = Teal/II)
+  PORTAL_COLORS.forEach((p, idx) => {
+    createTile(`tile_teleporter_${idx}`, (ctx) => {
+      ctx.fillStyle = p.bg;
+      ctx.fillRect(0, 0, S, S);
+
+      ctx.strokeStyle = p.outer;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(64, 50, 30, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = p.inner;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(64, 50, 18, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = p.core;
+      ctx.beginPath();
+      ctx.arc(64, 50, 8, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.label, 64, 86);
+    }, p.side);
+  });
 
   // 11. Exit Flag Platform
   createTile('tile_exit', (ctx) => {
@@ -318,138 +406,187 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, S, S);
 
-    // Flagpole
     ctx.fillStyle = '#475569';
     ctx.fillRect(40, 18, 6, 68);
 
-    // Waving flag
     ctx.fillStyle = '#ef4444';
     ctx.beginPath();
     ctx.moveTo(46, 20);
-    ctx.lineTo(92, 35);
+    ctx.lineTo(94, 35);
     ctx.lineTo(46, 50);
     ctx.closePath();
     ctx.fill();
   }, '#92400e');
 
-  // 12. Star Collectible
-  if (scene.textures.exists('item_star')) scene.textures.remove('item_star');
-  {
-    const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
-    const ctx = canvas.getContext('2d')!;
-
-    ctx.shadowColor = 'rgba(250, 204, 21, 0.8)';
+  // 12. Gem Collectible (distinct faceted cyan-gold crystal to disambiguate from Par Stars!)
+  createCanvas('item_gem', 64, 64, (ctx) => {
+    ctx.shadowColor = 'rgba(56, 189, 248, 0.85)';
     ctx.shadowBlur = 12;
 
-    const cx = 32, cy = 32, spikes = 5, outer = 26, inner = 12;
+    const grad = ctx.createLinearGradient(12, 8, 52, 56);
+    grad.addColorStop(0, '#e0f2fe');
+    grad.addColorStop(0.4, '#38bdf8');
+    grad.addColorStop(1, '#2563eb');
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(32, 6);
+    ctx.lineTo(54, 24);
+    ctx.lineTo(32, 58);
+    ctx.lineTo(10, 24);
+    ctx.closePath();
+    ctx.fill();
+
+    // Crisp specular facets
+    ctx.shadowColor = 'transparent';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.beginPath();
+    ctx.moveTo(32, 6);
+    ctx.lineTo(42, 24);
+    ctx.lineTo(22, 24);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(10, 24);
+    ctx.lineTo(54, 24);
+    ctx.stroke();
+  });
+
+  // Also keep item_star for ambient sparkles
+  createCanvas('item_star', 64, 64, (ctx) => {
+    const cx = 32, cy = 32, spikes = 5, outer = 24, inner = 10;
     let rot = (Math.PI / 2) * 3;
     const step = Math.PI / spikes;
-
     ctx.beginPath();
     ctx.moveTo(cx, cy - outer);
     for (let i = 0; i < spikes; i++) {
-      let x = cx + Math.cos(rot) * outer;
-      let y = cy + Math.sin(rot) * outer;
-      ctx.lineTo(x, y);
+      ctx.lineTo(cx + Math.cos(rot) * outer, cy + Math.sin(rot) * outer);
       rot += step;
-      x = cx + Math.cos(rot) * inner;
-      y = cy + Math.sin(rot) * inner;
-      ctx.lineTo(x, y);
+      ctx.lineTo(cx + Math.cos(rot) * inner, cy + Math.sin(rot) * inner);
       rot += step;
     }
     ctx.closePath();
-
-    const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, 26);
-    grad.addColorStop(0, '#ffffff');
-    grad.addColorStop(0.3, '#fef08a');
-    grad.addColorStop(1, '#eab308');
-    ctx.fillStyle = grad;
+    ctx.fillStyle = '#fef08a';
     ctx.fill();
+  });
 
-    scene.textures.addCanvas('item_star', canvas);
-  }
-
-  // 13. Mascot Character ("Puff")
-  if (scene.textures.exists('char_mascot')) scene.textures.remove('char_mascot');
-  {
-    const canvas = document.createElement('canvas');
-    canvas.width = 96;
-    canvas.height = 96;
-    const ctx = canvas.getContext('2d')!;
-
-    const cx = 48, cy = 52, r = 36;
-
-    // Soft drop shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-    ctx.beginPath();
-    ctx.ellipse(cx, 88, 30, 8, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Body
-    const grad = ctx.createRadialGradient(cx - 10, cy - 12, 4, cx, cy, r);
-    grad.addColorStop(0, '#ffffff');
-    grad.addColorStop(0.2, skinColor);
-    grad.addColorStop(1, Phaser.Display.Color.HexStringToColor(skinColor).darken(25).rgba);
+  // 13. Crisp Soft Particle Sprite (used for VFX bursts)
+  createCanvas('fx_particle', 24, 24, (ctx) => {
+    const grad = ctx.createRadialGradient(12, 12, 2, 12, 12, 11);
+    grad.addColorStop(0, 'rgba(255,255,255,1)');
+    grad.addColorStop(0.6, 'rgba(255,255,255,0.85)');
+    grad.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.arc(12, 12, 11, 0, Math.PI * 2);
     ctx.fill();
+  });
 
-    // Blush cheeks
-    ctx.fillStyle = 'rgba(244, 63, 94, 0.45)';
-    ctx.beginPath();
-    ctx.arc(cx - 18, cy + 8, 6, 0, Math.PI * 2);
-    ctx.arc(cx + 18, cy + 8, 6, 0, Math.PI * 2);
-    ctx.fill();
+  // 14. Expressive Mascot Character ("Puff"): normal, worried (0 tiles), and joyful (win)
+  const drawMascot = (key: string, mood: 'normal' | 'worried' | 'win') => {
+    createCanvas(key, 96, 96, (ctx) => {
+      const cx = 48, cy = 52, r = 36;
 
-    // Eyes
-    ctx.fillStyle = '#0f172a';
-    ctx.beginPath();
-    ctx.arc(cx - 12, cy - 4, 5, 0, Math.PI * 2);
-    ctx.arc(cx + 12, cy - 4, 5, 0, Math.PI * 2);
-    ctx.fill();
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.beginPath();
+      ctx.ellipse(cx, 88, 30, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
 
-    // Eye highlights
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(cx - 10, cy - 6, 2, 0, Math.PI * 2);
-    ctx.arc(cx + 14, cy - 6, 2, 0, Math.PI * 2);
-    ctx.fill();
+      const grad = ctx.createRadialGradient(cx - 10, cy - 12, 4, cx, cy, r);
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(0.2, skinColor);
+      grad.addColorStop(1, Phaser.Display.Color.HexStringToColor(skinColor).darken(25).rgba);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
 
-    // Cute smiling mouth
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.arc(cx, cy + 4, 7, 0.2, Math.PI - 0.2);
-    ctx.stroke();
+      // Blush cheeks
+      ctx.fillStyle = 'rgba(244, 63, 94, 0.45)';
+      ctx.beginPath();
+      ctx.arc(cx - 18, cy + 8, 6, 0, Math.PI * 2);
+      ctx.arc(cx + 18, cy + 8, 6, 0, Math.PI * 2);
+      ctx.fill();
 
-    // Antenna crown
-    ctx.strokeStyle = skinColor;
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy - r);
-    ctx.lineTo(cx, cy - r - 12);
-    ctx.stroke();
+      if (mood === 'win') {
+        // Happy curved ^_^ eyes
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(cx - 12, cy - 2, 6, Math.PI * 1.15, Math.PI * 1.85);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx + 12, cy - 2, 6, Math.PI * 1.15, Math.PI * 1.85);
+        ctx.stroke();
 
-    ctx.fillStyle = palette.accent;
-    ctx.beginPath();
-    ctx.arc(cx, cy - r - 14, 5, 0, Math.PI * 2);
-    ctx.fill();
+        // Big joyful grin
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(cx, cy + 5, 9, 0, Math.PI);
+        ctx.fill();
+      } else {
+        // Round eyes
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(cx - 12, cy - 4, mood === 'worried' ? 5.5 : 5, 0, Math.PI * 2);
+        ctx.arc(cx + 12, cy - 4, mood === 'worried' ? 5.5 : 5, 0, Math.PI * 2);
+        ctx.fill();
 
-    scene.textures.addCanvas('char_mascot', canvas);
-  }
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(cx - 10, cy - 6, 2, 0, Math.PI * 2);
+        ctx.arc(cx + 14, cy - 6, 2, 0, Math.PI * 2);
+        ctx.fill();
 
-  // 14. Valid Move Glowing Ring
-  if (scene.textures.exists('highlight_valid')) scene.textures.remove('highlight_valid');
-  {
-    const canvas = document.createElement('canvas');
-    canvas.width = S;
-    canvas.height = S;
-    const ctx = canvas.getContext('2d')!;
+        if (mood === 'worried') {
+          // Small "o" mouth + blue sweat drop
+          ctx.strokeStyle = '#0f172a';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(cx, cy + 9, 4.5, 0, Math.PI * 2);
+          ctx.stroke();
 
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.moveTo(cx + 26, cy - 20);
+          ctx.quadraticCurveTo(cx + 32, cy - 10, cx + 26, cy - 7);
+          ctx.quadraticCurveTo(cx + 20, cy - 10, cx + 26, cy - 20);
+          ctx.fill();
+        } else {
+          ctx.strokeStyle = '#0f172a';
+          ctx.lineWidth = 3;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.arc(cx, cy + 4, 7, 0.2, Math.PI - 0.2);
+          ctx.stroke();
+        }
+      }
+
+      // Antenna crown
+      ctx.strokeStyle = skinColor;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - r);
+      ctx.lineTo(cx, cy - r - 12);
+      ctx.stroke();
+
+      ctx.fillStyle = palette.accent;
+      ctx.beginPath();
+      ctx.arc(cx, cy - r - 14, 5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  };
+
+  drawMascot('char_mascot', 'normal');
+  drawMascot('char_mascot_worried', 'worried');
+  drawMascot('char_mascot_win', 'win');
+
+  // 15. Valid Move Glowing Ring
+  createCanvas('highlight_valid', S, S, (ctx) => {
     ctx.strokeStyle = '#38bdf8';
     ctx.lineWidth = 6;
     ctx.shadowColor = '#38bdf8';
@@ -458,7 +595,5 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.beginPath();
     ctx.roundRect(14, 14, S - 28, S - 38, 20);
     ctx.stroke();
-
-    scene.textures.addCanvas('highlight_valid', canvas);
-  }
+  });
 }
