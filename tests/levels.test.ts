@@ -4,21 +4,21 @@ import { PuzzleGame } from '../src/engine/logic';
 import { solveLevel } from '../src/engine/solver';
 import { LevelDefinition } from '../src/engine/types';
 
-describe('180 Levels Solvability & Mechanic Quality Gate Suite', () => {
-  it('contains exactly 180 levels across 9 worlds', () => {
-    expect(ALL_LEVELS.length).toBe(180);
-    expect(WORLDS.length).toBe(9);
+describe('200 Levels Solvability & Mechanic Quality Gate Suite', () => {
+  it('contains exactly 200 levels across 10 worlds', () => {
+    expect(ALL_LEVELS.length).toBe(200);
+    expect(WORLDS.length).toBe(10);
 
-    for (let w = 1; w <= 9; w++) {
+    for (let w = 1; w <= 10; w++) {
       const worldLevels = ALL_LEVELS.filter((l) => l.world === w);
       expect(worldLevels.length).toBe(20);
     }
   });
 
-  it('validates all 180 levels are solvable with accurate par and active mechanics', () => {
+  it('validates all 200 levels are solvable with accurate par and active mechanics', () => {
     for (const level of ALL_LEVELS) {
       expect(level.id).toBeGreaterThanOrEqual(1);
-      expect(level.id).toBeLessThanOrEqual(180);
+      expect(level.id).toBeLessThanOrEqual(200);
       expect(level.parMoves).toBeGreaterThan(0);
       expect(level.star2Moves).toBeGreaterThan(level.parMoves);
 
@@ -35,6 +35,8 @@ describe('180 Levels Solvability & Mechanic Quality Gate Suite', () => {
       let usedOneWay = false;
       let usedIce = false;
       let usedSpring = false;
+      let usedKey = false;
+      let usedLock = false;
       let usedBonusTile = false;
       let usedCrate = false;
 
@@ -58,6 +60,8 @@ describe('180 Levels Solvability & Mechanic Quality Gate Suite', () => {
           if (dist > 1) usedIce = true;
         }
         if (r.springPath && r.springPath.length > 0) usedSpring = true;
+        if (r.keyCollected) usedKey = true;
+        if (r.lockOpened) usedLock = true;
         if ((r.slidePath && r.slidePath.length > 0) || iceKeys.has(`${step.x},${step.y}`)) usedIce = true;
         if (r.bonusTileCollected) usedBonusTile = true;
       }
@@ -93,6 +97,21 @@ describe('180 Levels Solvability & Mechanic Quality Gate Suite', () => {
             `Level ${level.id}: timed gate '${ts.id}' countdown must have real tension`
           ).toBe(true);
         }
+      }
+
+      if (level.locks?.length) {
+        expect(usedKey && usedLock, `Level ${level.id}: key and locked vault must be used`).toBe(
+          true
+        );
+        const sealedVaults: LevelDefinition = {
+          ...level,
+          locks: undefined,
+          rocks: [...(level.rocks || []), ...level.locks],
+        };
+        expect(
+          solveLevel(sealedVaults, 45).solvable,
+          `Level ${level.id}: locked vault must not be bypassable`
+        ).toBe(false);
       }
 
       if (level.crates?.length) {

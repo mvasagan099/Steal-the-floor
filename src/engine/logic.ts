@@ -42,6 +42,8 @@ export class PuzzleGame {
   public crumbled: Set<string>; // Cells that crumbled away
   public collectedStars: Set<string>;
   public collectedBonusTiles: Set<string>; // +1 maxTiles pickups collected
+  public collectedKeys: Set<string>; // Golden keys picked up ("x,y")
+  public unlockedLocks: Set<string>; // Vault locks permanently opened ("x,y")
   public crates: Set<string>; // Pushable crate positions ("x,y")
   public openDoors: Set<string>;
   public doorTimers: Map<string, number>; // timed door ID -> moves remaining before auto-close
@@ -56,6 +58,8 @@ export class PuzzleGame {
   private crumblingSet: Set<string>;
   private iceSet: Set<string>;
   private springSet: Set<string>;
+  private keySet: Set<string>;
+  private lockSet: Set<string>;
   private bonusTileSet: Set<string>;
   private oneWayMap: Map<string, Direction>;
   private switchMap: Map<string, string>; // coordKey -> switchDoorId
@@ -75,6 +79,8 @@ export class PuzzleGame {
     this.crumbled = new Set<string>();
     this.collectedStars = new Set<string>();
     this.collectedBonusTiles = new Set<string>();
+    this.collectedKeys = new Set<string>();
+    this.unlockedLocks = new Set<string>();
     this.crates = new Set<string>();
     this.openDoors = new Set<string>();
     this.doorTimers = new Map<string, number>();
@@ -112,6 +118,12 @@ export class PuzzleGame {
       // Springboards are solid launch pads that vault Puff 2 cells in their move direction
       this.fixedSet.add(key);
     });
+
+    this.keySet = new Set<string>();
+    level.keys?.forEach((c) => this.keySet.add(coordToKey(c)));
+
+    this.lockSet = new Set<string>();
+    level.locks?.forEach((c) => this.lockSet.add(coordToKey(c)));
 
     this.bonusTileSet = new Set<string>();
     level.bonusTiles?.forEach((c) => this.bonusTileSet.add(coordToKey(c)));
@@ -179,6 +191,10 @@ export class PuzzleGame {
     return this.currentMaxTiles - (this.tiles.size + this.trapped.size);
   }
 
+  public get keysHeld(): number {
+    return Math.max(0, this.collectedKeys.size - this.unlockedLocks.size);
+  }
+
   private canCrateEnter(coord: Coordinate): boolean {
     if (coord.x < 0 || coord.x >= this.level.cols || coord.y < 0 || coord.y >= this.level.rows) {
       return false;
@@ -187,18 +203,26 @@ export class PuzzleGame {
     if (this.rockSet.has(key)) return false;
     if (this.crates.has(key)) return false;
     if (this.springSet.has(key)) return false;
+    if (this.lockSet.has(key) && !this.unlockedLocks.has(key)) return false;
     const doorId = this.doorMap.get(key);
     if (doorId && !this.openDoors.has(doorId)) return false;
     return this.isSolidGround(key);
   }
 
-  private canSpringLand(coord: Coordinate, availableAfterReclaim: number): boolean {
+  private canSpringLand(
+    coord: Coordinate,
+    availableAfterReclaim: number,
+    keysAvailable = this.keysHeld
+  ): boolean {
     if (coord.x < 0 || coord.x >= this.level.cols || coord.y < 0 || coord.y >= this.level.rows) {
       return false;
     }
     const key = coordToKey(coord);
     if (this.rockSet.has(key)) return false;
     if (this.crates.has(key)) return false;
+    if (this.lockSet.has(key) && !this.unlockedLocks.has(key)) {
+      return keysAvailable > 0;
+    }
     const doorId = this.doorMap.get(key);
     if (doorId && !this.openDoors.has(doorId)) return false;
     if (this.isSolidGround(key) || this.trapped.has(key)) return true;
@@ -245,6 +269,16 @@ export class PuzzleGame {
       return { allowed: false, reason: 'That rock blocks the path' };
     }
 
+    if (this.lockSet.has(targetKey) && !this.unlockedLocks.has(targetKey)) {
+      if (this.keysHeld <= 0) {
+        return {
+          allowed: false,
+          reason: 'This vault is locked! Collect a Golden Key first.',
+        };
+      }
+      return { allowed: true };
+    }
+
     const doorId = this.doorMap.get(targetKey);
     if (doorId && !this.openDoors.has(doorId)) {
       return { allowed: false, reason: 'This gate is closed! Find a switch.' };
@@ -274,9 +308,11 @@ export class PuzzleGame {
       const prevWillTrap = this.stickySet.has(currentKey) && this.tiles.has(currentKey) ? 1 : 0;
       const bonusOnSpring =
         this.bonusTileSet.has(targetKey) && !this.collectedBonusTiles.has(targetKey) ? 1 : 0;
+      const keyOnSpring =
+        this.keySet.has(targetKey) && !this.collectedKeys.has(targetKey) ? 1 : 0;
       const availableAfterReclaim =
         this.currentMaxTiles + bonusOnSpring - (this.trapped.size + prevWillTrap);
-      if (!this.canSpringLand(land, availableAfterReclaim)) {
+      if (!this.canSpringLand(land, availableAfterReclaim, this.keysHeld + keyOnSpring)) {
         return {
           allowed: false,
           reason: 'Spring landing blocked! Clear or open the landing spot 2 tiles ahead.',
@@ -304,6 +340,7 @@ export class PuzzleGame {
   public isSolidGround(coordKey: string): boolean {
     if (this.fixedSet.has(coordKey)) return true;
     if (this.crumblingSet.has(coordKey) && !this.crumbled.has(coordKey)) return true;
+    if (this.lockSet.has(coordKey) && this.unlockedLocks.has(coordKey)) return true;
     const doorId = this.doorMap.get(coordKey);
     if (doorId && this.openDoors.has(doorId)) return true;
     return false;
@@ -346,6 +383,8 @@ export class PuzzleGame {
       crumbled: Array.from(this.crumbled),
       collectedStars: Array.from(this.collectedStars),
       collectedBonusTiles: Array.from(this.collectedBonusTiles),
+      collectedKeys: Array.from(this.collectedKeys),
+      unlockedLocks: Array.from(this.unlockedLocks),
       crates: Array.from(this.crates),
       openDoors: Array.from(this.openDoors),
       doorTimers: timersObj,
@@ -361,6 +400,8 @@ export class PuzzleGame {
     this.crumbled = new Set(snapshot.crumbled);
     this.collectedStars = new Set(snapshot.collectedStars);
     this.collectedBonusTiles = new Set(snapshot.collectedBonusTiles || []);
+    this.collectedKeys = new Set(snapshot.collectedKeys || []);
+    this.unlockedLocks = new Set(snapshot.unlockedLocks || []);
     this.crates = new Set(snapshot.crates || []);
     this.openDoors = new Set(snapshot.openDoors);
     this.doorTimers = new Map(
@@ -395,6 +436,7 @@ export class PuzzleGame {
     const key = coordToKey(coord);
     if (this.rockSet.has(key)) return false;
     if (this.crates.has(key)) return false;
+    if (this.lockSet.has(key) && !this.unlockedLocks.has(key)) return false;
     const doorId = this.doorMap.get(key);
     if (doorId && !this.openDoors.has(doorId)) return false;
     return this.hasWalkableFloor(key);
@@ -405,6 +447,7 @@ export class PuzzleGame {
     if (!check.allowed) {
       let code: MoveResultCode = 'ERR_NOT_ADJACENT';
       if (check.reason?.includes('rock')) code = 'ERR_ROCK';
+      else if (check.reason?.includes('vault is locked')) code = 'ERR_LOCKED_VAULT';
       else if (check.reason?.includes('gate')) code = 'ERR_CLOSED_DOOR';
       else if (check.reason?.includes('One-way')) code = 'ERR_ONE_WAY';
       else if (check.reason?.includes('Out of tiles')) code = 'ERR_NO_TILES';
@@ -448,6 +491,12 @@ export class PuzzleGame {
 
       this.crates.add(coordToKey(cratePos));
       result.pushedCrate = { from: { ...target }, to: { ...cratePos } };
+    }
+
+    // 0b. Unlock locked vault if stepping onto one while holding a Golden Key
+    if (this.lockSet.has(targetKey) && !this.unlockedLocks.has(targetKey)) {
+      this.unlockedLocks.add(targetKey);
+      result.lockOpened = { ...target };
     }
 
     // 1. Place bridge tile if target is empty void
@@ -509,7 +558,7 @@ export class PuzzleGame {
     };
     reclaimOnSolid(targetKey);
 
-    // Helper to trigger collectibles, bonus tiles, and toggle/timed switches at current cell
+    // Helper to trigger collectibles, bonus tiles, keys, and toggle/timed switches at current cell
     const triggerCellEffects = () => {
       const pKey = coordToKey(this.player);
 
@@ -522,6 +571,11 @@ export class PuzzleGame {
       if (this.bonusTileSet.has(pKey) && !this.collectedBonusTiles.has(pKey)) {
         this.collectedBonusTiles.add(pKey);
         result.bonusTileCollected = { ...this.player };
+      }
+
+      if (this.keySet.has(pKey) && !this.collectedKeys.has(pKey)) {
+        this.collectedKeys.add(pKey);
+        result.keyCollected = { ...this.player };
       }
 
       const switchId = this.switchMap.get(pKey);
@@ -557,9 +611,13 @@ export class PuzzleGame {
           x: this.player.x + delta.x * 2,
           y: this.player.y + delta.y * 2,
         };
-        if (!this.canSpringLand(landCell, this.inventory)) break;
+        if (!this.canSpringLand(landCell, this.inventory, this.keysHeld)) break;
 
         const landKey = coordToKey(landCell);
+        if (this.lockSet.has(landKey) && !this.unlockedLocks.has(landKey)) {
+          this.unlockedLocks.add(landKey);
+          result.lockOpened = { ...landCell };
+        }
         if (!this.hasWalkableFloor(landKey)) {
           this.tiles.add(landKey);
           result.placedTile = { ...landCell };
@@ -660,6 +718,8 @@ export class PuzzleGame {
       this.crumbled.clear();
       this.collectedStars.clear();
       this.collectedBonusTiles.clear();
+      this.collectedKeys.clear();
+      this.unlockedLocks.clear();
       this.crates = new Set((this.level.crates || []).map(coordToKey));
       this.openDoors.clear();
       this.doorTimers.clear();

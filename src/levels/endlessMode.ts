@@ -45,6 +45,7 @@ export function generateEndlessStage(stageNumber: number, runSeed: number): Leve
     const rocks: Coordinate[] = [];
     const crumbling: Coordinate[] = [];
     const ice: Coordinate[] = [];
+    const springs: Coordinate[] = [];
     const sticky: Coordinate[] = [];
     const bonusTiles: Coordinate[] = [];
     const stars: Coordinate[] = [];
@@ -75,6 +76,8 @@ export function generateEndlessStage(stageNumber: number, runSeed: number): Leve
       if (i === 0 && useBonus) {
         fixed.push(pick);
         bonusTiles.push(pick);
+      } else if (stageNumber >= 5 && i > 0 && prng() < 0.22 && springs.length < 2) {
+        springs.push(pick);
       } else if (stageNumber >= 3 && i > 0 && prng() < 0.3) {
         crumbling.push(pick);
       } else if (stageNumber >= 3 && prng() < 0.25) {
@@ -145,6 +148,7 @@ export function generateEndlessStage(stageNumber: number, runSeed: number): Leve
       rocks: rocks.length ? rocks : undefined,
       crumbling: crumbling.length ? crumbling : undefined,
       ice: ice.length ? ice : undefined,
+      springs: springs.length ? springs : undefined,
       sticky: sticky.length ? sticky : undefined,
       bonusTiles: bonusTiles.length ? bonusTiles : undefined,
       stars: stars.length ? stars : undefined,

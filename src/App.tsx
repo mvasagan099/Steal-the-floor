@@ -99,6 +99,11 @@ const MECHANIC_INTROS: Record<number, { icon: string; title: string; tip: string
     title: 'Golden Springboards',
     tip: 'Step onto a Springboard to vault 2 tiles forward—leaping cleanly over rocks, walls, honey, or open void!',
   },
+  181: {
+    icon: '🔑',
+    title: 'Golden Keys & Vault Locks',
+    tip: 'Collect floating Golden Keys, then step onto a Locked Vault to unlock it permanently into solid ground!',
+  },
 };
 
 export const App: React.FC = () => {
@@ -140,6 +145,7 @@ export const App: React.FC = () => {
   const [currentMaxTiles, setCurrentMaxTiles] = useState(2);
   const [trappedTiles, setTrappedTiles] = useState(0);
   const [starsCollected, setStarsCollected] = useState(0);
+  const [keysHeld, setKeysHeld] = useState(0);
   const [isDeadlocked, setIsDeadlocked] = useState(false);
   const [notice, setNotice] = useState('Tap or swipe to place a floor and walk.');
   const [elapsedMs, setElapsedMs] = useState(0);
@@ -429,6 +435,7 @@ export const App: React.FC = () => {
     setCurrentMaxTiles(game.currentMaxTiles);
     setTrappedTiles(game.trapped.size);
     setStarsCollected(game.collectedStars.size);
+    setKeysHeld(game.keysHeld);
     gemsCollectedRef.current = game.collectedStars.size;
 
     const prevTrapped = prevTrappedRef.current;
@@ -695,6 +702,8 @@ export const App: React.FC = () => {
         parMoves={currentLevel.parMoves}
         starsCollected={starsCollected}
         totalStars={currentLevel.stars?.length || 0}
+        keysHeld={keysHeld}
+        hasKeys={Boolean(currentLevel.locks?.length || currentLevel.keys?.length)}
         elapsedMs={elapsedMs}
         showTimer={speedrunTimer}
         onPause={() => setShowPause(true)}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pause, Gem, RotateCcw, Timer } from 'lucide-react';
+import { Pause, Gem, RotateCcw, Timer, KeyRound } from 'lucide-react';
 import { sound } from '../audio/soundManager';
 import { formatElapsedTime } from '../storage/gameStorage';
 
@@ -10,6 +10,8 @@ interface HeaderBarProps {
   parMoves: number;
   starsCollected: number;
   totalStars: number;
+  keysHeld?: number;
+  hasKeys?: boolean;
   elapsedMs?: number;
   showTimer?: boolean;
   onPause: () => void;
@@ -23,6 +25,8 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   parMoves,
   starsCollected,
   totalStars,
+  keysHeld = 0,
+  hasKeys = false,
   elapsedMs = 0,
   showTimer = false,
   onPause,
@@ -66,7 +70,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         )}
       </div>
 
-      {/* Right: Speedrun Timer, Gems & Moves vs Par */}
+      {/* Right: Speedrun Timer, Keys, Gems & Moves vs Par */}
       <div className="flex items-center gap-1.5 flex-none">
         {showTimer && (
           <div
@@ -75,6 +79,19 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           >
             <Timer size={12} className="text-indigo-400" />
             <span>{formatElapsedTime(elapsedMs)}</span>
+          </div>
+        )}
+        {hasKeys && (
+          <div
+            className={`flex items-center gap-1 px-1.5 py-1 rounded-lg text-xs font-bold border ${
+              keysHeld > 0
+                ? 'bg-amber-500/20 border-amber-400/50 text-amber-300'
+                : 'bg-slate-800/80 border-slate-700 text-slate-400'
+            }`}
+            title="Golden Keys held"
+          >
+            <KeyRound size={12} className={keysHeld > 0 ? 'text-amber-300' : 'text-slate-500'} />
+            <span>{keysHeld}</span>
           </div>
         )}
         {totalStars > 0 && (

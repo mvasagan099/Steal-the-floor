@@ -21,7 +21,9 @@ function encodeGameState(game: PuzzleGame): string {
     .map(([k, v]) => `${k}:${v}`)
     .join(';');
   const cr = Array.from(game.crates).sort().join(';');
-  return `${p}|${t}|${tr}|${c}|${s}|${b}|${d}|${tm}|${cr}`;
+  const ky = Array.from(game.collectedKeys).sort().join(';');
+  const lk = Array.from(game.unlockedLocks).sort().join(';');
+  return `${p}|${t}|${tr}|${c}|${s}|${b}|${d}|${tm}|${cr}|${ky}|${lk}`;
 }
 
 interface BFSNode {

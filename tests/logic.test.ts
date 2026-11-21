@@ -569,4 +569,60 @@ describe('PuzzleGame Engine Mechanics', () => {
     expect(g2.inventory).toBe(0);
     expect(g2.move({ x: 4, y: 0 }).code).toBe('SUCCESS_WIN');
   });
+
+  it('collects Golden Keys, unlocks Locked Vaults into solid ground, allows crates across unlocked vaults, and restores on undo', () => {
+    const level: LevelDefinition = {
+      id: 18,
+      world: 10,
+      name: 'Key & Vault Test',
+      cols: 5,
+      rows: 2,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 0 },
+      fixed: [
+        { x: 0, y: 1 },
+        { x: 1, y: 0 },
+        { x: 3, y: 0 },
+      ],
+      keys: [{ x: 0, y: 1 }],
+      locks: [{ x: 2, y: 0 }],
+      rocks: [{ x: 2, y: 1 }],
+      parMoves: 6,
+    };
+
+    const game = new PuzzleGame(level);
+    expect(game.keysHeld).toBe(0);
+
+    // Move right to (1,0), then try stepping onto locked vault (2,0) without key -> ERR_LOCKED_VAULT
+    game.move({ x: 1, y: 0 });
+    const blocked = game.move({ x: 2, y: 0 });
+    expect(blocked.success).toBe(false);
+    expect(blocked.code).toBe('ERR_LOCKED_VAULT');
+
+    // Go back and collect Golden Key at (0,1)
+    game.move({ x: 0, y: 0 });
+    const keyRes = game.move({ x: 0, y: 1 });
+    expect(keyRes.keyCollected).toEqual({ x: 0, y: 1 });
+    expect(game.keysHeld).toBe(1);
+
+    // Return to (1,0) and unlock Vault (2,0) -> consumes key, becomes solid ground
+    game.move({ x: 0, y: 0 });
+    game.move({ x: 1, y: 0 });
+    const unlockRes = game.move({ x: 2, y: 0 });
+    expect(unlockRes.success).toBe(true);
+    expect(unlockRes.lockOpened).toEqual({ x: 2, y: 0 });
+    expect(game.keysHeld).toBe(0);
+    expect(game.isSolidGround('2,0')).toBe(true);
+
+    // Undo restores the lock and key in hand
+    game.undo();
+    expect(game.keysHeld).toBe(1);
+    expect(game.isSolidGround('2,0')).toBe(false);
+
+    // Re-unlock and finish
+    game.move({ x: 2, y: 0 });
+    game.move({ x: 3, y: 0 });
+    expect(game.move({ x: 4, y: 0 }).code).toBe('SUCCESS_WIN');
+  });
 });

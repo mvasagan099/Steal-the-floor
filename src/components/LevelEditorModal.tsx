@@ -25,6 +25,8 @@ type BrushType =
   | 'crumbling'
   | 'ice'
   | 'spring'
+  | 'key'
+  | 'lock'
   | 'crate'
   | 'bonus'
   | 'gem'
@@ -46,6 +48,8 @@ interface CellData {
     | 'crumbling'
     | 'ice'
     | 'spring'
+    | 'key'
+    | 'lock'
     | 'crate'
     | 'switchA'
     | 'doorA'
@@ -62,6 +66,8 @@ const BRUSHES: Array<{ id: BrushType; label: string; badge: string; color: strin
   { id: 'crumbling', label: 'Crumble', badge: '🧱', color: 'bg-stone-500/25 border-stone-400/50 text-stone-200' },
   { id: 'ice', label: 'Ice', badge: '❄️', color: 'bg-sky-300/20 border-sky-200/50 text-sky-100' },
   { id: 'spring', label: 'Spring', badge: '🦘', color: 'bg-teal-500/25 border-teal-300/60 text-teal-200' },
+  { id: 'key', label: 'Key', badge: '🔑', color: 'bg-yellow-500/25 border-yellow-300/60 text-yellow-200' },
+  { id: 'lock', label: 'Vault', badge: '🔒', color: 'bg-amber-700/35 border-amber-400/60 text-amber-200' },
   { id: 'crate', label: 'Crate', badge: '📦', color: 'bg-amber-600/25 border-amber-400/60 text-amber-200' },
   { id: 'bonus', label: '+1 Tile', badge: '➕', color: 'bg-amber-500/20 border-amber-400/50 text-amber-200' },
   { id: 'switchA', label: 'Switch', badge: '🔘', color: 'bg-blue-500/20 border-blue-400/50 text-blue-200' },
@@ -93,6 +99,8 @@ function levelToGrid(level: LevelDefinition): CellData[][] {
   level.crumbling?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'crumbling'; });
   level.ice?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'ice'; });
   level.springs?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'spring'; });
+  level.keys?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'key'; });
+  level.locks?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'lock'; });
   level.crates?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'crate'; });
   level.switches?.slice(0, 1).forEach((sw) => {
     if (inBounds(sw.switchPos)) grid[sw.switchPos.y][sw.switchPos.x].base = 'switchA';
@@ -203,6 +211,8 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
     const crumbling: Coordinate[] = [];
     const ice: Coordinate[] = [];
     const springs: Coordinate[] = [];
+    const keys: Coordinate[] = [];
+    const locks: Coordinate[] = [];
     const crates: Coordinate[] = [];
     const stars: Coordinate[] = [];
     const bonusTiles: Coordinate[] = [];
@@ -222,6 +232,10 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
         else if (cell.base === 'crumbling') crumbling.push(coord);
         else if (cell.base === 'ice') ice.push(coord);
         else if (cell.base === 'spring') springs.push(coord);
+        else if (cell.base === 'key') {
+          fixed.push(coord);
+          keys.push(coord);
+        } else if (cell.base === 'lock') locks.push(coord);
         else if (cell.base === 'crate') {
           fixed.push(coord);
           crates.push(coord);
@@ -267,6 +281,8 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
       crumbling: crumbling.length ? crumbling : undefined,
       ice: ice.length ? ice : undefined,
       springs: springs.length ? springs : undefined,
+      keys: keys.length ? keys : undefined,
+      locks: locks.length ? locks : undefined,
       bonusTiles: bonusTiles.length ? bonusTiles : undefined,
       crates: crates.length ? crates : undefined,
       stars: stars.length ? stars : undefined,
@@ -366,6 +382,8 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
       crumbling: { bg: 'bg-stone-500/80 border-stone-300', icon: '🧱' },
       ice: { bg: 'bg-cyan-300/80 border-white text-slate-900', icon: '❄️' },
       spring: { bg: 'bg-teal-500/85 border-amber-300', icon: '🦘' },
+      key: { bg: 'bg-yellow-500/80 border-yellow-200', icon: '🔑' },
+      lock: { bg: 'bg-amber-800/90 border-amber-400', icon: '🔒' },
       crate: { bg: 'bg-amber-600/85 border-amber-300', icon: '📦' },
       switchA: { bg: 'bg-blue-500/80 border-sky-300', icon: '🔘' },
       doorA: { bg: 'bg-rose-600/80 border-rose-300', icon: '🚧' },

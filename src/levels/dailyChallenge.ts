@@ -47,6 +47,8 @@ export function getDailyChallenge(dateStr?: string): LevelDefinition {
     const fixed: Coordinate[] = [];
     const rocks: Coordinate[] = [];
     const crumbling: Coordinate[] = [];
+    const ice: Coordinate[] = [];
+    const springs: Coordinate[] = [];
     const sticky: Coordinate[] = [];
     const stars: Coordinate[] = [];
 
@@ -69,9 +71,14 @@ export function getDailyChallenge(dateStr?: string): LevelDefinition {
       const pick = candidates[Math.floor(prng() * candidates.length)];
       occupied.add(coordKey(pick));
 
-      // Mix in crumbling checkpoints on ~30% of islands
-      if (i > 0 && prng() < 0.35) {
+      // Mix in crumbling, ice, and occasional springboards for rich daily variety
+      const roll = prng();
+      if (i > 0 && roll < 0.25) {
         crumbling.push(pick);
+      } else if (i > 0 && roll < 0.42) {
+        ice.push(pick);
+      } else if (i > 0 && roll < 0.54 && springs.length < 1) {
+        springs.push(pick);
       } else {
         fixed.push(pick);
       }
@@ -137,6 +144,8 @@ export function getDailyChallenge(dateStr?: string): LevelDefinition {
       fixed: fixed.length ? fixed : undefined,
       rocks: rocks.length ? rocks : undefined,
       crumbling: crumbling.length ? crumbling : undefined,
+      ice: ice.length ? ice : undefined,
+      springs: springs.length ? springs : undefined,
       sticky: sticky.length ? sticky : undefined,
       stars: stars.length ? stars : undefined,
       parMoves: 0,

@@ -133,6 +133,19 @@ export const THEME_PALETTES: Record<string, ThemeColors> = {
     bgGradBottom: '#0f172a',
     accent: '#fcd34d',
   },
+  'celestial-crown': {
+    name: 'Celestial Crown',
+    tileFixed: '#818cf8',
+    tileFixedSide: '#4338ca',
+    tileBridge: '#fbbf24',
+    tileBridgeSide: '#b45309',
+    tileSticky: '#f472b6',
+    tileCrumbling: '#cbd5e1',
+    tileRock: '#1e1b4b',
+    bgGradTop: '#312e81',
+    bgGradBottom: '#030712',
+    accent: '#fde047',
+  },
 };
 
 const PAIR_COLORS = [
@@ -863,4 +876,100 @@ export function generateAllTextures(
     },
     '#042f2e'
   );
+
+  // 19. Locked Vault Tile (closed iron/gold padlock block & open golden sanctuary tile)
+  createTile(
+    'tile_lock_closed',
+    (ctx) => {
+      const grad = ctx.createLinearGradient(0, 0, S, S);
+      grad.addColorStop(0, '#475569');
+      grad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
+
+      // Ornate gold outer frame
+      ctx.strokeStyle = highContrast ? '#fef08a' : '#f59e0b';
+      ctx.lineWidth = highContrast ? 8 : 6;
+      ctx.strokeRect(14, 14, S - 28, S - 42);
+
+      // Central golden shield badge
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.roundRect(36, 20, S - 72, S - 54, 12);
+      ctx.fill();
+
+      // Dark keyhole cutout
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(S / 2, 42, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(S / 2 - 5, 46);
+      ctx.lineTo(S / 2 + 5, 46);
+      ctx.lineTo(S / 2 + 8, 66);
+      ctx.lineTo(S / 2 - 8, 66);
+      ctx.closePath();
+      ctx.fill();
+    },
+    '#0f172a'
+  );
+
+  createTile(
+    'tile_lock_open',
+    (ctx) => {
+      const grad = ctx.createLinearGradient(0, 0, S, S);
+      grad.addColorStop(0, '#fde68a');
+      grad.addColorStop(1, '#f59e0b');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
+
+      ctx.strokeStyle = '#ffffff';
+      ctx.globalAlpha = 0.65;
+      ctx.lineWidth = 4;
+      ctx.strokeRect(16, 16, S - 32, S - 44);
+      ctx.globalAlpha = 1;
+
+      // Subtle open keyhole emblem
+      ctx.fillStyle = 'rgba(146, 64, 14, 0.35)';
+      ctx.beginPath();
+      ctx.arc(S / 2, 44, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillRect(S / 2 - 4, 48, 8, 16);
+    },
+    '#b45309'
+  );
+
+  // 20. Collectible Golden Key Sprite
+  createCanvas('item_key', 64, 64, (ctx) => {
+    ctx.save();
+    ctx.translate(32, 32);
+    ctx.rotate(-Math.PI / 5);
+
+    // Outer glow
+    ctx.shadowColor = '#fde047';
+    ctx.shadowBlur = 10;
+
+    // Key bow (ring)
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.arc(-12, 0, 10, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath();
+    ctx.arc(-12, 0, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Key shaft & teeth
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(-3, -3, 26, 6);
+    ctx.fillRect(10, 3, 5, 8);
+    ctx.fillRect(18, 3, 5, 10);
+
+    // Specular glint
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, -2, 18, 2);
+    ctx.restore();
+  });
 }

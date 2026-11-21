@@ -30,7 +30,7 @@ export interface TeleporterPair {
 
 export interface LevelDefinition {
   id: number;
-  world: number; // 1 to 9 (0 for daily/endless/custom)
+  world: number; // 1 to 10 (0 for daily/endless/custom)
   name: string;
   cols: number;
   rows: number;
@@ -43,6 +43,8 @@ export interface LevelDefinition {
   crumbling?: Coordinate[];
   ice?: Coordinate[];
   springs?: Coordinate[];
+  keys?: Coordinate[];
+  locks?: Coordinate[];
   bonusTiles?: Coordinate[];
   crates?: Coordinate[];
   oneWay?: OneWayTile[];
@@ -64,7 +66,8 @@ export type MoveResultCode =
   | 'ERR_NO_TILES'
   | 'ERR_OUT_OF_BOUNDS'
   | 'ERR_CRATE_BLOCKED'
-  | 'ERR_SPRING_BLOCKED';
+  | 'ERR_SPRING_BLOCKED'
+  | 'ERR_LOCKED_VAULT';
 
 export interface MoveResult {
   success: boolean;
@@ -78,6 +81,8 @@ export interface MoveResult {
   teleportedTo?: Coordinate;
   starCollected?: Coordinate;
   bonusTileCollected?: Coordinate;
+  keyCollected?: Coordinate;
+  lockOpened?: Coordinate;
   pushedCrate?: { from: Coordinate; to: Coordinate };
   springPath?: Coordinate[];
   slidePath?: Coordinate[];
@@ -91,6 +96,8 @@ export interface GameStateSnapshot {
   crumbled: string[]; // "x,y" keys
   collectedStars: string[]; // "x,y" keys
   collectedBonusTiles: string[]; // "x,y" keys
+  collectedKeys?: string[]; // "x,y" keys
+  unlockedLocks?: string[]; // "x,y" keys
   crates?: string[]; // "x,y" keys
   openDoors: string[]; // IDs
   doorTimers?: Record<string, number>; // timed door ID -> remaining moves

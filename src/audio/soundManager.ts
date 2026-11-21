@@ -294,6 +294,48 @@ export class SoundManager {
     osc.stop(t + 0.25);
   }
 
+  public playKeyPickup(): void {
+    if (!this.sfxEnabled) return;
+    const ctx = this.ensureCtx();
+    if (!ctx || !this.sfxGainNode) return;
+
+    const notes = [880, 1174.66, 1567.98]; // A5, D6, G6 shimmering chime
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const t = ctx.currentTime + idx * 0.05;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.16, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+      osc.connect(gain);
+      gain.connect(this.sfxGainNode!);
+      osc.start(t);
+      osc.stop(t + 0.3);
+    });
+  }
+
+  public playUnlockVault(): void {
+    if (!this.sfxEnabled) return;
+    const ctx = this.ensureCtx();
+    if (!ctx || !this.sfxGainNode) return;
+
+    const t = ctx.currentTime;
+    // Crisp lock tumbler click + triumphant harmonic swell
+    [440, 659.25, 880].forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = idx === 0 ? 'triangle' : 'sine';
+      osc.frequency.setValueAtTime(freq, t + idx * 0.045);
+      gain.gain.setValueAtTime(0.18, t + idx * 0.045);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + idx * 0.045 + 0.32);
+      osc.connect(gain);
+      gain.connect(this.sfxGainNode!);
+      osc.start(t + idx * 0.045);
+      osc.stop(t + idx * 0.045 + 0.34);
+    });
+  }
+
   public playCrumble(): void {
     if (!this.sfxEnabled) return;
     const ctx = this.ensureCtx();
@@ -483,6 +525,12 @@ export class SoundManager {
         { pad: [246.94, 329.63, 392.0, 493.88], chime: [659.25, 783.99, 987.77] },
         { pad: [220.0, 293.66, 369.99, 440.0], chime: [587.33, 739.99, 880.0] },
         { pad: [261.63, 329.63, 392.0, 523.25], chime: [659.25, 783.99, 1046.5] },
+      ],
+      'celestial-crown': [
+        { pad: [246.94, 311.13, 369.99, 493.88], chime: [739.99, 932.33, 1244.51] },
+        { pad: [207.65, 246.94, 311.13, 369.99], chime: [622.25, 739.99, 987.77] },
+        { pad: [185.0, 233.08, 277.18, 369.99], chime: [554.37, 739.99, 932.33] },
+        { pad: [220.0, 277.18, 329.63, 440.0], chime: [659.25, 880.0, 1108.73] },
       ],
     };
 

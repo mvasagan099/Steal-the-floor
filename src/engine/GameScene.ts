@@ -42,6 +42,7 @@ const TRAIL_TINTS: Record<string, number[]> = {
   'trail-neon': [0xf472b6, 0xc084fc, 0x38bdf8],
   'trail-ember': [0xfb923c, 0xfbbf24, 0xf43f5e],
   'trail-gold': [0xfef08a, 0xf59e0b, 0xfffbeb],
+  'trail-celestial': [0xfef08a, 0xa5b4fc, 0xf472b6, 0xffffff],
   'trail-rainbow': [0xf43f5e, 0xfbbf24, 0x4ade80, 0x38bdf8, 0xc084fc],
 };
 
@@ -63,6 +64,8 @@ export class GameScene extends Phaser.Scene {
   private tileSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private starSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private bonusTileSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
+  private keySprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
+  private lockSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private crateSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private holdSwitchKeys: Set<string> = new Set();
   private doorSprites: Map<string, DoorEntry> = new Map();
@@ -94,6 +97,8 @@ export class GameScene extends Phaser.Scene {
     this.tileSprites.clear();
     this.starSprites.clear();
     this.bonusTileSprites.clear();
+    this.keySprites.clear();
+    this.lockSprites.clear();
     this.crateSprites.clear();
     this.holdSwitchKeys.clear();
     this.doorSprites.clear();
@@ -200,6 +205,14 @@ export class GameScene extends Phaser.Scene {
           speedY: { min: -26, max: -12 },
           scale: { min: 0.06, max: 0.14 },
           frequency: 260,
+        },
+        'celestial-crown': {
+          texture: 'item_star',
+          tint: [0xfde047, 0xa5b4fc, 0xf9a8d4, 0xffffff],
+          speedX: { min: -8, max: 8 },
+          speedY: { min: -16, max: -4 },
+          scale: { min: 0.06, max: 0.16 },
+          frequency: 230,
         },
       };
       const amb = ambientMap[this.config.themeId] || ambientMap['floating-sky'];
@@ -345,6 +358,20 @@ export class GameScene extends Phaser.Scene {
       sprite.setPosition(pos.x, pos.y);
       sprite.setScale(this.baseStarScale);
       this.addStarFloatTween(sprite, pos.y);
+    }
+
+    for (const [key, sprite] of this.keySprites.entries()) {
+      this.tweens.killTweensOf(sprite);
+      const pos = this.gridToScreen(keyToCoord(key));
+      sprite.setPosition(pos.x, pos.y);
+      sprite.setScale(this.baseStarScale * 1.1);
+      this.addStarFloatTween(sprite, pos.y);
+    }
+
+    for (const [key, sprite] of this.lockSprites.entries()) {
+      const pos = this.gridToScreen(keyToCoord(key));
+      sprite.setPosition(pos.x, pos.y);
+      sprite.setScale(this.baseTileScale);
     }
 
     for (const [key, sprite] of this.crateSprites.entries()) {
@@ -509,6 +536,17 @@ export class GameScene extends Phaser.Scene {
       this.spawnCrateSprite(crate);
     });
 
+    // Locked Vaults
+    level.locks?.forEach((lock) => {
+      const key = coordToKey(lock);
+      const pos = this.gridToScreen(lock);
+      const tex = this.gameLogic.unlockedLocks.has(key) ? 'tile_lock_open' : 'tile_lock_closed';
+      const sprite = this.add.sprite(pos.x, pos.y, tex);
+      sprite.setScale(this.baseTileScale);
+      sprite.setDepth(2);
+      this.lockSprites.set(key, sprite);
+    });
+
     // Collectible Gems
     level.stars?.forEach((gem) => {
       this.spawnStarSprite(gem);
@@ -517,6 +555,11 @@ export class GameScene extends Phaser.Scene {
     // Bonus Tile (+1) Pickups
     level.bonusTiles?.forEach((bonus) => {
       this.spawnBonusTileSprite(bonus);
+    });
+
+    // Collectible Golden Keys
+    level.keys?.forEach((k) => {
+      this.spawnKeySprite(k);
     });
   }
 
@@ -566,6 +609,18 @@ export class GameScene extends Phaser.Scene {
     sprite.setDepth(4);
     this.addStarFloatTween(sprite, pos.y);
     this.bonusTileSprites.set(key, sprite);
+  }
+
+  private spawnKeySprite(coord: Coordinate): void {
+    const key = coordToKey(coord);
+    if (this.keySprites.has(key)) return;
+
+    const pos = this.gridToScreen(coord);
+    const sprite = this.add.sprite(pos.x, pos.y, 'item_key');
+    sprite.setScale(this.baseStarScale * 1.1);
+    sprite.setDepth(4);
+    this.addStarFloatTween(sprite, pos.y);
+    this.keySprites.set(key, sprite);
   }
 
   private addStarFloatTween(sprite: Phaser.GameObjects.Sprite, baseY: number): void {
@@ -819,6 +874,15 @@ export class GameScene extends Phaser.Scene {
     const afterSlideOrLanding = () => {
       this.animateCollectedStars();
       this.animateCollectedBonusTiles();
+      this.animateCollectedKeys();
+
+      if (res.lockOpened) {
+        sound.playUnlockVault();
+        sound.triggerHaptic('success');
+        const lockPos = this.gridToScreen(res.lockOpened);
+        this.spawnBurst(lockPos.x, lockPos.y, 0xfde047, 16);
+      }
+      this.syncLocksVisuals();
 
       if (res.doorToggled) {
         sound.playSwitch();
@@ -1033,6 +1097,31 @@ export class GameScene extends Phaser.Scene {
       sound.playStar();
       sound.triggerHaptic('success');
       this.config.onError('Bonus tile collected! Your tile capacity grew by +1!');
+    }
+  }
+
+  private animateCollectedKeys(): void {
+    let collectedAny = false;
+    for (const [keyCoord, sprite] of Array.from(this.keySprites.entries())) {
+      if (this.gameLogic.collectedKeys.has(keyCoord)) {
+        collectedAny = true;
+        this.keySprites.delete(keyCoord);
+        this.tweens.killTweensOf(sprite);
+        this.spawnBurst(sprite.x, sprite.y, 0xfde047, 14);
+        this.tweens.add({
+          targets: sprite,
+          y: sprite.y - 36,
+          alpha: 0,
+          scaleX: this.baseStarScale * 1.6,
+          scaleY: this.baseStarScale * 1.6,
+          duration: 300,
+          onComplete: () => sprite.destroy(),
+        });
+      }
+    }
+    if (collectedAny) {
+      sound.playKeyPickup();
+      sound.triggerHaptic('success');
     }
   }
 
@@ -1413,6 +1502,20 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
+    for (const [key, sprite] of Array.from(this.keySprites.entries())) {
+      if (this.gameLogic.collectedKeys.has(key)) {
+        this.tweens.killTweensOf(sprite);
+        sprite.destroy();
+        this.keySprites.delete(key);
+      }
+    }
+    this.config.level.keys?.forEach((k) => {
+      const key = coordToKey(k);
+      if (!this.gameLogic.collectedKeys.has(key) && !this.keySprites.has(key)) {
+        this.spawnKeySprite(k);
+      }
+    });
+
     // Rebuild crate sprite map cleanly to match current engine crate coordinates
     for (const sprite of this.crateSprites.values()) {
       this.tweens.killTweensOf(sprite);
@@ -1424,6 +1527,7 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.syncDoorsVisuals();
+    this.syncLocksVisuals();
 
     this.updateLegalHighlights();
     this.config.onStateChange(this.gameLogic);
@@ -1432,6 +1536,13 @@ export class GameScene extends Phaser.Scene {
       (this.gameLogic.getLegalMoves().length === 0 ||
         !solveFromState(this.gameLogic, 30, 5000).solvable);
     this.config.onDeadlock?.(deadlocked);
+  }
+
+  private syncLocksVisuals(): void {
+    for (const [key, sprite] of this.lockSprites.entries()) {
+      const isOpen = this.gameLogic.unlockedLocks.has(key);
+      sprite.setTexture(isOpen ? 'tile_lock_open' : 'tile_lock_closed');
+    }
   }
 
   private syncDoorsVisuals(): void {

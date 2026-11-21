@@ -56,6 +56,8 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   const crumbling: Coordinate[] = [];
   const ice: Coordinate[] = [];
   const springs: Coordinate[] = [];
+  const keys: Coordinate[] = [];
+  const locks: Coordinate[] = [];
   const bonusTiles: Coordinate[] = [...(input.bonusTiles || [])];
   const crates: Coordinate[] = [];
   const oneWay: OneWayTile[] = [];
@@ -99,6 +101,13 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
           break;
         case 'J':
           springs.push(coord);
+          break;
+        case 'K':
+          fixed.push(coord);
+          keys.push(coord);
+          break;
+        case 'L':
+          locks.push(coord);
           break;
         case '+':
           fixed.push(coord);
@@ -201,6 +210,8 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   if (crumbling.length) level.crumbling = crumbling;
   if (ice.length) level.ice = ice;
   if (springs.length) level.springs = springs;
+  if (keys.length) level.keys = keys;
+  if (locks.length) level.locks = locks;
   if (bonusTiles.length) level.bonusTiles = bonusTiles;
   if (crates.length) level.crates = crates;
   if (oneWay.length) level.oneWay = oneWay;
@@ -3357,11 +3368,305 @@ const world9Drafts: GridLevelInput[] = [
 
 drafts.push(...world9Drafts);
 
+// =========================================================================
+// WORLD 10: CELESTIAL CROWN (Levels 181–200) — Golden Keys (K) & Vault Locks (L)
+// =========================================================================
+const world10Drafts: GridLevelInput[] = [
+  {
+    id: 181, world: 10, name: 'Golden Key', maxTiles: 2,
+    grid: [
+      'S..#..',
+      '.....K',
+      'XXLXXX',
+      '..#...',
+      '......',
+      '...#.E',
+      '......',
+    ],
+    stars: [{ x: 3, y: 5 }],
+    hint: 'Collect the floating Golden Key (K) on the eastern island, then step onto the Locked Vault (L) to open it permanently!',
+  },
+  {
+    id: 182, world: 10, name: 'Twin Vaults', maxTiles: 2,
+    grid: [
+      'S.#..K',
+      'XXX#XX',
+      'XXXLXX',
+      '#..#K.',
+      'XXXXLX',
+      '..#.#.',
+      'E.....',
+    ],
+    stars: [{ x: 0, y: 3 }],
+    hint: 'Unlock the first vault, sweep the western gem and second key, then unlock the southern vault!',
+  },
+  {
+    id: 183, world: 10, name: 'Choice of Locks', maxTiles: 2,
+    grid: [
+      'S.#K..',
+      'XLXXLX',
+      '#X..#K',
+      'XX..XX',
+      '..#LX.',
+      '....#.',
+      '....E.',
+    ],
+    stars: [{ x: 2, y: 4 }],
+    hint: 'One vault is a dead end—spend your first key on the eastern vault to reach the second key and exit!',
+  },
+  {
+    id: 184, world: 10, name: 'Gilded Honey', maxTiles: 1,
+    grid: [
+      'S#H#KX',
+      '#..X.X',
+      '#.#.#X',
+      'XXXXLX',
+      '....#.',
+      '....E.',
+      '......',
+    ],
+    hint: 'Avoid trapping your only tile in the honey—detour south around the honey, snatch the Key, and unlock Vault L!',
+  },
+  {
+    id: 185, world: 10, name: 'Brittle Keychain', maxTiles: 2,
+    grid: [
+      'S..C.K',
+      'XXX..#',
+      'XXXLXX',
+      '..#...',
+      '.#..#.',
+      '......',
+      '....#E',
+    ],
+    stars: [{ x: 1, y: 4 }],
+    hint: 'Cross the crumbling stone to grab the Golden Key, then bridge back to unlock Vault L!',
+  },
+  {
+    id: 186, world: 10, name: 'Frozen Keychain', maxTiles: 2,
+    grid: [
+      'S#IIK.',
+      'XXXXX.',
+      '..#L##',
+      'XXX#XX',
+      '..#...',
+      '...#.#',
+      '...E..',
+    ],
+    stars: [{ x: 5, y: 5 }],
+    hint: 'Glide east across the frozen runway to grab the key, loop around to unlock Vault L, and grab the gem!',
+  },
+  {
+    id: 187, world: 10, name: 'Spring for the Key', maxTiles: 2,
+    grid: [
+      'S#JXK.',
+      'XXXX#.',
+      '..#.#.',
+      'XXLXXX',
+      '..#...',
+      '....#.',
+      '.....E',
+    ],
+    stars: [{ x: 4, y: 5 }],
+    hint: 'Launch east over the wall to snag the Golden Key, loop around to unlock Vault L, and bridge to the exit!',
+  },
+  {
+    id: 188, world: 10, name: 'Vaulting Launch', maxTiles: 2,
+    grid: [
+      'S.#..K',
+      '..J#..',
+      'XXXXX.',
+      '..L...',
+      '..#...',
+      '....#.',
+      '.....E',
+    ],
+    stars: [{ x: 4, y: 5 }],
+    hint: 'Grab the Key first, then step south onto Springboard J to vault straight onto Locked Vault L—unlocking it on landing!',
+  },
+  {
+    id: 189, world: 10, name: 'Portal Treasury', maxTiles: 2,
+    grid: [
+      'S.#1.X',
+      'XXXXLX',
+      '1#KX#.',
+      'XXXX#.',
+      '..#...',
+      '....#.',
+      '..E...',
+    ],
+    stars: [{ x: 4, y: 5 }],
+    hint: 'Warp through Portal 1 to collect the Key inside the sealed vault, warp back, and unlock Vault L!',
+  },
+  {
+    id: 190, world: 10, name: 'Spark & Key', maxTiles: 1,
+    grid: [
+      'S#+..K',
+      'XXXX..',
+      'XXXXLX',
+      'XXXX#X',
+      '..#...',
+      '......',
+      '...E..',
+    ],
+    stars: [{ x: 2, y: 4 }],
+    hint: 'Grab the +1 Bonus Tile first so you can bridge across to the Key, unlock Vault L, and finish!',
+  },
+  {
+    id: 191, world: 10, name: 'One-Way Vault', maxTiles: 2,
+    grid: [
+      'S.#>K.',
+      'XXXX.X',
+      '....v.',
+      'XXXXLX',
+      '..#.#.',
+      '.#....',
+      'E.....',
+    ],
+    stars: [{ x: 1, y: 5 }],
+    hint: 'Ride the one-way arrows to claim the Key, dive south through Vault L, and sweep the gem!',
+  },
+  {
+    id: 192, world: 10, name: 'Key & Laser', maxTiles: 2,
+    grid: [
+      'S#K.LX',
+      'XXXXaX',
+      '..#..#',
+      'XXXAXX',
+      '...#..',
+      '.#....',
+      '....E.',
+    ],
+    stars: [{ x: 1, y: 5 }],
+    hint: 'Collect the Key, unlock Vault L to reach Switch a, open Laser Gate A, and claim the southern gem!',
+  },
+  {
+    id: 193, world: 10, name: 'Timed Treasury', maxTiles: 2,
+    grid: [
+      'S.#K..',
+      'XXXaL#',
+      'XXXX#.',
+      'XXXXA.',
+      '..#.#.',
+      '......',
+      'E..#..',
+    ],
+    stars: [{ x: 2, y: 4 }],
+    timedDurations: { g1: 3 },
+    hint: 'Unlock Vault L FIRST with your Key, then step back onto Timed Switch a and sprint through Gate A before it shuts!',
+  },
+  {
+    id: 194, world: 10, name: 'Crate Behind Lock', maxTiles: 2,
+    grid: [
+      'S#ML#a',
+      'K###XX',
+      'XXAXXX',
+      '..#...',
+      '.#....',
+      '...#..',
+      '.....E',
+    ],
+    stars: [{ x: 1, y: 4 }],
+    holdSwitches: ['g1'],
+    hint: 'Unlock Vault L first so it becomes solid ground—then shove the heavy Crate right across it onto Weighted Plate a!',
+  },
+  {
+    id: 195, world: 10, name: 'Glacial Vault Freight', maxTiles: 2,
+    grid: [
+      'S#MLIa',
+      'K###XX',
+      'XXAXXX',
+      '..#...',
+      '....#.',
+      '..#...',
+      'E.....',
+    ],
+    stars: [{ x: 4, y: 4 }],
+    holdSwitches: ['g1'],
+    hint: 'Snatch the Key, unlock Vault L, then glide Crate M across Ice onto Weighted Plate a!',
+  },
+  {
+    id: 196, world: 10, name: 'Double Bounce Key', maxTiles: 2,
+    grid: [
+      'SJXJXK',
+      'XXXXX.',
+      '..#L#.',
+      'XXX#XX',
+      '..#...',
+      '....#.',
+      '..E...',
+    ],
+    stars: [{ x: 4, y: 5 }],
+    hint: 'Double-bounce across both springboards straight to the Key, then loop back to unlock Vault L!',
+  },
+  {
+    id: 197, world: 10, name: 'Twin Keys & Gates', maxTiles: 2,
+    grid: [
+      'S#K.L1',
+      'XXXXXX',
+      '1#a#K.',
+      'XXXAXX',
+      '..#L#.',
+      '....#.',
+      '..E...',
+    ],
+    stars: [{ x: 4, y: 5 }],
+    hint: 'Unlock Vault 1 to reach Portal 1, press Switch a and grab Key 2, pass Gate A, and unlock the final Vault!',
+  },
+  {
+    id: 198, world: 10, name: 'Clockwork Crown', maxTiles: 2,
+    grid: [
+      'S#KXXX',
+      'XLXXXX',
+      'Xa#JXA',
+      'XXXXX.',
+      '....#.',
+      '..#...',
+      'E..#..',
+    ],
+    stars: [{ x: 2, y: 5 }],
+    timedDurations: { g1: 3 },
+    hint: 'Grab the Key, unlock Vault L, press Timed Switch a, and launch east off Springboard J straight onto Gate A!',
+  },
+  {
+    id: 199, world: 10, name: 'Astral Gauntlet', maxTiles: 2,
+    grid: [
+      'S#K.C.',
+      'XXXXLX',
+      'aIIM#.',
+      'XXXJXX',
+      '...XXX',
+      '...#A#',
+      '...XXE',
+    ],
+    stars: [{ x: 5, y: 5 }],
+    holdSwitches: ['g1'],
+    hint: 'Snatch the Key, cross the crumbling stone to unlock Vault L, glide the crate onto Plate a, and vault south through Gate A!',
+  },
+  {
+    id: 200, world: 10, name: 'Celestial Crown', maxTiles: 1,
+    grid: [
+      'S#+KXX',
+      'X#ML#a',
+      'XXXJXX',
+      'XXXXXX',
+      'XXXA.b',
+      'XXXXBX',
+      'E..#.#',
+    ],
+    stars: [{ x: 5, y: 6 }],
+    holdSwitches: ['g1'],
+    timedDurations: { g2: 2 },
+    hint: 'The 200th Grand Finale! Grab +1 & the Key, unlock Vault L, shove Crate M across it onto Plate a, vault through Gate A, beat Timed Gate B, and claim the Crown!',
+  },
+];
+
+drafts.push(...world10Drafts);
+
 console.log(`Validating all ${drafts.length} levels with Solid-Ground Reclamation & Quality Gates...\n`);
 
 const validatedLevels: LevelDefinition[] = [];
 const failures: string[] = [];
-const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] };
+const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [] };
 
 for (const draft of drafts) {
   const level = parseGridLevel(draft);
@@ -3381,6 +3686,8 @@ for (const draft of drafts) {
   let usedOneWay = false;
   let usedIce = false;
   let usedSpring = false;
+  let usedKey = false;
+  let usedLock = false;
   let usedBonusTile = false;
   let usedCrate = false;
 
@@ -3404,6 +3711,8 @@ for (const draft of drafts) {
       if (dist > 1) usedIce = true;
     }
     if (r.springPath && r.springPath.length > 0) usedSpring = true;
+    if (r.keyCollected) usedKey = true;
+    if (r.lockOpened) usedLock = true;
     if ((r.slidePath && r.slidePath.length > 0) || iceKeys.has(`${step.x},${step.y}`)) usedIce = true;
     if (r.bonusTileCollected) usedBonusTile = true;
   }
@@ -3442,6 +3751,21 @@ for (const draft of drafts) {
         failures.push(
           `Level ${level.id} ("${level.name}"): Timed gate '${ts.id}' duration (${ts.timedDuration}) is too loose — even duration=${Math.max(1, (ts.timedDuration || 2) - 2)} solves in ${tighterSol.minMoves} moves!`
         );
+      }
+    }
+  }
+
+  if (level.locks?.length) {
+    if (!usedKey || !usedLock) {
+      failures.push(`Level ${level.id} ("${level.name}"): Key/Vault Lock BYPASSED in optimal solution!`);
+    } else {
+      const sealedVaults: LevelDefinition = {
+        ...level,
+        locks: undefined,
+        rocks: [...(level.rocks || []), ...level.locks],
+      };
+      if (solveLevel(sealedVaults, 45).solvable) {
+        failures.push(`Level ${level.id} ("${level.name}"): Locked vault can be bypassed without a key!`);
       }
     }
   }
@@ -3504,7 +3828,7 @@ for (const draft of drafts) {
 }
 
 console.log('\n--- World Par Curve ---');
-for (const w of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
+for (const w of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
   const arr = worldPars[w];
   if (arr.length) {
     const avg = (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
@@ -3518,13 +3842,13 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-if (validatedLevels.length !== 180) {
-  console.error(`Expected 180 levels, got ${validatedLevels.length}`);
+if (validatedLevels.length !== 200) {
+  console.error(`Expected 200 levels, got ${validatedLevels.length}`);
   process.exit(1);
 }
 
 const fileContent = `// AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 180 Handcrafted levels across 9 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 200 Handcrafted levels across 10 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = ${JSON.stringify(validatedLevels, null, 2)};
@@ -3539,9 +3863,10 @@ export const WORLDS = [
   { id: 7, name: 'Clockwork Forge', levels: [121, 140], theme: 'clockwork-forge', description: 'Race countdown switches and timed gates across mechanical gauntlets.' },
   { id: 8, name: 'Obsidian Sanctum', levels: [141, 160], theme: 'crate-sanctum', description: 'Push heavy crates onto weighted pressure plates to unlock ancient sanctum gates.' },
   { id: 9, name: 'Skyward Spire', levels: [161, 180], theme: 'skyward-spire', description: 'Vault 2 tiles over walls and chasms with golden springboard launch pads.' },
+  { id: 10, name: 'Celestial Crown', levels: [181, 200], theme: 'celestial-crown', description: 'Collect golden keys to unlock sealed vaults permanently into solid ground.' },
 ];
 `;
 
 const outputPath = path.resolve(process.cwd(), 'src/levels/levelsData.ts');
 fs.writeFileSync(outputPath, fileContent, 'utf-8');
-console.log(`\n✅ ALL 180 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);
+console.log(`\n✅ ALL 200 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);

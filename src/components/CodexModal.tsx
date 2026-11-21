@@ -146,6 +146,16 @@ const MECHANICS: MechanicEntry[] = [
     rule: 'Stepping onto a Springboard vaults Puff 2 tiles forward in your move direction, leaping right over rocks, void, or honey! Chained springs bounce consecutively.',
     tip: 'Approach the same Springboard from different sides to launch in different directions—and you can even vault straight onto Void (using 1 tile) or Ice!',
   },
+  {
+    id: 'keys',
+    icon: '🔑',
+    title: 'Golden Keys & Vault Locks',
+    worldTag: 'World 10',
+    category: 'contraptions',
+    accent: 'border-yellow-400/40 bg-yellow-500/10 text-yellow-200',
+    rule: 'Collect a floating Golden Key to carry it in your pocket. Stepping onto a Locked Vault consumes 1 Key and permanently turns the vault into solid ground!',
+    tip: 'Once unlocked, a Vault Lock stays open forever, reclaims bridge tiles, and even lets pushable crates slide across it.',
+  },
 ];
 
 interface CodexModalProps {
@@ -185,7 +195,7 @@ export const CodexModal: React.FC<CodexModalProps> = ({ onBack }) => {
             <span>Mechanic Field Guide</span>
           </h2>
           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-            All 13 Puzzle Rules &amp; Tactics
+            All 14 Puzzle Rules &amp; Tactics
           </p>
         </div>
         <div className="w-9" />

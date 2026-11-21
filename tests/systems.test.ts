@@ -366,4 +366,35 @@ describe('Game Systems QA Test Suite', () => {
       expect(dec.parMoves).toBe(2);
     }
   });
+
+  it('tracks World 10 Celestial Crown achievement and STF1 Key/Vault Lock share codes', () => {
+    for (let id = 181; id <= 200; id++) {
+      storage.recordLevelVictory(id, 15, 3, { usedUndo: false });
+    }
+    expect(storage.getData().achievements['world10_cleared'].unlocked).toBe(true);
+
+    const vaultLevel: LevelDefinition = {
+      id: 30004,
+      world: 0,
+      name: 'Vault Share Test',
+      cols: 5,
+      rows: 3,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 0 },
+      fixed: [{ x: 1, y: 0 }, { x: 3, y: 0 }],
+      keys: [{ x: 1, y: 0 }],
+      locks: [{ x: 2, y: 0 }],
+      rocks: [{ x: 2, y: 1 }, { x: 2, y: 2 }],
+      parMoves: 4,
+    };
+    const code = encodeLevelCode(vaultLevel);
+    const dec = decodeLevelCode(code);
+    expect(dec.ok).toBe(true);
+    if (dec.ok) {
+      expect(dec.level.keys).toEqual([{ x: 1, y: 0 }]);
+      expect(dec.level.locks).toEqual([{ x: 2, y: 0 }]);
+      expect(dec.parMoves).toBe(4);
+    }
+  });
 });
