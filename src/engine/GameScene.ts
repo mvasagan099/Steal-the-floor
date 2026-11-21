@@ -28,6 +28,8 @@ interface DoorEntry {
   switchPos: Coordinate;
   pairIndex: number;
   sprite: Phaser.GameObjects.Sprite;
+  timedDuration?: number;
+  timerText?: Phaser.GameObjects.Text;
 }
 
 const TRAIL_TINTS: Record<string, number[]> = {
@@ -219,6 +221,10 @@ export class GameScene extends Phaser.Scene {
       const pos = this.gridToScreen(entry.coord);
       entry.sprite.setPosition(pos.x, pos.y);
       entry.sprite.setScale(this.baseTileScale);
+      if (entry.timerText) {
+        entry.timerText.setPosition(pos.x + this.tileSize * 0.28, pos.y - this.tileSize * 0.28);
+        entry.timerText.setFontSize(Math.max(10, Math.round(this.tileSize * 0.26)));
+      }
     }
 
     for (const [key, sprite] of this.starSprites.entries()) {
@@ -322,11 +328,29 @@ export class GameScene extends Phaser.Scene {
       const doorSprite = this.add.sprite(pos.x, pos.y, doorKey);
       doorSprite.setScale(this.baseTileScale);
       doorSprite.setDepth(2);
+
+      let timerText: Phaser.GameObjects.Text | undefined;
+      if (sw.timedDuration && sw.timedDuration > 0) {
+        timerText = this.add
+          .text(pos.x + this.tileSize * 0.28, pos.y - this.tileSize * 0.28, `${sw.timedDuration}t`, {
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            fontSize: `${Math.max(10, Math.round(this.tileSize * 0.26))}px`,
+            fontStyle: 'bold',
+            color: '#fef3c7',
+            backgroundColor: '#92400e',
+            padding: { x: 4, y: 2 },
+          })
+          .setOrigin(0.5)
+          .setDepth(6);
+      }
+
       this.doorSprites.set(sw.id, {
         coord: sw.doorPos,
         switchPos: sw.switchPos,
         pairIndex: pairIdx,
         sprite: doorSprite,
+        timedDuration: sw.timedDuration,
+        timerText,
       });
     });
 
@@ -615,16 +639,15 @@ export class GameScene extends Phaser.Scene {
         sound.playSwitch();
         const doorEntry = this.doorSprites.get(res.doorToggled.id);
         if (doorEntry) {
-          const tex = res.doorToggled.open
-            ? `tile_door_open_${doorEntry.pairIndex}`
-            : `tile_door_closed_${doorEntry.pairIndex}`;
-          doorEntry.sprite.setTexture(tex);
           const beamColor = doorEntry.pairIndex === 0 ? 0x38bdf8 : 0xf59e0b;
-          this.drawSwitchBeam(doorEntry.switchPos, doorEntry.coord, beamColor);
+          if (res.doorToggled.open) {
+            this.drawSwitchBeam(doorEntry.switchPos, doorEntry.coord, beamColor);
+          }
           const doorPos = this.gridToScreen(doorEntry.coord);
           this.spawnBurst(doorPos.x, doorPos.y, beamColor, 10);
         }
       }
+      this.syncDoorsVisuals();
 
       if (res.teleportedTo) {
         sound.playTeleport();
@@ -1070,17 +1093,7 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    this.config.level.switches?.forEach((sw) => {
-      const doorEntry = this.doorSprites.get(sw.id);
-      if (doorEntry) {
-        const isOpen = this.gameLogic.openDoors.has(sw.id);
-        doorEntry.sprite.setTexture(
-          isOpen
-            ? `tile_door_open_${doorEntry.pairIndex}`
-            : `tile_door_closed_${doorEntry.pairIndex}`
-        );
-      }
-    });
+    this.syncDoorsVisuals();
 
     this.updateLegalHighlights();
     this.config.onStateChange(this.gameLogic);
@@ -1089,5 +1102,34 @@ export class GameScene extends Phaser.Scene {
       (this.gameLogic.getLegalMoves().length === 0 ||
         !solveFromState(this.gameLogic, 30, 5000).solvable);
     this.config.onDeadlock?.(deadlocked);
+  }
+
+  private syncDoorsVisuals(): void {
+    this.config.level.switches?.forEach((sw) => {
+      const doorEntry = this.doorSprites.get(sw.id);
+      if (!doorEntry) return;
+      const isOpen = this.gameLogic.openDoors.has(sw.id);
+      doorEntry.sprite.setTexture(
+        isOpen
+          ? `tile_door_open_${doorEntry.pairIndex}`
+          : `tile_door_closed_${doorEntry.pairIndex}`
+      );
+      if (doorEntry.timerText && doorEntry.timedDuration) {
+        const remaining = this.gameLogic.doorTimers.get(sw.id);
+        if (isOpen && remaining !== undefined) {
+          doorEntry.timerText.setText(`${remaining}`);
+          doorEntry.timerText.setStyle({
+            color: remaining <= 2 ? '#fef2f2' : '#ecfdf5',
+            backgroundColor: remaining <= 2 ? '#dc2626' : '#059669',
+          });
+        } else {
+          doorEntry.timerText.setText(`${doorEntry.timedDuration}t`);
+          doorEntry.timerText.setStyle({
+            color: '#fef3c7',
+            backgroundColor: '#92400e',
+          });
+        }
+      }
+    });
   }
 }

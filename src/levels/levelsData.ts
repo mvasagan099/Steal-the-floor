@@ -1,5 +1,5 @@
 // AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 120 Handcrafted levels across 6 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 140 Handcrafted levels across 7 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = [
@@ -10676,6 +10676,1961 @@ export const ALL_LEVELS: LevelDefinition[] = [
       }
     ],
     "star2Moves": 27
+  },
+  {
+    "id": 121,
+    "world": 7,
+    "name": "Tick Tock Gate",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "Step on the timed switch to open Gate A for 3 moves — sprint straight through before it shuts!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 3,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        },
+        "timedDuration": 3
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 122,
+    "world": 7,
+    "name": "Beat the Bell",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Hit Switch a on the east ledge, reclaim on the middle stone, and race through Gate A in 5 moves!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 2
+        },
+        "timedDuration": 5
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 123,
+    "world": 7,
+    "name": "Gearbox Sprint",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 3,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Grab the western gem FIRST — once you tap Switch a, you only have 3 moves to reach Gate A!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 2
+        },
+        "timedDuration": 3
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 124,
+    "world": 7,
+    "name": "Pendulum Path",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Hit Switch a, use the central island to reclaim your bridge tiles, and dash through Gate A!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 3
+        },
+        "timedDuration": 7
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 125,
+    "world": 7,
+    "name": "Crumbling Clockwork",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Use the crumbling checkpoint to reclaim your bridge tiles midway through the timed sprint!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 3
+        },
+        "timedDuration": 5
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 126,
+    "world": 7,
+    "name": "Frosty Fuse",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 2,
+      "y": 6
+    },
+    "parMoves": 12,
+    "hint": "Hit Switch a and immediately glide across the ice runway — one move covers the whole ledge to beat the 3-move timer!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 5,
+          "y": 2
+        },
+        "timedDuration": 3
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 127,
+    "world": 7,
+    "name": "Forge Spark",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 3,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Collect the +1 Bonus Tile first so your 2-tile bridge can sprint directly from Switch a to Gate A!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        },
+        "timedDuration": 4
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 128,
+    "world": 7,
+    "name": "Sticky Delay",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Cross the sticky honey corridor sacrificing 1 tile, hit Switch a, and sprint to Gate A with your remaining 2!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        },
+        "timedDuration": 5
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 129,
+    "world": 7,
+    "name": "One-Way Escapement",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 14,
+    "hint": "Ride the one-way escapement arrows straight from Switch a into Gate A in 4 crisp moves!",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "direction": "down"
+      },
+      {
+        "x": 4,
+        "y": 1,
+        "direction": "down"
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 2
+        },
+        "timedDuration": 4
+      }
+    ],
+    "star2Moves": 18
+  },
+  {
+    "id": 130,
+    "world": 7,
+    "name": "Warp Relay",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Hit Switch a, dive into Portal 1, and sprint across the middle vault before Gate A seals shut!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 5,
+          "y": 2
+        },
+        "timedDuration": 7
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 131,
+    "world": 7,
+    "name": "Twin Mainsprings",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Two rapid countdown gates in a row! Clear Gate A in 3 moves, then trip Switch b and race back to Gate B!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 3,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 1
+        },
+        "timedDuration": 3
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 4,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        },
+        "timedDuration": 3
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 132,
+    "world": 7,
+    "name": "Gem Before Gear",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 22,
+    "hint": "Sweeping both top gems first is mandatory — Switch a only holds Gate A open for 3 moves!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 3
+        },
+        "timedDuration": 3
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      }
+    ],
+    "star2Moves": 28
+  },
+  {
+    "id": 133,
+    "world": 7,
+    "name": "Glacial Timer",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "Step on Switch a, skate straight into Portal 1 in one glide, and clear Gate A before the clock hits zero!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        },
+        "timedDuration": 4
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 5,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 134,
+    "world": 7,
+    "name": "Anvil Overdrive",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 1,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Grab the +1 Bonus Tile first, trigger Switch a, and dash over the crumbling stone through Gate A!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 3
+        },
+        "timedDuration": 5
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 135,
+    "world": 7,
+    "name": "Synchronized Gears",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Sprint from Switch a through Gate A, grab the gem, then hit Switch b and race back through Gate B!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 3,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 1,
+          "y": 2
+        },
+        "timedDuration": 4
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 4,
+          "y": 3
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 4
+        },
+        "timedDuration": 3
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 3
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 136,
+    "world": 7,
+    "name": "Molten Shortcut",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Detour north around the sticky honey so both tiles survive for the 3-move timed sprint from Switch a to Gate A!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "sticky": [
+      {
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        },
+        "timedDuration": 3
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 137,
+    "world": 7,
+    "name": "Spring-Loaded Ice",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 12,
+    "hint": "Grab the +1 Bonus Tile, press Switch a, and ride the vertical ice chute straight into Gate A!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "ice": [
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 1
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 4
+        },
+        "timedDuration": 3
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 138,
+    "world": 7,
+    "name": "Clockwork Labyrinth",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Press Switch a, ride the one-way chute into Portal 1, and dash through Gate A before it shuts!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "direction": "down"
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 4
+        },
+        "timedDuration": 7
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 1
+        },
+        "posB": {
+          "x": 0,
+          "y": 3
+        }
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 139,
+    "world": 7,
+    "name": "The Furnace Core",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 26,
+    "hint": "Skate from Switch a through Gate A in 2 moves, cross the crumbling stone for the gem, then beat Timed Gate B!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 5,
+          "y": 1
+        },
+        "timedDuration": 2
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 5,
+          "y": 3
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 4
+        },
+        "timedDuration": 3
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 3
+      }
+    ],
+    "star2Moves": 33
+  },
+  {
+    "id": 140,
+    "world": 7,
+    "name": "Grand Horologist",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 18,
+    "hint": "The ultimate Clockwork Forge trial! Grab +1, glide past Timed Gate A, cross crumbling stone to Portal 1, and beat Timed Gate B!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      },
+      {
+        "x": 4,
+        "y": 6
+      },
+      {
+        "x": 5,
+        "y": 6
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "ice": [
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 5,
+          "y": 2
+        },
+        "timedDuration": 3
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 4,
+          "y": 5
+        },
+        "doorPos": {
+          "x": 1,
+          "y": 6
+        },
+        "timedDuration": 4
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 0,
+          "y": 3
+        },
+        "posB": {
+          "x": 5,
+          "y": 5
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "star2Moves": 23
   }
 ];
 
@@ -10686,4 +12641,5 @@ export const WORLDS = [
   { id: 4, name: 'Open the Way', levels: [61, 80], theme: 'neon-space', description: 'Unlock enclosed laser gates and warp across impassable divides.' },
   { id: 5, name: 'Master Builder', levels: [81, 100], theme: 'forest-adventure', description: 'Combine every mechanic in intricate multi-stage master puzzles.' },
   { id: 6, name: 'Frost & Spark', levels: [101, 120], theme: 'arctic-frost', description: 'Glide across frozen ice rinks and collect +1 Bonus Tiles to expand your reach.' },
+  { id: 7, name: 'Clockwork Forge', levels: [121, 140], theme: 'clockwork-forge', description: 'Race countdown switches and timed gates across mechanical gauntlets.' },
 ];

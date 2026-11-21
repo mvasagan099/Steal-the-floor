@@ -193,4 +193,49 @@ describe('Game Systems QA Test Suite', () => {
     expect(storage.getData().selectedTrail).toBe('trail-frost');
     expect(storage.getData().coins).toBe(100 - frostTrail.price);
   });
+
+  it('tracks Daily Archive completions and Monthly Medal tiers (Bronze/Silver/Gold)', () => {
+    // Complete today first (builds streak = 1, +25 coins)
+    const todayRes = storage.recordDailyCompletion('2026-11-21', false);
+    expect(todayRes.completedNow).toBe(true);
+    expect(todayRes.coinsAwarded).toBe(25);
+    expect(storage.getData().dailyStreak).toBe(1);
+
+    // Complete 4 archive days (+10 each, does NOT break today's streak) -> total 5 -> Bronze
+    for (let d = 1; d <= 4; d++) {
+      const ds = `2026-11-${String(d).padStart(2, '0')}`;
+      const r = storage.recordDailyCompletion(ds, true);
+      expect(r.completedNow).toBe(true);
+      expect(r.coinsAwarded).toBeGreaterThanOrEqual(10);
+    }
+    expect(storage.getData().dailyStreak).toBe(1);
+    expect(storage.getMonthlyDailyStats(2026, 11).count).toBe(5);
+    expect(storage.getMonthlyDailyStats(2026, 11).medal).toBe('bronze');
+
+    // Duplicate archive completion awards 0
+    expect(storage.recordDailyCompletion('2026-11-01', true).completedNow).toBe(false);
+
+    // Reach 12 days -> Silver
+    for (let d = 5; d <= 11; d++) {
+      storage.recordDailyCompletion(`2026-11-${String(d).padStart(2, '0')}`, true);
+    }
+    expect(storage.getMonthlyDailyStats(2026, 11).count).toBe(12);
+    expect(storage.getMonthlyDailyStats(2026, 11).medal).toBe('silver');
+
+    // Reach 20 days -> Gold
+    for (let d = 12; d <= 19; d++) {
+      storage.recordDailyCompletion(`2026-11-${String(d).padStart(2, '0')}`, true);
+    }
+    expect(storage.getMonthlyDailyStats(2026, 11).count).toBe(20);
+    expect(storage.getMonthlyDailyStats(2026, 11).medal).toBe('gold');
+  });
+
+  it('tracks World 7 Clockwork Forge achievement progress', () => {
+    for (let id = 121; id <= 140; id++) {
+      storage.recordLevelVictory(id, 12, 3, { usedUndo: false });
+    }
+    const data = storage.getData();
+    expect(data.achievements['world7_cleared'].progress).toBe(20);
+    expect(data.achievements['world7_cleared'].unlocked).toBe(true);
+  });
 });

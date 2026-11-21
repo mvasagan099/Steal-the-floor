@@ -398,4 +398,60 @@ describe('PuzzleGame Engine Mechanics', () => {
     expect(game.inventory).toBe(1);
     expect(game.collectedBonusTiles.size).toBe(0);
   });
+
+  it('handles timed switches with countdown expiry, standing safety, and undo restoration', () => {
+    const level: LevelDefinition = {
+      id: 14,
+      world: 7,
+      name: 'Timed Gate Test',
+      cols: 5,
+      rows: 2,
+      maxTiles: 3,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 0 },
+      switches: [
+        {
+          id: 'g1',
+          switchPos: { x: 1, y: 0 },
+          doorPos: { x: 3, y: 0 },
+          timedDuration: 2,
+        },
+      ],
+      rocks: [{ x: 3, y: 1 }],
+      parMoves: 4,
+    };
+
+    const game = new PuzzleGame(level);
+    expect(game.openDoors.has('g1')).toBe(false);
+
+    // Step onto timed switch (1,0) -> gate opens with timer = 2
+    game.move({ x: 1, y: 0 });
+    expect(game.openDoors.has('g1')).toBe(true);
+    expect(game.doorTimers.get('g1')).toBe(2);
+
+    // Move 1 away to (2,0) -> timer ticks down to 1, gate still open
+    game.move({ x: 2, y: 0 });
+    expect(game.openDoors.has('g1')).toBe(true);
+    expect(game.doorTimers.get('g1')).toBe(1);
+
+    // Detour down to (2,1) instead of entering gate -> timer hits 0 and gate snaps shut!
+    game.move({ x: 2, y: 1 });
+    expect(game.openDoors.has('g1')).toBe(false);
+    expect(game.doorTimers.has('g1')).toBe(false);
+
+    // Undo brings gate back open with timer = 1
+    game.undo();
+    expect(game.openDoors.has('g1')).toBe(true);
+    expect(game.doorTimers.get('g1')).toBe(1);
+
+    // Stepping onto gate (3,0) on last tick succeeds and stays open while standing on it
+    const onGate = game.move({ x: 3, y: 0 });
+    expect(onGate.success).toBe(true);
+    expect(game.openDoors.has('g1')).toBe(true);
+
+    // Stepping off gate onto exit (4,0) closes gate behind Puff and wins!
+    const winRes = game.move({ x: 4, y: 0 });
+    expect(winRes.code).toBe('SUCCESS_WIN');
+    expect(game.openDoors.has('g1')).toBe(false);
+  });
 });

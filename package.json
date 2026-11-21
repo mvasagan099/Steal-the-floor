@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@capacitor/android": "^7.0.1",
+    "@capacitor/app": "^7.1.2",
     "@capacitor/core": "^7.0.1",
+    "@capacitor/haptics": "^7.0.5",
     "canvas-confetti": "^1.9.4",
     "lucide-react": "^1.16.0",
     "phaser": "^3.90.0",

@@ -16,6 +16,8 @@ export interface SwitchDoorPair {
   switchPos: Coordinate;
   doorPos: Coordinate;
   doorInitiallyOpen?: boolean;
+  /** If set, stepping on the switch opens the gate for N moves before it auto-closes. */
+  timedDuration?: number;
 }
 
 export interface TeleporterPair {
@@ -82,6 +84,7 @@ export interface GameStateSnapshot {
   collectedStars: string[]; // "x,y" keys
   collectedBonusTiles: string[]; // "x,y" keys
   openDoors: string[]; // IDs
+  doorTimers?: Record<string, number>; // timed door ID -> remaining moves
   moves: number;
   status: 'playing' | 'won';
 }

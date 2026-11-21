@@ -37,6 +37,8 @@ interface GridLevelInput {
   stars?: Coordinate[];
   /** Extra bonus tile (+1 maxTiles) coordinates */
   bonusTiles?: Coordinate[];
+  /** Optional countdown durations for timed switches (e.g. { g1: 4 }) */
+  timedDurations?: Record<string, number>;
   hint: string;
 }
 
@@ -147,11 +149,13 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   for (const id of Object.keys(switchPositions)) {
     const door = doorPositions[id];
     if (!door) throw new Error(`Level ${input.id} switch '${id}' missing matching door`);
+    const timedDuration = input.timedDurations?.[id];
     switches.push({
       id,
       switchPos: switchPositions[id],
       doorPos: door.pos,
       ...(door.initiallyOpen ? { doorInitiallyOpen: true } : {}),
+      ...(timedDuration ? { timedDuration } : {}),
     });
   }
 
@@ -2453,11 +2457,305 @@ const world6Drafts: GridLevelInput[] = [
 
 drafts.push(...world6Drafts);
 
+// =========================================================================
+// WORLD 7: CLOCKWORK FORGE (Levels 121 - 140) — Timed Switches & Countdown Gates
+// =========================================================================
+const world7Drafts: GridLevelInput[] = [
+  {
+    id: 121, world: 7, name: 'Tick Tock Gate', maxTiles: 2,
+    grid: [
+      'S..a..',
+      '......',
+      'XXXAXX',
+      '...#..',
+      '......',
+      '...#..',
+      '.....E',
+    ],
+    timedDurations: { g1: 3 },
+    hint: 'Step on the timed switch to open Gate A for 3 moves — sprint straight through before it shuts!',
+  },
+  {
+    id: 122, world: 7, name: 'Beat the Bell', maxTiles: 2,
+    grid: [
+      'S.#..a',
+      '......',
+      'XXAXXX',
+      '..#...',
+      '......',
+      '..#...',
+      '....E.',
+    ],
+    timedDurations: { g1: 5 },
+    hint: 'Hit Switch a on the east ledge, reclaim on the middle stone, and race through Gate A in 5 moves!',
+  },
+  {
+    id: 123, world: 7, name: 'Gearbox Sprint', maxTiles: 2,
+    grid: [
+      '#..S.a',
+      '......',
+      'XXXXAX',
+      '....#.',
+      '...#..',
+      '.#....',
+      'E.....',
+    ],
+    stars: [{ x: 0, y: 0 }],
+    timedDurations: { g1: 3 },
+    hint: 'Grab the western gem FIRST — once you tap Switch a, you only have 3 moves to reach Gate A!',
+  },
+  {
+    id: 124, world: 7, name: 'Pendulum Path', maxTiles: 2,
+    grid: [
+      'a..#..',
+      '......',
+      'S..#..',
+      'XXXXAX',
+      '....#.',
+      '......',
+      '....#E',
+    ],
+    timedDurations: { g1: 7 },
+    hint: 'Hit Switch a, use the central island to reclaim your bridge tiles, and dash through Gate A!',
+  },
+  {
+    id: 125, world: 7, name: 'Crumbling Clockwork', maxTiles: 2,
+    grid: [
+      'S..#..',
+      '......',
+      'a..C..',
+      'XXXXAX',
+      '....#.',
+      '......',
+      '..#.E.',
+    ],
+    timedDurations: { g1: 5 },
+    hint: 'Use the crumbling checkpoint to reclaim your bridge tiles midway through the timed sprint!',
+  },
+  {
+    id: 126, world: 7, name: 'Frosty Fuse', maxTiles: 2,
+    grid: [
+      'S.aII#',
+      'XXXXX.',
+      '.....A',
+      '.....#',
+      '......',
+      '....#.',
+      '..E...',
+    ],
+    timedDurations: { g1: 3 },
+    hint: 'Hit Switch a and immediately glide across the ice runway — one move covers the whole ledge to beat the 3-move timer!',
+  },
+  {
+    id: 127, world: 7, name: 'Forge Spark', maxTiles: 1,
+    grid: [
+      '+.#S.a',
+      '......',
+      'XXXAXX',
+      '...#..',
+      '......',
+      '.....#',
+      '...E..',
+    ],
+    timedDurations: { g1: 4 },
+    hint: 'Collect the +1 Bonus Tile first so your 2-tile bridge can sprint directly from Switch a to Gate A!',
+  },
+  {
+    id: 128, world: 7, name: 'Sticky Delay', maxTiles: 3,
+    grid: [
+      'S#H.a.',
+      'XXXX..',
+      '....#.',
+      'XXAXXX',
+      '..#...',
+      '....#.',
+      '.....E',
+    ],
+    timedDurations: { g1: 5 },
+    hint: 'Cross the sticky honey corridor sacrificing 1 tile, hit Switch a, and sprint to Gate A with your remaining 2!',
+  },
+  {
+    id: 129, world: 7, name: 'One-Way Escapement', maxTiles: 2,
+    grid: [
+      'S.a>v.',
+      '....v.',
+      'XXXXAX',
+      '....#.',
+      '...#..',
+      '.#....',
+      'E.....',
+    ],
+    timedDurations: { g1: 4 },
+    hint: 'Ride the one-way escapement arrows straight from Switch a into Gate A in 4 crisp moves!',
+  },
+  {
+    id: 130, world: 7, name: 'Warp Relay', maxTiles: 2,
+    grid: [
+      'S.a.1X',
+      'XXXXXX',
+      '1.#..A',
+      'XXXXX.',
+      '....#.',
+      '...#..',
+      '..#..E',
+    ],
+    timedDurations: { g1: 7 },
+    hint: 'Hit Switch a, dive into Portal 1, and sprint across the middle vault before Gate A seals shut!',
+  },
+  {
+    id: 131, world: 7, name: 'Twin Mainsprings', maxTiles: 2,
+    grid: [
+      'S..a..',
+      'XXAXXX',
+      '..#.b.',
+      'XXBXXX',
+      '..#...',
+      '...#..',
+      '....#E',
+    ],
+    timedDurations: { g1: 3, g2: 3 },
+    hint: 'Two rapid countdown gates in a row! Clear Gate A in 3 moves, then trip Switch b and race back to Gate B!',
+  },
+  {
+    id: 132, world: 7, name: 'Gem Before Gear', maxTiles: 2,
+    grid: [
+      '#..#.#',
+      '......',
+      'S.a...',
+      'XXXXAX',
+      '....#.',
+      '......',
+      'E..#..',
+    ],
+    stars: [{ x: 0, y: 0 }, { x: 5, y: 0 }],
+    timedDurations: { g1: 3 },
+    hint: 'Sweeping both top gems first is mandatory — Switch a only holds Gate A open for 3 moves!',
+  },
+  {
+    id: 133, world: 7, name: 'Glacial Timer', maxTiles: 2,
+    grid: [
+      'S.aII1',
+      'XXXXXX',
+      '1.#A..',
+      'XXXX..',
+      '....#.',
+      '......',
+      '..#.E.',
+    ],
+    timedDurations: { g1: 4 },
+    hint: 'Step on Switch a, skate straight into Portal 1 in one glide, and clear Gate A before the clock hits zero!',
+  },
+  {
+    id: 134, world: 7, name: 'Anvil Overdrive', maxTiles: 1,
+    grid: [
+      'S.#+..',
+      '......',
+      'a..C..',
+      'XXXXAX',
+      '....#.',
+      '......',
+      '.E..#.',
+    ],
+    timedDurations: { g1: 5 },
+    hint: 'Grab the +1 Bonus Tile first, trigger Switch a, and dash over the crumbling stone through Gate A!',
+  },
+  {
+    id: 135, world: 7, name: 'Synchronized Gears', maxTiles: 2,
+    grid: [
+      'S.#a..',
+      '......',
+      'XAXXXX',
+      '.#..b.',
+      'XXBXXX',
+      '..#...',
+      '....#E',
+    ],
+    stars: [{ x: 1, y: 3 }],
+    timedDurations: { g1: 4, g2: 3 },
+    hint: 'Sprint from Switch a through Gate A, grab the gem, then hit Switch b and race back through Gate B!',
+  },
+  {
+    id: 136, world: 7, name: 'Molten Shortcut', maxTiles: 2,
+    grid: [
+      '#.#..#',
+      '.X.XX.',
+      'SH#..a',
+      'XXXAXX',
+      '...#..',
+      '....#.',
+      '.....E',
+    ],
+    stars: [{ x: 3, y: 4 }],
+    timedDurations: { g1: 3 },
+    hint: 'Detour north around the sticky honey so both tiles survive for the 3-move timed sprint from Switch a to Gate A!',
+  },
+  {
+    id: 137, world: 7, name: 'Spring-Loaded Ice', maxTiles: 1,
+    grid: [
+      'S.#+..',
+      '....a.',
+      'XX..I.',
+      'XX..I.',
+      'XXXXAX',
+      '..#.#.',
+      'E.....',
+    ],
+    timedDurations: { g1: 3 },
+    hint: 'Grab the +1 Bonus Tile, press Switch a, and ride the vertical ice chute straight into Gate A!',
+  },
+  {
+    id: 138, world: 7, name: 'Clockwork Labyrinth', maxTiles: 2,
+    grid: [
+      'S.a>v.',
+      'XXXX1.',
+      'XXXXXX',
+      '1..#..',
+      'XXXAXX',
+      '...#..',
+      '.....E',
+    ],
+    timedDurations: { g1: 7 },
+    hint: 'Press Switch a, ride the one-way chute into Portal 1, and dash through Gate A before it shuts!',
+  },
+  {
+    id: 139, world: 7, name: 'The Furnace Core', maxTiles: 2,
+    grid: [
+      'S.aII#',
+      'XXXXXA',
+      '...C.#',
+      '.#...b',
+      'XXXBXX',
+      '...#..',
+      'E..#..',
+    ],
+    stars: [{ x: 1, y: 3 }],
+    timedDurations: { g1: 2, g2: 3 },
+    hint: 'Skate from Switch a through Gate A in 2 moves, cross the crumbling stone for the gem, then beat Timed Gate B!',
+  },
+  {
+    id: 140, world: 7, name: 'Grand Horologist', maxTiles: 1,
+    grid: [
+      'S.#+a.',
+      '....II',
+      'XXXXXA',
+      '1..C.#',
+      'XXXXXX',
+      'X#..b1',
+      'EBXXXX',
+    ],
+    stars: [{ x: 5, y: 3 }],
+    timedDurations: { g1: 3, g2: 4 },
+    hint: 'The ultimate Clockwork Forge trial! Grab +1, glide past Timed Gate A, cross crumbling stone to Portal 1, and beat Timed Gate B!',
+  },
+];
+
+drafts.push(...world7Drafts);
+
 console.log(`Validating all ${drafts.length} levels with Solid-Ground Reclamation & Quality Gates...\n`);
 
 const validatedLevels: LevelDefinition[] = [];
 const failures: string[] = [];
-const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [] };
 
 for (const draft of drafts) {
   const level = parseGridLevel(draft);
@@ -2513,6 +2811,23 @@ for (const draft of drafts) {
         failures.push(`Level ${level.id} ("${level.name}"): Closed door can be bypassed without switch!`);
       }
     }
+
+    // Quality Gate 1b: Timed switches must have meaningful countdown tension
+    const timedSwitches = level.switches.filter((s) => s.timedDuration && s.timedDuration > 0);
+    for (const ts of timedSwitches) {
+      const tighterLevel: LevelDefinition = {
+        ...level,
+        switches: level.switches.map((s) =>
+          s.id === ts.id ? { ...s, timedDuration: Math.max(1, (s.timedDuration || 2) - 2) } : s
+        ),
+      };
+      const tighterSol = solveLevel(tighterLevel, 45);
+      if (tighterSol.solvable && tighterSol.minMoves <= solution.minMoves) {
+        failures.push(
+          `Level ${level.id} ("${level.name}"): Timed gate '${ts.id}' duration (${ts.timedDuration}) is too loose — even duration=${Math.max(1, (ts.timedDuration || 2) - 2)} solves in ${tighterSol.minMoves} moves!`
+        );
+      }
+    }
   }
 
   if (level.teleporters?.length && !usedTeleport) {
@@ -2565,7 +2880,7 @@ for (const draft of drafts) {
 }
 
 console.log('\n--- World Par Curve ---');
-for (const w of [1, 2, 3, 4, 5, 6]) {
+for (const w of [1, 2, 3, 4, 5, 6, 7]) {
   const arr = worldPars[w];
   if (arr.length) {
     const avg = (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
@@ -2579,13 +2894,13 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-if (validatedLevels.length !== 120) {
-  console.error(`Expected 120 levels, got ${validatedLevels.length}`);
+if (validatedLevels.length !== 140) {
+  console.error(`Expected 140 levels, got ${validatedLevels.length}`);
   process.exit(1);
 }
 
 const fileContent = `// AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 120 Handcrafted levels across 6 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 140 Handcrafted levels across 7 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = ${JSON.stringify(validatedLevels, null, 2)};
@@ -2597,9 +2912,10 @@ export const WORLDS = [
   { id: 4, name: 'Open the Way', levels: [61, 80], theme: 'neon-space', description: 'Unlock enclosed laser gates and warp across impassable divides.' },
   { id: 5, name: 'Master Builder', levels: [81, 100], theme: 'forest-adventure', description: 'Combine every mechanic in intricate multi-stage master puzzles.' },
   { id: 6, name: 'Frost & Spark', levels: [101, 120], theme: 'arctic-frost', description: 'Glide across frozen ice rinks and collect +1 Bonus Tiles to expand your reach.' },
+  { id: 7, name: 'Clockwork Forge', levels: [121, 140], theme: 'clockwork-forge', description: 'Race countdown switches and timed gates across mechanical gauntlets.' },
 ];
 `;
 
 const outputPath = path.resolve(process.cwd(), 'src/levels/levelsData.ts');
 fs.writeFileSync(outputPath, fileContent, 'utf-8');
-console.log(`\n✅ ALL 120 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);
+console.log(`\n✅ ALL 140 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);

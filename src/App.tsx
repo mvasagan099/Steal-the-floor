@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { App as CapacitorApp } from '@capacitor/app';
 import { ALL_LEVELS, WORLDS } from './levels/levelsData';
 import { getDailyChallenge, formatDailyShareText } from './levels/dailyChallenge';
 import { generateEndlessStage } from './levels/endlessMode';
@@ -81,12 +83,18 @@ const MECHANIC_INTROS: Record<number, { icon: string; title: string; tip: string
     title: '+1 Bonus Tiles',
     tip: 'Pick up glowing +1 Spark tiles to permanently expand your tile inventory for the level!',
   },
+  121: {
+    icon: '⏱️',
+    title: 'Clockwork Timed Gates',
+    tip: 'Timed switches hold their gate open for a limited number of moves—watch the countdown badge and sprint through!',
+  },
 };
 
 export const App: React.FC = () => {
   const [screen, setScreen] = useState<AppScreen>('splash');
   const [playMode, setPlayMode] = useState<PlayMode>('campaign');
   const [currentLevel, setCurrentLevel] = useState<LevelDefinition>(ALL_LEVELS[0]);
+  const [dailyDateStr, setDailyDateStr] = useState<string>(() => getLocalDateString());
 
   // Endless Void Rush state
   const [endlessStage, setEndlessStage] = useState(1);
@@ -233,6 +241,49 @@ export const App: React.FC = () => {
     showSettings,
   ]);
 
+  // Native Capacitor hardware Back button & background audio pause/resume
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    const backPromise = CapacitorApp.addListener('backButton', () => {
+      if (showPause) setShowPause(false);
+      else if (showWin) {
+        setShowWin(false);
+        setScreen('home');
+      } else if (showLevels) setShowLevels(false);
+      else if (showDaily) setShowDaily(false);
+      else if (showEditor) setShowEditor(false);
+      else if (showThemes) setShowThemes(false);
+      else if (showAchievements) setShowAchievements(false);
+      else if (showSettings) setShowSettings(false);
+      else if (screen === 'game') setShowPause(true);
+      else CapacitorApp.exitApp().catch(() => {});
+    });
+
+    const statePromise = CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) {
+        sound.resumeAudio();
+      } else {
+        sound.suspendAudio();
+      }
+    });
+
+    return () => {
+      backPromise.then((h) => h.remove()).catch(() => {});
+      statePromise.then((h) => h.remove()).catch(() => {});
+    };
+  }, [
+    screen,
+    showPause,
+    showWin,
+    showLevels,
+    showDaily,
+    showEditor,
+    showThemes,
+    showAchievements,
+    showSettings,
+  ]);
+
   const showAchievementNotification = (unlocked: Achievement[]) => {
     if (unlocked.length === 0) return;
     setAchievementToast(unlocked[0]);
@@ -266,8 +317,10 @@ export const App: React.FC = () => {
     launchLevel(target, 'campaign');
   };
 
-  const handleStartDaily = () => {
-    launchLevel(getDailyChallenge(), 'daily');
+  const handleStartDaily = (dateStr?: string) => {
+    const targetDate = dateStr || getLocalDateString();
+    setDailyDateStr(targetDate);
+    launchLevel(getDailyChallenge(targetDate), 'daily');
   };
 
   const handleStartEndless = () => {
@@ -311,11 +364,12 @@ export const App: React.FC = () => {
 
     if (playMode === 'daily') {
       const todayStr = getLocalDateString();
-      const dailyResult = storage.recordDailyCompletion(todayStr);
+      const isArchive = dailyDateStr !== todayStr;
+      const dailyResult = storage.recordDailyCompletion(dailyDateStr, isArchive);
       setWinCoins(dailyResult.coinsAwarded);
       setDailyShareText(
         formatDailyShareText(
-          todayStr,
+          dailyDateStr,
           movesUsed,
           parMoves,
           starsEarned,
@@ -361,6 +415,7 @@ export const App: React.FC = () => {
 
     if (playMode === 'daily') {
       setScreen('home');
+      setShowDaily(true);
       return;
     }
 
@@ -399,9 +454,13 @@ export const App: React.FC = () => {
       ? MECHANIC_INTROS[currentLevel.id]
       : null;
 
+  const isArchiveDaily = playMode === 'daily' && dailyDateStr !== getLocalDateString();
+
   const headerTitle =
     playMode === 'daily'
-      ? 'Daily Challenge'
+      ? isArchiveDaily
+        ? `Archive · ${dailyDateStr}`
+        : 'Daily Challenge'
       : playMode === 'endless'
       ? `Void Rush · Stage ${endlessStage}`
       : playMode === 'custom'
@@ -410,7 +469,9 @@ export const App: React.FC = () => {
 
   const headerSubtitle =
     playMode === 'daily'
-      ? 'Procedural Daily'
+      ? isArchiveDaily
+        ? 'Monthly Archive Replay'
+        : `Daily · ${dailyDateStr}`
       : playMode === 'endless'
       ? `Best Streak: ${storage.getData().bestEndlessStreak}`
       : playMode === 'custom'

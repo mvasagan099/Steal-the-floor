@@ -4,21 +4,21 @@ import { PuzzleGame } from '../src/engine/logic';
 import { solveLevel } from '../src/engine/solver';
 import { LevelDefinition } from '../src/engine/types';
 
-describe('120 Levels Solvability & Mechanic Quality Gate Suite', () => {
-  it('contains exactly 120 levels across 6 worlds', () => {
-    expect(ALL_LEVELS.length).toBe(120);
-    expect(WORLDS.length).toBe(6);
+describe('140 Levels Solvability & Mechanic Quality Gate Suite', () => {
+  it('contains exactly 140 levels across 7 worlds', () => {
+    expect(ALL_LEVELS.length).toBe(140);
+    expect(WORLDS.length).toBe(7);
 
-    for (let w = 1; w <= 6; w++) {
+    for (let w = 1; w <= 7; w++) {
       const worldLevels = ALL_LEVELS.filter((l) => l.world === w);
       expect(worldLevels.length).toBe(20);
     }
   });
 
-  it('validates all 120 levels are solvable with accurate par and active mechanics', () => {
+  it('validates all 140 levels are solvable with accurate par and active mechanics', () => {
     for (const level of ALL_LEVELS) {
       expect(level.id).toBeGreaterThanOrEqual(1);
-      expect(level.id).toBeLessThanOrEqual(120);
+      expect(level.id).toBeLessThanOrEqual(140);
       expect(level.parMoves).toBeGreaterThan(0);
       expect(level.star2Moves).toBeGreaterThan(level.parMoves);
 
@@ -66,6 +66,23 @@ describe('120 Levels Solvability & Mechanic Quality Gate Suite', () => {
           solveLevel(lockedOnly, 45).solvable,
           `Level ${level.id}: closed door must not be bypassable`
         ).toBe(false);
+      }
+
+      if (level.switches?.some((s) => s.timedDuration && s.timedDuration > 0)) {
+        const timedSwitches = level.switches.filter((s) => s.timedDuration && s.timedDuration > 0);
+        for (const ts of timedSwitches) {
+          const tighterLevel: LevelDefinition = {
+            ...level,
+            switches: level.switches.map((s) =>
+              s.id === ts.id ? { ...s, timedDuration: Math.max(1, (s.timedDuration || 2) - 2) } : s
+            ),
+          };
+          const tighterSol = solveLevel(tighterLevel, 45);
+          expect(
+            !tighterSol.solvable || tighterSol.minMoves > result.minMoves,
+            `Level ${level.id}: timed gate '${ts.id}' countdown must have real tension`
+          ).toBe(true);
+        }
       }
 
       if (level.teleporters?.length) {

@@ -33,6 +33,7 @@ export interface PlayerData {
   totalStars: number;
   dailyStreak: number;
   lastDailyCompletedDate: string; // Local YYYY-MM-DD
+  completedDailyDates: string[]; // All completed daily/archive YYYY-MM-DD dates
   bestEndlessStreak: number;
   customLevels: LevelDefinition[];
   settings: {
@@ -58,10 +59,12 @@ export function getLocalDateString(date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
-export const TOTAL_CAMPAIGN_LEVELS = 120;
+export type MonthlyMedal = 'none' | 'bronze' | 'silver' | 'gold';
+
+export const TOTAL_CAMPAIGN_LEVELS = 140;
 export const MAX_CAMPAIGN_STARS = TOTAL_CAMPAIGN_LEVELS * 3;
 const STORAGE_KEY = 'steal_the_floor_save_v1';
-const CURRENT_VERSION = 3;
+const CURRENT_VERSION = 4;
 export const ACHIEVEMENT_REWARD_COINS = 15;
 
 export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
@@ -71,7 +74,8 @@ export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   { id: 'world3_cleared', title: 'Hazard Master', description: 'Complete all 20 levels in World 3', unlocked: false, progress: 0, maxProgress: 20, icon: '⚡' },
   { id: 'world4_cleared', title: 'Portal Wanderer', description: 'Complete all 20 levels in World 4', unlocked: false, progress: 0, maxProgress: 20, icon: '🌀' },
   { id: 'world6_cleared', title: 'Frost Master', description: 'Complete all 20 levels in World 6', unlocked: false, progress: 0, maxProgress: 20, icon: '❄️' },
-  { id: 'grand_master', title: 'Master Builder', description: 'Complete all 120 campaign levels!', unlocked: false, progress: 0, maxProgress: 120, icon: '👑' },
+  { id: 'world7_cleared', title: 'Clockwork Savant', description: 'Complete all 20 levels in World 7', unlocked: false, progress: 0, maxProgress: 20, icon: '⚙️' },
+  { id: 'grand_master', title: 'Master Builder', description: 'Complete all 140 campaign levels!', unlocked: false, progress: 0, maxProgress: 140, icon: '👑' },
   { id: 'star_collector_50', title: 'Stargazer', description: 'Earn 50 par stars total', unlocked: false, progress: 0, maxProgress: 50, icon: '⭐' },
   { id: 'star_collector_150', title: 'Constellation', description: 'Earn 150 par stars total', unlocked: false, progress: 0, maxProgress: 150, icon: '🌟' },
   { id: 'star_collector_300', title: 'Galactic Brilliance', description: 'Earn 300 par stars across all levels!', unlocked: false, progress: 0, maxProgress: 300, icon: '✨' },
@@ -87,6 +91,7 @@ export const THEMES = [
   { id: 'neon-space', name: 'Neon Space', price: 60, bg: 'linear-gradient(to bottom, #7e22ce, #180828)', tileColor: '#a855f7', previewColor: '#a855f7', unlockedByDefault: false },
   { id: 'forest-adventure', name: 'Forest Adventure', price: 80, bg: 'linear-gradient(to bottom, #15803d, #052e16)', tileColor: '#4ade80', previewColor: '#4ade80', unlockedByDefault: false },
   { id: 'arctic-frost', name: 'Arctic Frost', price: 100, bg: 'linear-gradient(to bottom, #0c4a6e, #082f49)', tileColor: '#67e8f9', previewColor: '#67e8f9', unlockedByDefault: false },
+  { id: 'clockwork-forge', name: 'Clockwork Forge', price: 120, bg: 'linear-gradient(to bottom, #7c2d12, #1c0a00)', tileColor: '#fb923c', previewColor: '#fb923c', unlockedByDefault: false },
 ];
 
 export const SKINS = [
@@ -95,6 +100,7 @@ export const SKINS = [
   { id: 'puff-cyan', name: 'Aqua Puff', color: '#06b6d4', price: 30, unlockedByDefault: false },
   { id: 'puff-emerald', name: 'Moss Puff', color: '#10b981', price: 45, unlockedByDefault: false },
   { id: 'puff-frost', name: 'Frost Puff', color: '#7dd3fc', price: 70, unlockedByDefault: false },
+  { id: 'puff-ember', name: 'Ember Puff', color: '#f97316', price: 90, unlockedByDefault: false },
   { id: 'puff-gold', name: 'Royal Gold', color: '#fbbf24', price: 100, unlockedByDefault: false },
 ];
 
@@ -143,6 +149,7 @@ export class GameStorage {
       totalStars: 0,
       dailyStreak: 0,
       lastDailyCompletedDate: '',
+      completedDailyDates: [],
       bestEndlessStreak: 0,
       customLevels: [],
       settings: {
@@ -190,12 +197,19 @@ export class GameStorage {
       }
     }
 
+    const migratedDailyDates = Array.isArray(parsed.completedDailyDates)
+      ? Array.from(new Set(parsed.completedDailyDates))
+      : parsed.lastDailyCompletedDate
+      ? [parsed.lastDailyCompletedDate]
+      : [];
+
     return {
       ...base,
       ...parsed,
       version: CURRENT_VERSION,
       noUndoLevelIds: Array.isArray(parsed.noUndoLevelIds) ? parsed.noUndoLevelIds : [],
       unlockedTrails: Array.isArray(parsed.unlockedTrails) ? parsed.unlockedTrails : ['trail-none'],
+      completedDailyDates: migratedDailyDates,
       customLevels: Array.isArray(parsed.customLevels) ? parsed.customLevels : [],
       settings: { ...base.settings, ...(parsed.settings || {}) },
       stats: { ...base.stats, ...(parsed.stats || {}) },
@@ -383,35 +397,44 @@ export class GameStorage {
     }
   }
 
-  public recordDailyCompletion(todayStr = getLocalDateString()): {
+  public recordDailyCompletion(
+    dateStr = getLocalDateString(),
+    isArchive = false
+  ): {
     completedNow: boolean;
     coinsAwarded: number;
     newlyUnlockedAchievements: Achievement[];
   } {
-    if (this.data.lastDailyCompletedDate === todayStr) {
+    if (this.data.completedDailyDates.includes(dateStr)) {
       return { completedNow: false, coinsAwarded: 0, newlyUnlockedAchievements: [] };
     }
 
-    const [y, m, d] = todayStr.split('-').map(Number);
-    const yesterdayDate = new Date(y, m - 1, d - 1);
-    const yesterdayStr = getLocalDateString(yesterdayDate);
+    this.data.completedDailyDates.push(dateStr);
 
-    if (this.data.lastDailyCompletedDate === yesterdayStr) {
-      this.data.dailyStreak++;
-    } else {
-      this.data.dailyStreak = 1;
+    let coinsAwarded = isArchive ? 10 : 25;
+
+    if (!isArchive) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const yesterdayDate = new Date(y, m - 1, d - 1);
+      const yesterdayStr = getLocalDateString(yesterdayDate);
+
+      if (this.data.lastDailyCompletedDate === yesterdayStr) {
+        this.data.dailyStreak++;
+      } else {
+        this.data.dailyStreak = 1;
+      }
+      this.data.lastDailyCompletedDate = dateStr;
     }
 
-    this.data.lastDailyCompletedDate = todayStr;
-    let coinsAwarded = 25;
     this.data.coins += coinsAwarded;
 
     const newlyUnlockedAchievements: Achievement[] = [];
     const ach = this.data.achievements['daily_challenger'];
     if (ach) {
-      ach.progress = Math.min(ach.maxProgress, ach.progress + 1);
+      ach.progress = Math.min(ach.maxProgress, Math.max(ach.progress + 1, this.data.completedDailyDates.length));
       if (!ach.unlocked && ach.progress >= ach.maxProgress) {
         ach.unlocked = true;
+        ach.progress = ach.maxProgress;
         this.data.coins += ACHIEVEMENT_REWARD_COINS;
         coinsAwarded += ACHIEVEMENT_REWARD_COINS;
         newlyUnlockedAchievements.push({ ...ach });
@@ -420,6 +443,30 @@ export class GameStorage {
 
     this.save();
     return { completedNow: true, coinsAwarded, newlyUnlockedAchievements };
+  }
+
+  public getMonthlyDailyStats(
+    year: number,
+    month: number // 1-12
+  ): {
+    completedDays: number[];
+    count: number;
+    medal: MonthlyMedal;
+  } {
+    const prefix = `${year}-${String(month).padStart(2, '0')}-`;
+    const completedDays = this.data.completedDailyDates
+      .filter((d) => d.startsWith(prefix))
+      .map((d) => Number(d.slice(8, 10)))
+      .filter((n) => Number.isFinite(n) && n >= 1 && n <= 31)
+      .sort((a, b) => a - b);
+
+    const count = completedDays.length;
+    let medal: MonthlyMedal = 'none';
+    if (count >= 20) medal = 'gold';
+    else if (count >= 12) medal = 'silver';
+    else if (count >= 5) medal = 'bronze';
+
+    return { completedDays, count, medal };
   }
 
   private checkAchievements(): Achievement[] {
@@ -453,6 +500,7 @@ export class GameStorage {
     updateProgress('world3_cleared', countRange(41, 60));
     updateProgress('world4_cleared', countRange(61, 80));
     updateProgress('world6_cleared', countRange(101, 120));
+    updateProgress('world7_cleared', countRange(121, 140));
     updateProgress('grand_master', wonCount);
 
     let totalStarsEarned = 0;

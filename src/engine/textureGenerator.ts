@@ -94,6 +94,19 @@ export const THEME_PALETTES: Record<string, ThemeColors> = {
     bgGradBottom: '#082f49',
     accent: '#67e8f9',
   },
+  'clockwork-forge': {
+    name: 'Clockwork Forge',
+    tileFixed: '#fb923c',
+    tileFixedSide: '#c2410c',
+    tileBridge: '#fbbf24',
+    tileBridgeSide: '#b45309',
+    tileSticky: '#f43f5e',
+    tileCrumbling: '#a8a29e',
+    tileRock: '#44403c',
+    bgGradTop: '#451a03',
+    bgGradBottom: '#1c0a00',
+    accent: '#fb923c',
+  },
 };
 
 const PAIR_COLORS = [

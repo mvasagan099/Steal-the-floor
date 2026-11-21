@@ -1,5 +1,7 @@
 // High-quality procedural Web Audio engine for Steal the Floor
 // Zero external files, 100% offline, zero latency, ultra-lightweight
+import { Capacitor } from '@capacitor/core';
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 
 export class SoundManager {
   private static instance: SoundManager;
@@ -425,8 +427,43 @@ export class SoundManager {
     }, (duration - 0.6) * 1000);
   }
 
+  public suspendAudio(): void {
+    if (this.ctx && this.ctx.state === 'running') {
+      this.ctx.suspend().catch(() => {});
+    }
+  }
+
+  public resumeAudio(): void {
+    if (this.ctx && this.ctx.state === 'suspended' && (this.musicEnabled || this.sfxEnabled)) {
+      this.ctx.resume().catch(() => {});
+    }
+  }
+
   public triggerHaptic(type: 'light' | 'medium' | 'success' | 'warning' = 'light'): void {
     if (!this.hapticsEnabled) return;
+
+    // Prefer native Capacitor Haptics when running inside Android/iOS shell
+    if (Capacitor.isNativePlatform()) {
+      try {
+        switch (type) {
+          case 'light':
+            Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
+            return;
+          case 'medium':
+            Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
+            return;
+          case 'success':
+            Haptics.notification({ type: NotificationType.Success }).catch(() => {});
+            return;
+          case 'warning':
+            Haptics.notification({ type: NotificationType.Warning }).catch(() => {});
+            return;
+        }
+      } catch {
+        // Fall through to web vibration API
+      }
+    }
+
     if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
       try {
         switch (type) {

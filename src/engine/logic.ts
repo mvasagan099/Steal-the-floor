@@ -43,6 +43,7 @@ export class PuzzleGame {
   public collectedStars: Set<string>;
   public collectedBonusTiles: Set<string>; // +1 maxTiles pickups collected
   public openDoors: Set<string>;
+  public doorTimers: Map<string, number>; // timed door ID -> moves remaining before auto-close
   public moves: number;
   public status: 'playing' | 'won';
   public history: GameStateSnapshot[];
@@ -56,6 +57,7 @@ export class PuzzleGame {
   private bonusTileSet: Set<string>;
   private oneWayMap: Map<string, Direction>;
   private switchMap: Map<string, string>; // coordKey -> switchDoorId
+  private switchDurationMap: Map<string, number>; // switchDoorId -> timedDuration
   private doorMap: Map<string, string>; // coordKey -> switchDoorId
   private teleporterMap: Map<string, Coordinate>; // coordKey -> destCoord
   public totalStars: number;
@@ -69,6 +71,7 @@ export class PuzzleGame {
     this.collectedStars = new Set<string>();
     this.collectedBonusTiles = new Set<string>();
     this.openDoors = new Set<string>();
+    this.doorTimers = new Map<string, number>();
     this.moves = 0;
     this.status = 'playing';
     this.history = [];
@@ -107,10 +110,14 @@ export class PuzzleGame {
     });
 
     this.switchMap = new Map<string, string>();
+    this.switchDurationMap = new Map<string, number>();
     this.doorMap = new Map<string, string>();
     level.switches?.forEach((sw) => {
       const swKey = coordToKey(sw.switchPos);
       this.switchMap.set(swKey, sw.id);
+      if (sw.timedDuration && sw.timedDuration > 0) {
+        this.switchDurationMap.set(sw.id, sw.timedDuration);
+      }
       this.fixedSet.add(swKey);
       this.doorMap.set(coordToKey(sw.doorPos), sw.id);
       if (sw.doorInitiallyOpen) {
@@ -234,6 +241,10 @@ export class PuzzleGame {
   }
 
   public snapshot(): GameStateSnapshot {
+    const timersObj: Record<string, number> = {};
+    this.doorTimers.forEach((v, k) => {
+      timersObj[k] = v;
+    });
     return {
       player: { ...this.player },
       tiles: Array.from(this.tiles),
@@ -242,6 +253,7 @@ export class PuzzleGame {
       collectedStars: Array.from(this.collectedStars),
       collectedBonusTiles: Array.from(this.collectedBonusTiles),
       openDoors: Array.from(this.openDoors),
+      doorTimers: timersObj,
       moves: this.moves,
       status: this.status,
     };
@@ -255,6 +267,9 @@ export class PuzzleGame {
     this.collectedStars = new Set(snapshot.collectedStars);
     this.collectedBonusTiles = new Set(snapshot.collectedBonusTiles || []);
     this.openDoors = new Set(snapshot.openDoors);
+    this.doorTimers = new Map(
+      Object.entries(snapshot.doorTimers || {}).map(([k, v]) => [k, Number(v)])
+    );
     this.moves = snapshot.moves;
     this.status = snapshot.status;
   }
@@ -267,7 +282,6 @@ export class PuzzleGame {
     if (this.rockSet.has(key)) return false;
     const doorId = this.doorMap.get(key);
     if (doorId && !this.openDoors.has(doorId)) return false;
-    // Slide continues onto any existing floor (ice, solid islands, bridges) and stops before empty void
     return this.hasWalkableFloor(key);
   }
 
@@ -308,9 +322,22 @@ export class PuzzleGame {
       result.placedTile = { ...target };
     }
 
-    // 2. Step player onto target
+    // 2. Step player onto target & advance move counter
     this.player = { ...target };
     this.moves++;
+
+    // 2b. Tick down any active timed gates (a gate does not snap shut while player is standing on it)
+    const standingDoorId = this.doorMap.get(targetKey);
+    for (const [dId, remaining] of Array.from(this.doorTimers.entries())) {
+      const nextRemaining = remaining - 1;
+      if (nextRemaining <= 0 && standingDoorId !== dId) {
+        this.doorTimers.delete(dId);
+        this.openDoors.delete(dId);
+        result.doorToggled = { id: dId, open: false };
+      } else {
+        this.doorTimers.set(dId, Math.max(1, nextRemaining));
+      }
+    }
 
     // 3. Handle departure hazards from previous cell
     const isPrevSticky = this.stickySet.has(prevKey);
@@ -356,7 +383,13 @@ export class PuzzleGame {
 
       const switchId = this.switchMap.get(pKey);
       if (switchId) {
-        if (this.openDoors.has(switchId)) {
+        const timedDuration = this.switchDurationMap.get(switchId);
+        if (timedDuration) {
+          // Timed switch always opens/refreshes the countdown timer!
+          this.openDoors.add(switchId);
+          this.doorTimers.set(switchId, timedDuration);
+          result.doorToggled = { id: switchId, open: true };
+        } else if (this.openDoors.has(switchId)) {
           this.openDoors.delete(switchId);
           result.doorToggled = { id: switchId, open: false };
         } else {
@@ -369,7 +402,7 @@ export class PuzzleGame {
     // 5. Initial landing cell effects
     triggerCellEffects();
 
-    // 6. Ice Sliding: if standing on ice, glide along moveDir across walkable tiles until off-ice or blocked
+    // 6. Ice Sliding
     if (this.iceSet.has(coordToKey(this.player))) {
       const slidePath: Coordinate[] = [];
       const delta = DIR_DELTA[moveDir];
@@ -388,7 +421,6 @@ export class PuzzleGame {
         reclaimOnSolid(coordToKey(nextCell));
         triggerCellEffects();
 
-        // Stop sliding if we reached exit with all gems or entered a teleporter
         if (
           (areCoordsEqual(this.player, this.level.exit) &&
             this.collectedStars.size === this.totalStars) ||
@@ -444,6 +476,7 @@ export class PuzzleGame {
       this.collectedStars.clear();
       this.collectedBonusTiles.clear();
       this.openDoors.clear();
+      this.doorTimers.clear();
       this.level.switches?.forEach((sw) => {
         if (sw.doorInitiallyOpen) this.openDoors.add(sw.id);
       });

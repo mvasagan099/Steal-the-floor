@@ -16,7 +16,11 @@ function encodeGameState(game: PuzzleGame): string {
   const s = Array.from(game.collectedStars).sort().join(';');
   const b = Array.from(game.collectedBonusTiles).sort().join(';');
   const d = Array.from(game.openDoors).sort().join(';');
-  return `${p}|${t}|${tr}|${c}|${s}|${b}|${d}`;
+  const tm = Array.from(game.doorTimers.entries())
+    .sort((a, b2) => a[0].localeCompare(b2[0]))
+    .map(([k, v]) => `${k}:${v}`)
+    .join(';');
+  return `${p}|${t}|${tr}|${c}|${s}|${b}|${d}|${tm}`;
 }
 
 interface BFSNode {
