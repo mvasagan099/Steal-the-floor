@@ -517,6 +517,48 @@ export class GameStorage {
     return newlyUnlocked;
   }
 
+  public exportSaveCode(): string {
+    const json = JSON.stringify(this.data);
+    const bytes = new TextEncoder().encode(json);
+    let binary = '';
+    bytes.forEach((b) => {
+      binary += String.fromCharCode(b);
+    });
+    const b64 = btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    return `STFSAVE:${b64}`;
+  }
+
+  public importSaveCode(rawCode: string): { ok: true } | { ok: false; error: string } {
+    const trimmed = rawCode.trim();
+    if (!trimmed.startsWith('STFSAVE:')) {
+      return { ok: false, error: 'Backup code must start with "STFSAVE:"' };
+    }
+    try {
+      let padded = trimmed.slice('STFSAVE:'.length).replace(/-/g, '+').replace(/_/g, '/');
+      while (padded.length % 4 !== 0) padded += '=';
+      const binary = atob(padded);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      const parsed = JSON.parse(new TextDecoder().decode(bytes)) as Partial<PlayerData>;
+      if (
+        !parsed ||
+        typeof parsed !== 'object' ||
+        typeof parsed.highestUnlockedLevel !== 'number' ||
+        typeof parsed.coins !== 'number'
+      ) {
+        return { ok: false, error: 'Backup data is invalid or incomplete.' };
+      }
+
+      this.data = this.migrate(parsed);
+      this.save();
+      return { ok: true };
+    } catch {
+      return { ok: false, error: 'Could not decode save backup code.' };
+    }
+  }
+
   public resetProgress(): void {
     this.data = this.getDefaultData();
     this.save();

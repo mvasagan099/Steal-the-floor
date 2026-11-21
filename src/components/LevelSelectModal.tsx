@@ -54,6 +54,7 @@ export const LevelSelectModal: React.FC<LevelSelectModalProps> = ({
           const completedCount = worldLevels.filter(
             (l) => playerData.levelProgress[l.id]?.completed
           ).length;
+          const worldMastered = completedCount === worldLevels.length;
 
           return (
             <button
@@ -68,10 +69,13 @@ export const LevelSelectModal: React.FC<LevelSelectModalProps> = ({
                   : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-850'
               }`}
             >
-              <div className="text-[10px] font-bold uppercase opacity-80">World {w.id}</div>
-              <div className="text-xs font-black truncate max-w-[110px]">{w.name}</div>
+              <div className="text-[10px] font-bold uppercase opacity-80 flex items-center justify-between gap-1">
+                <span>World {w.id}</span>
+                {worldMastered && <span title="World Mastered">👑</span>}
+              </div>
+              <div className="text-xs font-black truncate max-w-[115px]">{w.name}</div>
               <div className="text-[9px] font-mono mt-0.5 opacity-90">
-                {completedCount}/20 Cleared
+                {completedCount}/{worldLevels.length} Cleared
               </div>
             </button>
           );
@@ -79,12 +83,22 @@ export const LevelSelectModal: React.FC<LevelSelectModalProps> = ({
       </div>
 
       {/* World Description Banner */}
-      <div className="px-4 py-2 bg-slate-900/60 border-b border-slate-800/50 flex items-center justify-between">
-        <div>
+      <div className="px-4 py-2 bg-slate-900/60 border-b border-slate-800/50 flex items-center justify-between gap-2">
+        <div className="min-w-0">
           <span className="text-xs font-bold text-sky-400">{world.name}</span>
-          <p className="text-[11px] text-slate-400 truncate max-w-[280px]">
+          <p className="text-[11px] text-slate-400 truncate">
             {world.description}
           </p>
+        </div>
+        <div className="flex-none flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-800/80 border border-slate-700 text-[11px] font-bold text-amber-300">
+          <Star size={11} className="fill-amber-400 text-amber-400" />
+          <span>
+            {levelsInWorld.reduce(
+              (sum, l) => sum + (playerData.levelProgress[l.id]?.stars || 0),
+              0
+            )}
+            /{levelsInWorld.length * 3}
+          </span>
         </div>
       </div>
 

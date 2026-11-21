@@ -1,152 +1,110 @@
 # Steal the Floor
 
-> **A polished, offline-first mobile casual puzzle and strategy game built with React, TypeScript, Phaser 3, Tailwind CSS, and Capacitor for Android.**
+> **A 100% offline, ad-free spatial puzzle & strategy game built with React 19, TypeScript, Phaser 3, Tailwind CSS v4, and Capacitor 7 for Android & PWA.**
 
-![Steal the Floor Icon](public/icon.svg)
-
----
-
-## 🎮 Overview
-
-In **Steal the Floor**, the player controls a cute mascot ("Puff") stranded on floating islands separated by open void. To reach the exit flag, the player must strategically place and reclaim a limited inventory of reusable floor tiles.
-
-Every time the character advances off a standard bridge tile, that tile returns to their inventory. However, tricky hazards like **sticky honey** (trapping tiles permanently), **crumbling stone** (breaking on departure), **one-way arrows**, **switches & locking gates**, and **teleportation portals** create deep, rewarding spatial puzzles.
+<p align="center">
+  <img src="public/icon-192.png" alt="Steal the Floor Icon" width="128" />
+</p>
 
 ---
 
-## 🌟 Key Features
+## 🎮 Core Mechanic: Solid-Ground Reclamation
 
-- **100 Solver-Validated Handcrafted Levels** across 5 distinct worlds:
-  - **World 1: First Steps (Levels 1–20)** — Movement, tile placement, tile recovery, and star collection.
-  - **World 2: Think Ahead (Levels 21–40)** — Rock formations, winding paths, and tight inventory allocations.
-  - **World 3: Tricky Tiles (Levels 41–60)** — Sticky honey floors, crumbling platforms, and one-way arrows.
-  - **World 4: Open the Way (Levels 61–80)** — Pressure switches, laser gates, and dimensional teleporters.
-  - **World 5: Master Builder (Levels 81–100)** — Elaborate multi-stage spatial puzzles combining all mechanics.
-- **Mathematical BFS Solver**:
-  - Every single level is proven mathematically solvable before publishing.
-  - Generates optimal minimal moves (par) for 3-star ratings.
-  - Powers an in-game **Hint System** that calculates the next best move in real-time.
-- **5 Unlockable Visual Themes**:
-  - ☁️ *Floating Sky* (serene azure skies & floating islands)
-  - 🍬 *Candy World* (pastel pink sweets & wafer tiles)
-  - 🏝️ *Ocean Islands* (tropical teal lagoons & sand bars)
-  - 🚀 *Neon Space* (cyber synthwave nebula & laser grid)
-  - 🌲 *Forest Adventure* (lush mossy stones & canopy glow)
-- **Mascot Customization**:
-  - Unlockable skins: *Sunny Puff*, *Berry Puff*, *Aqua Puff*, *Moss Puff*, and *Royal Gold*.
-- **Daily Challenge**:
-  - Deterministic procedural daily puzzle seeded by calendar date.
-  - Rewards bonus coins and tracks daily completion streaks.
-- **Achievements & Replayability**:
-  - 11 tracking badges for milestone completions, star collections, and perfect runs.
-- **Procedural Web Audio Engine**:
-  - 100% offline, synthesized sound effects for footsteps, tile placement, recovery whooshes, star chimes, and victory fanfares.
-  - Ambient relaxing puzzle background music with volume and mute controls.
-  - Native haptic vibration feedback on mobile.
-- **100% Offline & Private**:
-  - Zero external servers or tracking.
-  - Versioned local storage save system with migration support.
-- **Android Ready (Capacitor)**:
-  - Portrait orientation locked.
-  - Safe-area inset support for modern edge-to-edge screens.
-  - Ultra-lightweight APK: **4.4 MB** (well under the 50 MB mobile target).
+In **Steal the Floor**, you guide **Puff** across floating islands suspended over open void using a limited hand of reusable bridge tiles:
+
+- **Bridge the Void:** Tap, swipe, or use `WASD`/Arrow keys to drop bridge tiles into empty void up to your tile budget (`maxTiles`).
+- **Reclaim on Solid Ground:** Step onto any solid platform (Start, Exit, Fixed Islands, Switches, One-Way Pads, Portals, Ice, Open Gates, or intact Crumbling Stones) and all un-trapped bridge tiles fly back into your hand!
+- **Master Every Twist:** Collect all glowing **Gems** before reaching the exit flag, manage **Sticky Honey** sacrifices, race **Timed Countdown Gates**, glide across **Frozen Ice Rinks**, and collect **+1 Bonus Tiles** to expand your reach.
 
 ---
 
-## 🛠️ Technology Stack
+## 🌟 Highlights (v2.0.0)
+
+- **140 Solver-Validated Campaign Levels across 7 Worlds (420 Stars):**
+  - **World 1 — First Steps (1–20):** Bridge reach, island reclamation, and gem detours.
+  - **World 2 — Think Ahead (21–40):** Granite rock formations, tight corridors, and strict tile budgets.
+  - **World 3 — Tricky Tiles (41–60):** Sticky honey traps, crumbling stones, and one-way arrows.
+  - **World 4 — Open the Way (61–80):** Color-coded switches/laser gates (`A`/`B`) and warp portals (`I`/`II`).
+  - **World 5 — Master Builder (81–100):** Multi-stage spatial trials combining Worlds 1–4.
+  - **World 6 — Frost & Spark (101–120):** Continuous **Ice Sliding (`I`)** and permanent **+1 Bonus Tile Pickups (`+`)**.
+  - **World 7 — Clockwork Forge (121–140):** **Timed Switches & Countdown Gates** where every move counts down before the gate seals shut.
+- **Automated Mathematical Quality Gates (BFS Solver):**
+  - Every campaign level is proven solvable, par-calibrated, and verified so no switch, portal, crumbling stone, one-way arrow, ice runway, `+1` bonus tile, sticky trap, or timed gate can be trivially bypassed.
+  - Powers real-time **State-Aware Hints** (`H`) and **Live Deadlock Detection** (pulsing Undo warning when no winning path remains).
+- **Endless Mode — Void Rush:**
+  - Infinite stream of solver-verified procedural stages with escalating mechanics, personal-best streaks, and rewards.
+- **Daily Challenge Archive & Monthly Medals:**
+  - Deterministic offline daily puzzles seeded by local calendar date, interactive **Monthly Archive Calendar** for replaying past days, **Bronze (5) / Silver (12) / Gold (20)** monthly trophies, and spoiler-free emoji share cards.
+- **Builder Studio (In-Game Level Editor + Offline Share Codes):**
+  - Tap-to-paint `6×7` puzzle creator supporting islands, rocks, gems, sticky honey, crumbling stone, ice, `+1` bonus tiles, portals, switches, and optional timed gate countdowns.
+  - Built-in BFS solver verification + zero-server `STF1:` Base64URL share & import codes.
+- **World-Themed Atmosphere, Cosmetics & Procedural Web Audio:**
+  - **7 Visual Themes** (*Floating Sky*, *Candy World*, *Ocean Islands*, *Neon Space*, *Forest Adventure*, *Arctic Frost*, *Clockwork Forge*) each with distinct living background particles and custom 4-bar adaptive musical progressions.
+  - **7 Puff Skins**, **5 Jump Particle Trails**, and **14 Achievements** with live unlock toasts and Player Stats.
+- **100% Offline, Ad-Free & Private:**
+  - Zero ads, zero analytics, zero remote servers, and no `INTERNET` permission in `AndroidManifest.xml`.
+  - Offline-first PWA (`public/manifest.json` + `public/sw.js`) and portable `STFSAVE:` backup codes in Settings to transfer saves across devices.
+
+---
+
+## 🛠️ Tech Stack
 
 - **Game Engine:** Phaser 3 (`phaser@3.90.0`)
-- **Frontend / UI:** React 19, TypeScript, Tailwind CSS v4, Lucide Icons, Canvas Confetti
-- **Build Tool:** Vite 6
-- **Mobile Runtime:** Capacitor 7 (`@capacitor/core`, `@capacitor/android`, `@capacitor/cli`)
-- **Testing:** Vitest (`vitest run` running unit tests and level solvability tests)
-- **Audio:** Web Audio API (procedural synthesis)
+- **UI & Framework:** React 19, TypeScript 5.8, Tailwind CSS v4, Lucide Icons, Canvas Confetti
+- **Build Tool:** Vite 6 (with Rollup vendor chunk splitting)
+- **Mobile Runtime:** Capacitor 7 (`@capacitor/core`, `@capacitor/android`, `@capacitor/app`, `@capacitor/haptics`)
+- **Testing & CI:** Vitest (`tests/logic.test.ts`, `tests/levels.test.ts`, `tests/systems.test.ts`) + GitHub Actions (`.github/workflows/ci.yml`)
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18+ (tested with Node 22)
-- npm 9+
-- Java 17+ & Android SDK (for native Android builds)
-
-### Installation
+## 🚀 Development & Verification
 
 ```bash
-git clone https://github.com/mvasagan099/Steal-the-floor.git
-cd Steal-the-floor
+# Install dependencies
 npm install
-```
 
-### Development Server
-
-Start Vite local dev server:
-
-```bash
+# Run development server (http://localhost:5173)
 npm run dev
-```
 
-Open `http://localhost:5173` in your browser.
-
-### Automated Test Suite
-
-Run the full Vitest suite covering mechanics, engine logic, systems, storage, and 100/100 level solvability:
-
-```bash
+# Run full unit & 140-level BFS Quality Gate test suite
 npm test
-```
 
-### Production Web Build
+# Re-validate and regenerate src/levels/levelsData.ts from ASCII grids
+npx tsx scripts/buildLevels.ts
 
-```bash
+# Type-check and build production bundle (dist/)
 npm run build
 ```
 
-This compiles TypeScript and builds optimized static assets to `dist/`.
-
 ---
 
-## 📱 Android Build & Packaging
-
-Sync the web build to the Android Capacitor project:
+## 📱 Android Build & Release Packaging
 
 ```bash
+# Build web assets & sync Capacitor plugins/assets into android/
+npm run build
 npx cap sync android
-```
 
-Build the native debug APK:
+# Build debug APK
+cd android && ./gradlew assembleDebug
 
-```bash
-cd android
-./gradlew assembleDebug
+# Build signed Play Store App Bundle (.aab) via environment variables
+export STEAL_FLOOR_KEYSTORE_PATH="/path/to/upload-keystore.jks"
+export STEAL_FLOOR_KEYSTORE_PASSWORD="your-store-password"
+export STEAL_FLOOR_KEY_ALIAS="your-key-alias"
+export STEAL_FLOOR_KEY_PASSWORD="your-key-password"
+cd android && ./gradlew bundleRelease
 ```
-
-The compiled APK will be generated at:
-```
-android/app/build/outputs/apk/debug/app-debug.apk
-```
-(A pre-built copy is also available in `build-artifacts/steal-the-floor-debug.apk`).
 
 ---
 
-## 🧩 Mechanics Reference
+## ⌨️ Controls
 
-| Element | Icon / Texture | Behavior |
-| :--- | :---: | :--- |
-| **Start Tile** | Lush Island with S | Fixed spawn point for the player mascot. |
-| **Exit Tile** | Gold Island with Flag | Goal destination; stepping here with all stars collected completes the level. |
-| **Bridge Tile** | Cyan Planks | Placed when stepping into empty space. Recycled back to inventory upon stepping off. |
-| **Sticky Floor** | Purple Honey | Traps placed bridge tiles permanently when stepped off, reducing inventory. |
-| **Crumbling Tile** | Cracked Slate | Breaks into void after being stepped off; cannot be walked on again. |
-| **One-Way Arrow** | Directional Chevron | Can only be exited in the direction the chevron points. |
-| **Switch & Door** | Pressure Pad / Laser Gate | Stepping on the switch toggles the door open or closed. |
-| **Teleporter** | Swirling Rune Vortex | Instantly warps the character between linked portal pads. |
-| **Collectible Star** | Gleaming 5-Point Star | Optional or required collectible; needed for 3-star rating. |
-
----
-
-## 📄 License
-
-MIT License. Designed and developed for the Steal the Floor casual puzzle mobile experience.
+| Input | Action |
+| :--- | :--- |
+| **Tap adjacent cell / Swipe** | Move Puff / drop bridge tile |
+| **`WASD` / Arrow Keys** | Move Puff |
+| **`Z` / `Backspace`** | Undo move |
+| **`R`** | Restart level |
+| **`H`** | Show live-state optimal hint |
+| **`Esc` / Android Back** | Close modal or toggle Pause menu |

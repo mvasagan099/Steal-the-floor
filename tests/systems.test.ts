@@ -240,4 +240,26 @@ describe('Game Systems QA Test Suite', () => {
     expect(data.achievements['world7_cleared'].progress).toBe(20);
     expect(data.achievements['world7_cleared'].unlocked).toBe(true);
   });
+
+  it('exports and restores offline STFSAVE backup codes cleanly', () => {
+    storage.recordLevelVictory(1, 4, 3, { usedUndo: false });
+    storage.recordDailyCompletion('2026-11-21', false);
+    const coinsBefore = storage.getData().coins;
+    const backup = storage.exportSaveCode();
+    expect(backup.startsWith('STFSAVE:')).toBe(true);
+
+    // Wipe local data and restore from backup code
+    storage.resetProgress();
+    expect(storage.getData().coins).toBe(0);
+    expect(storage.getData().totalStars).toBe(0);
+
+    const restored = storage.importSaveCode(backup);
+    expect(restored.ok).toBe(true);
+    expect(storage.getData().coins).toBe(coinsBefore);
+    expect(storage.getData().totalStars).toBe(3);
+    expect(storage.getData().completedDailyDates).toContain('2026-11-21');
+
+    // Rejects malformed codes
+    expect(storage.importSaveCode('BAD_CODE').ok).toBe(false);
+  });
 });
