@@ -120,6 +120,19 @@ export const THEME_PALETTES: Record<string, ThemeColors> = {
     bgGradBottom: '#09090b',
     accent: '#34d399',
   },
+  'skyward-spire': {
+    name: 'Skyward Spire',
+    tileFixed: '#38bdf8',
+    tileFixedSide: '#0369a1',
+    tileBridge: '#fcd34d',
+    tileBridgeSide: '#d97706',
+    tileSticky: '#f472b6',
+    tileCrumbling: '#cbd5e1',
+    tileRock: '#334155',
+    bgGradTop: '#0284c7',
+    bgGradBottom: '#0f172a',
+    accent: '#fcd34d',
+  },
 };
 
 const PAIR_COLORS = [
@@ -795,4 +808,59 @@ export function generateAllTextures(
   };
   drawCrate('item_crate', false);
   drawCrate('item_crate_lit', true);
+
+  // 18. Springboard Launch Pad (vaults Puff 2 tiles forward over obstacles/void)
+  createTile(
+    'tile_spring',
+    (ctx) => {
+      const grad = ctx.createLinearGradient(0, 0, S, S);
+      grad.addColorStop(0, '#0f766e');
+      grad.addColorStop(1, '#115e59');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
+
+      // Outer luminous ring
+      ctx.strokeStyle = highContrast ? '#fef08a' : '#2dd4bf';
+      ctx.lineWidth = highContrast ? 6 : 4;
+      ctx.beginPath();
+      ctx.arc(S / 2, S / 2 - 8, 34, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Inner coiled bounce pad
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(S / 2, S / 2 - 8, 22, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Concentric coil ring
+      ctx.strokeStyle = '#92400e';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(S / 2, S / 2 - 8, 13, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Bright launch star core
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(S / 2, S / 2 - 8, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 4 directional chevron tips around the ring
+      ctx.fillStyle = '#fef08a';
+      const cx = S / 2;
+      const cy = S / 2 - 8;
+      const offsets = [
+        { dx: 0, dy: -36 },
+        { dx: 0, dy: 36 },
+        { dx: -36, dy: 0 },
+        { dx: 36, dy: 0 },
+      ];
+      offsets.forEach(({ dx, dy }) => {
+        ctx.beginPath();
+        ctx.arc(cx + dx, cy + dy, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    },
+    '#042f2e'
+  );
 }

@@ -501,4 +501,72 @@ describe('PuzzleGame Engine Mechanics', () => {
     expect(game.move({ x: 1, y: 1 }).success).toBe(true);
     expect(game.move({ x: 1, y: 2 }).code).toBe('SUCCESS_WIN');
   });
+
+  it('vaults 2 tiles over rocks via Springboards, chains consecutive springs, lands on void, and restores on undo', () => {
+    const level: LevelDefinition = {
+      id: 16,
+      world: 9,
+      name: 'Springboard Chain Test',
+      cols: 6,
+      rows: 2,
+      maxTiles: 1,
+      start: { x: 0, y: 0 },
+      exit: { x: 5, y: 0 },
+      springs: [
+        { x: 1, y: 0 },
+        { x: 3, y: 0 },
+        { x: 0, y: 1 },
+      ],
+      rocks: [
+        { x: 2, y: 0 },
+        { x: 4, y: 0 },
+        { x: 2, y: 1 }, // blocks landing when approaching (0,1) from left—wait from top (0,0)->(0,1) lands out of bounds!
+      ],
+      parMoves: 1,
+    };
+
+    const game = new PuzzleGame(level);
+
+    // Stepping south onto (0,1) would land at (0,3) out of bounds -> blocked with ERR_SPRING_BLOCKED
+    const blocked = game.move({ x: 0, y: 1 });
+    expect(blocked.success).toBe(false);
+    expect(blocked.code).toBe('ERR_SPRING_BLOCKED');
+
+    // Stepping right onto (1,0) vaults over rock (2,0) onto spring (3,0), then chains over rock (4,0) straight onto exit (5,0)!
+    const chain = game.move({ x: 1, y: 0 });
+    expect(chain.success).toBe(true);
+    expect(chain.code).toBe('SUCCESS_WIN');
+    expect(chain.springPath).toEqual([
+      { x: 3, y: 0 },
+      { x: 5, y: 0 },
+    ]);
+    expect(game.player).toEqual({ x: 5, y: 0 });
+
+    // Undo cleanly returns to start
+    game.undo();
+    expect(game.player).toEqual({ x: 0, y: 0 });
+    expect(game.status).toBe('playing');
+
+    // Also verify landing from a Springboard onto void consumes 1 bridge tile
+    const voidSpringLevel: LevelDefinition = {
+      id: 17,
+      world: 9,
+      name: 'Void Spring Landing',
+      cols: 5,
+      rows: 1,
+      maxTiles: 1,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 0 },
+      springs: [{ x: 1, y: 0 }],
+      rocks: [{ x: 2, y: 0 }],
+      parMoves: 2,
+    };
+    const g2 = new PuzzleGame(voidSpringLevel);
+    const hop = g2.move({ x: 1, y: 0 });
+    expect(hop.success).toBe(true);
+    expect(g2.player).toEqual({ x: 3, y: 0 });
+    expect(g2.tiles.has('3,0')).toBe(true);
+    expect(g2.inventory).toBe(0);
+    expect(g2.move({ x: 4, y: 0 }).code).toBe('SUCCESS_WIN');
+  });
 });

@@ -1,5 +1,5 @@
 // AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 160 Handcrafted levels across 8 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 180 Handcrafted levels across 9 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = [
@@ -15039,6 +15039,2118 @@ export const ALL_LEVELS: LevelDefinition[] = [
       }
     ],
     "star2Moves": 29
+  },
+  {
+    "id": 161,
+    "world": 9,
+    "name": "First Leap",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 1
+    },
+    "exit": {
+      "x": 5,
+      "y": 5
+    },
+    "parMoves": 9,
+    "hint": "Step onto the golden Springboard (J) to vault 2 tiles forward right over rocks and void!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 1
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "star2Moves": 12
+  },
+  {
+    "id": 162,
+    "world": 9,
+    "name": "Rock Hurdle",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 12,
+    "hint": "Vault east over the first wall, then step south onto the second springboard to clear the stone barrier!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 163,
+    "world": 9,
+    "name": "Double Bounce",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Step east onto the first springboard to chain-bounce straight across two barriers in a single leap!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      }
+    ],
+    "springs": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 164,
+    "world": 9,
+    "name": "Four-Way Pad",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 2,
+      "y": 6
+    },
+    "parMoves": 8,
+    "hint": "Approach the central Springboard from the west to grab the eastern gem, then approach from the north to vault south!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "star2Moves": 10
+  },
+  {
+    "id": 165,
+    "world": 9,
+    "name": "Abyssal Hop",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "With only 1 bridge tile, launch off springboards into void and reclaim your tile on the next island!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 166,
+    "world": 9,
+    "name": "Honey Hurdle",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 0
+    },
+    "parMoves": 7,
+    "hint": "Stepping on sticky honey traps your only tile—detour south and use the Springboard to vault over the wall!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "springs": [
+      {
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "star2Moves": 9
+  },
+  {
+    "id": 167,
+    "world": 9,
+    "name": "Spring & Slide",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "Launch over the rock wall, glide down the frozen runway, grab the mid-board gem, and bridge to the exit!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "ice": [
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 168,
+    "world": 9,
+    "name": "Ice Catapult",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Vault onto the frozen upper corner, collect the western gem, then approach the springboard from the north to vault south!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "ice": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 169,
+    "world": 9,
+    "name": "Cracked Landing",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Vault onto crumbling checkpoints — plan your route cleanly before the fragile stones shatter behind you!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 170,
+    "world": 9,
+    "name": "Switch Vault",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Vault into the upper switch vault, trigger Switch a, then use the lower springboard to pass Gate A!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 171,
+    "world": 9,
+    "name": "Portal Bounce",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Launch right over the rock wall straight into Warp Portal 1, then bounce south to the exit!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 172,
+    "world": 9,
+    "name": "Spark Vault",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 5
+    },
+    "parMoves": 10,
+    "hint": "Vault east to collect the +1 Bonus Tile so you have enough reach to cross the southern void!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 173,
+    "world": 9,
+    "name": "Clockwork Leap",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 1
+    },
+    "exit": {
+      "x": 5,
+      "y": 5
+    },
+    "parMoves": 13,
+    "hint": "Press Timed Switch a and immediately springboard over the wall straight onto Gate A before it shuts!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 0
+        },
+        "timedDuration": 3
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 174,
+    "world": 9,
+    "name": "Crate & Vault",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 12,
+    "hint": "Shove the crate onto Weighted Plate a, then step south onto the springboard to vault right over the barrier!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 1
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 175,
+    "world": 9,
+    "name": "Arrow Launch",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 12,
+    "hint": "Follow the one-way arrow onto the first springboard, ride south into the second leap, and sweep the gem!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "springs": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "direction": "down"
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 176,
+    "world": 9,
+    "name": "Twin Springs",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 14,
+    "hint": "Use both omni-directional springboards from multiple angles to sweep both upper gems before leaping south!",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "star2Moves": 18
+  },
+  {
+    "id": 177,
+    "world": 9,
+    "name": "Double Gate Spire",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 2,
+      "y": 6
+    },
+    "parMoves": 14,
+    "hint": "Unlock Gate A, vault over the top wall, grab the gem and Switch b, warp through Portal 1, and vault through Gate B!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "springs": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 5,
+          "y": 1
+        }
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 3,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 4
+        }
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 0,
+          "y": 2
+        },
+        "posB": {
+          "x": 0,
+          "y": 4
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "star2Moves": 18
+  },
+  {
+    "id": 178,
+    "world": 9,
+    "name": "Frozen Freight Vault",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 1,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Glide the crate across ice onto Weighted Plate a, vault south off the springboard, grab the gem, and exit!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 1
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 179,
+    "world": 9,
+    "name": "Skyward Labyrinth",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 12,
+    "hint": "Vault into Portal 1, cross the crumbling stone, bounce south over the divide, and avoid the sticky honey trap!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 180,
+    "world": 9,
+    "name": "Spire Grandmaster",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "The 180th grand finale! Grab +1, park the crate on Plate a, vault south through Gate A, hit Timed Switch b, and leap straight into Gate B!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      },
+      {
+        "x": 5,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "springs": [
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        },
+        "holdSwitch": true
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 5,
+          "y": 3
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 6
+        },
+        "timedDuration": 2
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "star2Moves": 20
   }
 ];
 
@@ -15051,4 +17163,5 @@ export const WORLDS = [
   { id: 6, name: 'Frost & Spark', levels: [101, 120], theme: 'arctic-frost', description: 'Glide across frozen ice rinks and collect +1 Bonus Tiles to expand your reach.' },
   { id: 7, name: 'Clockwork Forge', levels: [121, 140], theme: 'clockwork-forge', description: 'Race countdown switches and timed gates across mechanical gauntlets.' },
   { id: 8, name: 'Obsidian Sanctum', levels: [141, 160], theme: 'crate-sanctum', description: 'Push heavy crates onto weighted pressure plates to unlock ancient sanctum gates.' },
+  { id: 9, name: 'Skyward Spire', levels: [161, 180], theme: 'skyward-spire', description: 'Vault 2 tiles over walls and chasms with golden springboard launch pads.' },
 ];

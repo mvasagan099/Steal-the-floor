@@ -55,6 +55,7 @@ export class PuzzleGame {
   private stickySet: Set<string>;
   private crumblingSet: Set<string>;
   private iceSet: Set<string>;
+  private springSet: Set<string>;
   private bonusTileSet: Set<string>;
   private oneWayMap: Map<string, Direction>;
   private switchMap: Map<string, string>; // coordKey -> switchDoorId
@@ -101,6 +102,14 @@ export class PuzzleGame {
       const key = coordToKey(c);
       this.iceSet.add(key);
       // Ice tiles are solid platforms that slide the player in their move direction
+      this.fixedSet.add(key);
+    });
+
+    this.springSet = new Set<string>();
+    level.springs?.forEach((c) => {
+      const key = coordToKey(c);
+      this.springSet.add(key);
+      // Springboards are solid launch pads that vault Puff 2 cells in their move direction
       this.fixedSet.add(key);
     });
 
@@ -177,9 +186,23 @@ export class PuzzleGame {
     const key = coordToKey(coord);
     if (this.rockSet.has(key)) return false;
     if (this.crates.has(key)) return false;
+    if (this.springSet.has(key)) return false;
     const doorId = this.doorMap.get(key);
     if (doorId && !this.openDoors.has(doorId)) return false;
     return this.isSolidGround(key);
+  }
+
+  private canSpringLand(coord: Coordinate, availableAfterReclaim: number): boolean {
+    if (coord.x < 0 || coord.x >= this.level.cols || coord.y < 0 || coord.y >= this.level.rows) {
+      return false;
+    }
+    const key = coordToKey(coord);
+    if (this.rockSet.has(key)) return false;
+    if (this.crates.has(key)) return false;
+    const doorId = this.doorMap.get(key);
+    if (doorId && !this.openDoors.has(doorId)) return false;
+    if (this.isSolidGround(key) || this.trapped.has(key)) return true;
+    return availableAfterReclaim > 0;
   }
 
   public canMoveTo(target: Coordinate): { allowed: boolean; reason?: string } {
@@ -237,6 +260,26 @@ export class PuzzleGame {
         return {
           allowed: false,
           reason: 'Crate blocked! Push crates onto open solid ground.',
+        };
+      }
+      return { allowed: true };
+    }
+
+    if (this.springSet.has(targetKey)) {
+      const dir = getDirection(this.player, target)!;
+      const land: Coordinate = {
+        x: target.x + DIR_DELTA[dir].x * 2,
+        y: target.y + DIR_DELTA[dir].y * 2,
+      };
+      const prevWillTrap = this.stickySet.has(currentKey) && this.tiles.has(currentKey) ? 1 : 0;
+      const bonusOnSpring =
+        this.bonusTileSet.has(targetKey) && !this.collectedBonusTiles.has(targetKey) ? 1 : 0;
+      const availableAfterReclaim =
+        this.currentMaxTiles + bonusOnSpring - (this.trapped.size + prevWillTrap);
+      if (!this.canSpringLand(land, availableAfterReclaim)) {
+        return {
+          allowed: false,
+          reason: 'Spring landing blocked! Clear or open the landing spot 2 tiles ahead.',
         };
       }
       return { allowed: true };
@@ -367,6 +410,7 @@ export class PuzzleGame {
       else if (check.reason?.includes('Out of tiles')) code = 'ERR_NO_TILES';
       else if (check.reason?.includes('boundaries')) code = 'ERR_OUT_OF_BOUNDS';
       else if (check.reason?.includes('Crate blocked')) code = 'ERR_CRATE_BLOCKED';
+      else if (check.reason?.includes('Spring landing')) code = 'ERR_SPRING_BLOCKED';
 
       return {
         success: false,
@@ -419,9 +463,17 @@ export class PuzzleGame {
 
     // 2b. Tick down any active timed gates (a gate does not snap shut while player is standing on it)
     const standingDoorId = this.doorMap.get(targetKey);
+    const springLandDoorId = this.springSet.has(targetKey)
+      ? this.doorMap.get(
+          coordToKey({
+            x: target.x + DIR_DELTA[moveDir].x * 2,
+            y: target.y + DIR_DELTA[moveDir].y * 2,
+          })
+        )
+      : undefined;
     for (const [dId, remaining] of Array.from(this.doorTimers.entries())) {
       const nextRemaining = remaining - 1;
-      if (nextRemaining <= 0 && standingDoorId !== dId) {
+      if (nextRemaining <= 0 && standingDoorId !== dId && springLandDoorId !== dId) {
         this.doorTimers.delete(dId);
         this.openDoors.delete(dId);
         result.doorToggled = { id: dId, open: false };
@@ -492,6 +544,45 @@ export class PuzzleGame {
 
     // 5. Initial landing cell effects
     triggerCellEffects();
+
+    // 5b. Springboard Launch (vaults 2 cells in moveDir, leaping over obstacles/void; chains if landing on another spring)
+    if (this.springSet.has(coordToKey(this.player))) {
+      const springPath: Coordinate[] = [];
+      const delta = DIR_DELTA[moveDir];
+      let safety = 0;
+
+      while (this.springSet.has(coordToKey(this.player)) && safety < 10) {
+        safety++;
+        const landCell: Coordinate = {
+          x: this.player.x + delta.x * 2,
+          y: this.player.y + delta.y * 2,
+        };
+        if (!this.canSpringLand(landCell, this.inventory)) break;
+
+        const landKey = coordToKey(landCell);
+        if (!this.hasWalkableFloor(landKey)) {
+          this.tiles.add(landKey);
+          result.placedTile = { ...landCell };
+        }
+
+        this.player = landCell;
+        springPath.push({ ...landCell });
+        reclaimOnSolid(landKey);
+        triggerCellEffects();
+
+        if (
+          (areCoordsEqual(this.player, this.level.exit) &&
+            this.collectedStars.size === this.totalStars) ||
+          this.teleporterMap.has(coordToKey(this.player))
+        ) {
+          break;
+        }
+      }
+
+      if (springPath.length > 0) {
+        result.springPath = springPath;
+      }
+    }
 
     // 6. Ice Sliding
     if (this.iceSet.has(coordToKey(this.player))) {

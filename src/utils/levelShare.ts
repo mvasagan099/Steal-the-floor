@@ -15,6 +15,7 @@ interface CompactLevelPayload {
   h?: [number, number][]; // sticky
   cr?: [number, number][]; // crumbling
   i?: [number, number][]; // ice
+  j?: [number, number][]; // springs
   b?: [number, number][]; // bonusTiles
   k?: [number, number][]; // crates
   g?: [number, number][]; // stars/gems
@@ -64,6 +65,7 @@ export function encodeLevelCode(level: LevelDefinition): string {
   if (level.sticky?.length) payload.h = level.sticky.map(toPair);
   if (level.crumbling?.length) payload.cr = level.crumbling.map(toPair);
   if (level.ice?.length) payload.i = level.ice.map(toPair);
+  if (level.springs?.length) payload.j = level.springs.map(toPair);
   if (level.bonusTiles?.length) payload.b = level.bonusTiles.map(toPair);
   if (level.crates?.length) payload.k = level.crates.map(toPair);
   if (level.stars?.length) payload.g = level.stars.map(toPair);
@@ -141,6 +143,7 @@ export function decodeLevelCode(
       sticky: p.h?.map(fromPair),
       crumbling: p.cr?.map(fromPair),
       ice: p.i?.map(fromPair),
+      springs: p.j?.map(fromPair),
       bonusTiles: p.b?.map(fromPair),
       crates: p.k?.map(fromPair),
       stars: p.g?.map(fromPair),

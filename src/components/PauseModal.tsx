@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, RotateCcw, Home, Volume2, VolumeX, Film } from 'lucide-react';
+import { Play, RotateCcw, Home, Volume2, VolumeX, Film, BookOpen } from 'lucide-react';
 import { sound } from '../audio/soundManager';
 
 interface PauseModalProps {
@@ -9,6 +9,7 @@ interface PauseModalProps {
   onRestart: () => void;
   onHome: () => void;
   onWatchSolution?: () => void;
+  onOpenCodex?: () => void;
   musicEnabled: boolean;
   sfxEnabled: boolean;
   onToggleMusic: () => void;
@@ -22,6 +23,7 @@ export const PauseModal: React.FC<PauseModalProps> = ({
   onRestart,
   onHome,
   onWatchSolution,
+  onOpenCodex,
   musicEnabled,
   sfxEnabled,
   onToggleMusic,
@@ -104,6 +106,19 @@ export const PauseModal: React.FC<PauseModalProps> = ({
             >
               <Film size={15} />
               <span>Watch Optimal Par</span>
+            </button>
+          )}
+
+          {onOpenCodex && (
+            <button
+              onClick={() => {
+                sound.playTap();
+                onOpenCodex();
+              }}
+              className="w-full py-2.5 bg-slate-800 active:scale-95 transition-all border border-slate-700 text-sky-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 hover:bg-slate-700"
+            >
+              <BookOpen size={15} />
+              <span>Mechanic Field Guide</span>
             </button>
           )}
 

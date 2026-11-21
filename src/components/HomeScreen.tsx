@@ -9,8 +9,9 @@ import {
   Star,
   Infinity as InfinityIcon,
   Hammer,
+  BookOpen,
 } from 'lucide-react';
-import { storage, THEMES, SKINS } from '../storage/gameStorage';
+import { storage, THEMES, SKINS, TOTAL_CAMPAIGN_LEVELS } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
 
 interface HomeScreenProps {
@@ -21,6 +22,7 @@ interface HomeScreenProps {
   onOpenEditor: () => void;
   onOpenThemes: () => void;
   onOpenAchievements: () => void;
+  onOpenCodex: () => void;
   onOpenSettings: () => void;
 }
 
@@ -32,6 +34,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onOpenEditor,
   onOpenThemes,
   onOpenAchievements,
+  onOpenCodex,
   onOpenSettings,
 }) => {
   const data = storage.getData();
@@ -61,7 +64,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <div className="flex flex-col items-center text-center my-auto z-10 max-w-sm">
         <div className="relative mb-4">
           <div
-            className="w-28 h-28 rounded-full border-4 border-white/30 shadow-2xl flex items-center justify-center animate-bounce duration-1000"
+            className={`w-28 h-28 rounded-full border-4 border-white/30 shadow-2xl flex items-center justify-center ${
+              data.settings.reducedMotion ? '' : 'animate-bounce duration-1000'
+            }`}
             style={{
               background: `radial-gradient(circle at 35% 30%, #ffffff 0%, ${activeSkin.color} 35%, ${activeSkin.color} 100%)`,
               boxShadow: `0 20px 45px ${activeSkin.color}55`,
@@ -112,7 +117,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             className="py-3 bg-slate-900/90 active:scale-95 border border-slate-800 hover:border-slate-700 rounded-2xl text-xs font-bold text-slate-200 flex items-center justify-center gap-2 shadow"
           >
             <Grid size={16} className="text-sky-400" />
-            <span>120 Levels</span>
+            <span>{TOTAL_CAMPAIGN_LEVELS} Levels</span>
           </button>
 
           <button
@@ -152,7 +157,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         {/* Utilities Row */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           <button
             onClick={() => {
               sound.playTap();
@@ -173,6 +178,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           >
             <Trophy size={15} className="text-amber-400" />
             <span>Badges</span>
+          </button>
+
+          <button
+            onClick={() => {
+              sound.playTap();
+              onOpenCodex();
+            }}
+            className="py-2.5 bg-slate-900/70 active:scale-95 border border-slate-800/80 rounded-xl text-[11px] font-bold text-slate-300 flex flex-col items-center justify-center gap-1"
+          >
+            <BookOpen size={15} className="text-sky-400" />
+            <span>Guide</span>
           </button>
 
           <button

@@ -271,6 +271,29 @@ export class SoundManager {
     osc.stop(t + 0.16);
   }
 
+  public playSpring(): void {
+    if (!this.sfxEnabled) return;
+    const ctx = this.ensureCtx();
+    if (!ctx || !this.sfxGainNode) return;
+
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(220, t);
+    osc.frequency.exponentialRampToValueAtTime(780, t + 0.14);
+    osc.frequency.exponentialRampToValueAtTime(520, t + 0.22);
+
+    gain.gain.setValueAtTime(0.22, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGainNode);
+    osc.start(t);
+    osc.stop(t + 0.25);
+  }
+
   public playCrumble(): void {
     if (!this.sfxEnabled) return;
     const ctx = this.ensureCtx();
@@ -454,6 +477,12 @@ export class SoundManager {
         { pad: [146.83, 220.0, 261.63, 329.63], chime: [440.0, 523.25, 659.25] },
         { pad: [130.81, 196.0, 246.94, 329.63], chime: [392.0, 493.88, 659.25] },
         { pad: [146.83, 220.0, 293.66, 369.99], chime: [587.33, 659.25, 739.99] },
+      ],
+      'skyward-spire': [
+        { pad: [293.66, 369.99, 440.0, 587.33], chime: [739.99, 880.0, 1174.66] },
+        { pad: [246.94, 329.63, 392.0, 493.88], chime: [659.25, 783.99, 987.77] },
+        { pad: [220.0, 293.66, 369.99, 440.0], chime: [587.33, 739.99, 880.0] },
+        { pad: [261.63, 329.63, 392.0, 523.25], chime: [659.25, 783.99, 1046.5] },
       ],
     };
 

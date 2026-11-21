@@ -338,4 +338,32 @@ describe('Game Systems QA Test Suite', () => {
     expect(storage.getData().settings.reducedMotion).toBe(true);
     expect(storage.getData().settings.highContrast).toBe(true);
   });
+
+  it('tracks World 9 Skyward Spire achievement and STF1 Springboard share codes', () => {
+    for (let id = 161; id <= 180; id++) {
+      storage.recordLevelVictory(id, 10, 3, { usedUndo: false });
+    }
+    expect(storage.getData().achievements['world9_cleared'].unlocked).toBe(true);
+
+    const springLevel: LevelDefinition = {
+      id: 30003,
+      world: 0,
+      name: 'Spring Share Test',
+      cols: 5,
+      rows: 3,
+      maxTiles: 1,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 0 },
+      springs: [{ x: 1, y: 0 }],
+      rocks: [{ x: 2, y: 0 }],
+      parMoves: 2,
+    };
+    const code = encodeLevelCode(springLevel);
+    const dec = decodeLevelCode(code);
+    expect(dec.ok).toBe(true);
+    if (dec.ok) {
+      expect(dec.level.springs).toEqual([{ x: 1, y: 0 }]);
+      expect(dec.parMoves).toBe(2);
+    }
+  });
 });

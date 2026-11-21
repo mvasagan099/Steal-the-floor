@@ -55,6 +55,7 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   const sticky: Coordinate[] = [];
   const crumbling: Coordinate[] = [];
   const ice: Coordinate[] = [];
+  const springs: Coordinate[] = [];
   const bonusTiles: Coordinate[] = [...(input.bonusTiles || [])];
   const crates: Coordinate[] = [];
   const oneWay: OneWayTile[] = [];
@@ -95,6 +96,9 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
           break;
         case 'I':
           ice.push(coord);
+          break;
+        case 'J':
+          springs.push(coord);
           break;
         case '+':
           fixed.push(coord);
@@ -196,6 +200,7 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   if (sticky.length) level.sticky = sticky;
   if (crumbling.length) level.crumbling = crumbling;
   if (ice.length) level.ice = ice;
+  if (springs.length) level.springs = springs;
   if (bonusTiles.length) level.bonusTiles = bonusTiles;
   if (crates.length) level.crates = crates;
   if (oneWay.length) level.oneWay = oneWay;
@@ -3060,11 +3065,303 @@ const world8Drafts: GridLevelInput[] = [
 
 drafts.push(...world8Drafts);
 
+// =========================================================================
+// WORLD 9: SKYWARD SPIRE (Levels 161–180) — Springboard Launch Pads (J)
+// =========================================================================
+const world9Drafts: GridLevelInput[] = [
+  {
+    id: 161, world: 9, name: 'First Leap', maxTiles: 2,
+    grid: [
+      '......',
+      'S#JX#.',
+      '..XX..',
+      '....#.',
+      '......',
+      '..#..E',
+      '......',
+    ],
+    stars: [{ x: 2, y: 5 }],
+    hint: 'Step onto the golden Springboard (J) to vault 2 tiles forward right over rocks and void!',
+  },
+  {
+    id: 162, world: 9, name: 'Rock Hurdle', maxTiles: 2,
+    grid: [
+      'S#JX#.',
+      'XXXX#.',
+      '....J.',
+      'XXXXXX',
+      '..#.#.',
+      '......',
+      'E..#..',
+    ],
+    stars: [{ x: 2, y: 4 }],
+    hint: 'Vault east over the first wall, then step south onto the second springboard to clear the stone barrier!',
+  },
+  {
+    id: 163, world: 9, name: 'Double Bounce', maxTiles: 2,
+    grid: [
+      'SJXJX#',
+      'XXXXX.',
+      '....#.',
+      '..#...',
+      '.#..#.',
+      '..#...',
+      '....#E',
+    ],
+    stars: [{ x: 5, y: 0 }, { x: 1, y: 4 }],
+    hint: 'Step east onto the first springboard to chain-bounce straight across two barriers in a single leap!',
+  },
+  {
+    id: 164, world: 9, name: 'Four-Way Pad', maxTiles: 2,
+    grid: [
+      '..#...',
+      '..#...',
+      'S#J.#.',
+      'XXXXX.',
+      '..#...',
+      '..#...',
+      '..E...',
+    ],
+    stars: [{ x: 4, y: 2 }],
+    hint: 'Approach the central Springboard from the west to grab the eastern gem, then approach from the north to vault south!',
+  },
+  {
+    id: 165, world: 9, name: 'Abyssal Hop', maxTiles: 1,
+    grid: [
+      'S.J..#',
+      '.....J',
+      '......',
+      '......',
+      '..J#.#',
+      '#.....',
+      'E.....',
+    ],
+    stars: [{ x: 5, y: 4 }],
+    hint: 'With only 1 bridge tile, launch off springboards into void and reclaim your tile on the next island!',
+  },
+  {
+    id: 166, world: 9, name: 'Honey Hurdle', maxTiles: 1,
+    grid: [
+      'S#H#.E',
+      '#..XX#',
+      '#JX##.',
+      'XXXXXX',
+      '......',
+      '......',
+      '......',
+    ],
+    hint: 'Stepping on sticky honey traps your only tile—detour south and use the Springboard to vault over the wall!',
+  },
+  {
+    id: 167, world: 9, name: 'Spring & Slide', maxTiles: 2,
+    grid: [
+      'S#JX##',
+      'XXXXI.',
+      '....I.',
+      '..#.I.',
+      '....#.',
+      '.#....',
+      'E.....',
+    ],
+    stars: [{ x: 2, y: 3 }],
+    hint: 'Launch over the rock wall, glide down the frozen runway, grab the mid-board gem, and bridge to the exit!',
+  },
+  {
+    id: 168, world: 9, name: 'Ice Catapult', maxTiles: 2,
+    grid: [
+      'S#JXII',
+      'XXXXXI',
+      '#.#.##',
+      '...J..',
+      'XXXXXX',
+      '...#..',
+      '...E..',
+    ],
+    stars: [{ x: 0, y: 2 }],
+    hint: 'Vault onto the frozen upper corner, collect the western gem, then approach the springboard from the north to vault south!',
+  },
+  {
+    id: 169, world: 9, name: 'Cracked Landing', maxTiles: 2,
+    grid: [
+      'S#JXC.',
+      'XXXX..',
+      '....J.',
+      'XXXXXX',
+      '..C.#.',
+      '.#....',
+      'E.....',
+    ],
+    stars: [{ x: 4, y: 0 }, { x: 1, y: 5 }],
+    hint: 'Vault onto crumbling checkpoints — plan your route cleanly before the fragile stones shatter behind you!',
+  },
+  {
+    id: 170, world: 9, name: 'Switch Vault', maxTiles: 2,
+    grid: [
+      'S#JXa.',
+      'XXXX#.',
+      '.#.#J.',
+      'XXXAXX',
+      '...#..',
+      '.#....',
+      'E.....',
+    ],
+    stars: [{ x: 1, y: 2 }],
+    hint: 'Vault into the upper switch vault, trigger Switch a, then use the lower springboard to pass Gate A!',
+  },
+  {
+    id: 171, world: 9, name: 'Portal Bounce', maxTiles: 2,
+    grid: [
+      'S#JX1.',
+      'XXXXXX',
+      '1.#J..',
+      '...X..',
+      '...#..',
+      '.#....',
+      '....E.',
+    ],
+    stars: [{ x: 1, y: 5 }],
+    hint: 'Launch right over the rock wall straight into Warp Portal 1, then bounce south to the exit!',
+  },
+  {
+    id: 172, world: 9, name: 'Spark Vault', maxTiles: 1,
+    grid: [
+      'S#JX+.',
+      'XXXX..',
+      '....#.',
+      '..#...',
+      '......',
+      '...E..',
+      '......',
+    ],
+    stars: [{ x: 2, y: 3 }],
+    hint: 'Vault east to collect the +1 Bonus Tile so you have enough reach to cross the southern void!',
+  },
+  {
+    id: 173, world: 9, name: 'Clockwork Leap', maxTiles: 2,
+    grid: [
+      'a#JXA.',
+      'SXXX#.',
+      '....#.',
+      '..#...',
+      '......',
+      '...#.E',
+      '......',
+    ],
+    stars: [{ x: 2, y: 3 }],
+    timedDurations: { g1: 3 },
+    hint: 'Press Timed Switch a and immediately springboard over the wall straight onto Gate A before it shuts!',
+  },
+  {
+    id: 174, world: 9, name: 'Crate & Vault', maxTiles: 2,
+    grid: [
+      'S#M#a.',
+      'XXJXXX',
+      '..X...',
+      '..#A..',
+      'XXX#..',
+      '..#...',
+      '....E.',
+    ],
+    stars: [{ x: 2, y: 5 }],
+    holdSwitches: ['g1'],
+    hint: 'Shove the crate onto Weighted Plate a, then step south onto the springboard to vault right over the barrier!',
+  },
+  {
+    id: 175, world: 9, name: 'Arrow Launch', maxTiles: 2,
+    grid: [
+      'S#>JX#',
+      'XXXXX.',
+      '....v#',
+      '....J.',
+      'XXXXXX',
+      '..#.#.',
+      'E.....',
+    ],
+    stars: [{ x: 2, y: 5 }],
+    hint: 'Follow the one-way arrow onto the first springboard, ride south into the second leap, and sweep the gem!',
+  },
+  {
+    id: 176, world: 9, name: 'Twin Springs', maxTiles: 2,
+    grid: [
+      'S.J.#.',
+      '..X...',
+      '#.#.J.',
+      'XXX.X.',
+      '..#.#.',
+      '......',
+      'E..#..',
+    ],
+    stars: [{ x: 0, y: 2 }, { x: 4, y: 0 }],
+    hint: 'Use both omni-directional springboards from multiple angles to sweep both upper gems before leaping south!',
+  },
+  {
+    id: 177, world: 9, name: 'Double Gate Spire', maxTiles: 2,
+    grid: [
+      'S#aJX#',
+      'XXXXXA',
+      '1.#b#.',
+      'XXXXXX',
+      '1#JXB#',
+      '....#.',
+      '..E...',
+    ],
+    stars: [{ x: 2, y: 2 }],
+    hint: 'Unlock Gate A, vault over the top wall, grab the gem and Switch b, warp through Portal 1, and vault through Gate B!',
+  },
+  {
+    id: 178, world: 9, name: 'Frozen Freight Vault', maxTiles: 2,
+    grid: [
+      'S#MIIa',
+      'XXJXXX',
+      '..X...',
+      '..#A.#',
+      'XXXX.#',
+      '...#..',
+      '.E....',
+    ],
+    stars: [{ x: 5, y: 3 }],
+    holdSwitches: ['g1'],
+    hint: 'Glide the crate across ice onto Weighted Plate a, vault south off the springboard, grab the gem, and exit!',
+  },
+  {
+    id: 179, world: 9, name: 'Skyward Labyrinth', maxTiles: 2,
+    grid: [
+      'S#JX1.',
+      'XXXXXX',
+      '1#C#..',
+      'XXXJXX',
+      '.#.X..',
+      '.#H#..',
+      'E.....',
+    ],
+    stars: [{ x: 1, y: 4 }, { x: 3, y: 5 }],
+    hint: 'Vault into Portal 1, cross the crumbling stone, bounce south over the divide, and avoid the sticky honey trap!',
+  },
+  {
+    id: 180, world: 9, name: 'Spire Grandmaster', maxTiles: 1,
+    grid: [
+      'S#+M#a',
+      'XXXJXX',
+      '...X..',
+      '..#A.b',
+      'XXXXJ.',
+      '.#..X.',
+      'E..#B#',
+    ],
+    stars: [{ x: 1, y: 5 }],
+    holdSwitches: ['g1'],
+    timedDurations: { g2: 2 },
+    hint: 'The 180th grand finale! Grab +1, park the crate on Plate a, vault south through Gate A, hit Timed Switch b, and leap straight into Gate B!',
+  },
+];
+
+drafts.push(...world9Drafts);
+
 console.log(`Validating all ${drafts.length} levels with Solid-Ground Reclamation & Quality Gates...\n`);
 
 const validatedLevels: LevelDefinition[] = [];
 const failures: string[] = [];
-const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [] };
+const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] };
 
 for (const draft of drafts) {
   const level = parseGridLevel(draft);
@@ -3083,6 +3380,7 @@ for (const draft of drafts) {
   let usedCrumble = false;
   let usedOneWay = false;
   let usedIce = false;
+  let usedSpring = false;
   let usedBonusTile = false;
   let usedCrate = false;
 
@@ -3105,6 +3403,7 @@ for (const draft of drafts) {
         Math.abs(r.pushedCrate.to.y - r.pushedCrate.from.y);
       if (dist > 1) usedIce = true;
     }
+    if (r.springPath && r.springPath.length > 0) usedSpring = true;
     if ((r.slidePath && r.slidePath.length > 0) || iceKeys.has(`${step.x},${step.y}`)) usedIce = true;
     if (r.bonusTileCollected) usedBonusTile = true;
   }
@@ -3149,6 +3448,10 @@ for (const draft of drafts) {
 
   if (level.crates?.length && !usedCrate) {
     failures.push(`Level ${level.id} ("${level.name}"): Pushable crate UNUSED in optimal solution!`);
+  }
+
+  if (level.springs?.length && !usedSpring) {
+    failures.push(`Level ${level.id} ("${level.name}"): Springboard UNUSED in optimal solution!`);
   }
 
   if (level.teleporters?.length && !usedTeleport) {
@@ -3201,7 +3504,7 @@ for (const draft of drafts) {
 }
 
 console.log('\n--- World Par Curve ---');
-for (const w of [1, 2, 3, 4, 5, 6, 7, 8]) {
+for (const w of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
   const arr = worldPars[w];
   if (arr.length) {
     const avg = (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
@@ -3215,13 +3518,13 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-if (validatedLevels.length !== 160) {
-  console.error(`Expected 160 levels, got ${validatedLevels.length}`);
+if (validatedLevels.length !== 180) {
+  console.error(`Expected 180 levels, got ${validatedLevels.length}`);
   process.exit(1);
 }
 
 const fileContent = `// AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 160 Handcrafted levels across 8 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 180 Handcrafted levels across 9 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = ${JSON.stringify(validatedLevels, null, 2)};
@@ -3235,9 +3538,10 @@ export const WORLDS = [
   { id: 6, name: 'Frost & Spark', levels: [101, 120], theme: 'arctic-frost', description: 'Glide across frozen ice rinks and collect +1 Bonus Tiles to expand your reach.' },
   { id: 7, name: 'Clockwork Forge', levels: [121, 140], theme: 'clockwork-forge', description: 'Race countdown switches and timed gates across mechanical gauntlets.' },
   { id: 8, name: 'Obsidian Sanctum', levels: [141, 160], theme: 'crate-sanctum', description: 'Push heavy crates onto weighted pressure plates to unlock ancient sanctum gates.' },
+  { id: 9, name: 'Skyward Spire', levels: [161, 180], theme: 'skyward-spire', description: 'Vault 2 tiles over walls and chasms with golden springboard launch pads.' },
 ];
 `;
 
 const outputPath = path.resolve(process.cwd(), 'src/levels/levelsData.ts');
 fs.writeFileSync(outputPath, fileContent, 'utf-8');
-console.log(`\n✅ ALL 160 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);
+console.log(`\n✅ ALL 180 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);

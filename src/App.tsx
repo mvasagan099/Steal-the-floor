@@ -28,6 +28,7 @@ import { DailyChallengeModal } from './components/DailyChallengeModal';
 import { AchievementsModal } from './components/AchievementsModal';
 import { SettingsModal } from './components/SettingsModal';
 import { LevelEditorModal } from './components/LevelEditorModal';
+import { CodexModal } from './components/CodexModal';
 
 type AppScreen = 'splash' | 'home' | 'game';
 type PlayMode = 'campaign' | 'daily' | 'endless' | 'custom';
@@ -93,6 +94,11 @@ const MECHANIC_INTROS: Record<number, { icon: string; title: string; tip: string
     title: 'Pushable Crates & Weighted Plates',
     tip: 'Shove heavy crates across solid ground (or ice!) onto weighted pressure plates to hold sanctum gates open while you pass!',
   },
+  161: {
+    icon: '🦘',
+    title: 'Golden Springboards',
+    tip: 'Step onto a Springboard to vault 2 tiles forward—leaping cleanly over rocks, walls, honey, or open void!',
+  },
 };
 
 export const App: React.FC = () => {
@@ -113,6 +119,7 @@ export const App: React.FC = () => {
   const [showDaily, setShowDaily] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
+  const [showCodex, setShowCodex] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
   // Contextual onboarding banner & achievement unlock toast
@@ -217,7 +224,8 @@ export const App: React.FC = () => {
       if (e.key === 'Escape') {
         if (isDemoPlaying) {
           canvasRef.current?.stopDemo();
-        } else if (showPause) setShowPause(false);
+        } else if (showCodex) setShowCodex(false);
+        else if (showPause) setShowPause(false);
         else if (showLevels) setShowLevels(false);
         else if (showDaily) setShowDaily(false);
         else if (showEditor) setShowEditor(false);
@@ -228,7 +236,7 @@ export const App: React.FC = () => {
         return;
       }
 
-      if (screen !== 'game' || showPause || showWin || isDemoPlaying) return;
+      if (screen !== 'game' || showPause || showWin || showCodex || isDemoPlaying) return;
 
       switch (e.key) {
         case 'ArrowUp':
@@ -283,6 +291,7 @@ export const App: React.FC = () => {
     screen,
     showPause,
     showWin,
+    showCodex,
     isDemoPlaying,
     showLevels,
     showDaily,
@@ -298,6 +307,7 @@ export const App: React.FC = () => {
 
     const backPromise = CapacitorApp.addListener('backButton', () => {
       if (isDemoPlaying) canvasRef.current?.stopDemo();
+      else if (showCodex) setShowCodex(false);
       else if (showPause) setShowPause(false);
       else if (showWin) {
         setShowWin(false);
@@ -328,6 +338,7 @@ export const App: React.FC = () => {
     screen,
     showPause,
     showWin,
+    showCodex,
     isDemoPlaying,
     showLevels,
     showDaily,
@@ -593,6 +604,7 @@ export const App: React.FC = () => {
           onOpenEditor={() => setShowEditor(true)}
           onOpenThemes={() => setShowThemes(true)}
           onOpenAchievements={() => setShowAchievements(true)}
+          onOpenCodex={() => setShowCodex(true)}
           onOpenSettings={() => setShowSettings(true)}
         />
 
@@ -632,6 +644,8 @@ export const App: React.FC = () => {
         {showAchievements && (
           <AchievementsModal onBack={() => setShowAchievements(false)} />
         )}
+
+        {showCodex && <CodexModal onBack={() => setShowCodex(false)} />}
 
         {showSettings && (
           <SettingsModal
@@ -772,6 +786,7 @@ export const App: React.FC = () => {
             handleRestartBoard();
           }}
           onWatchSolution={handleWatchSolution}
+          onOpenCodex={() => setShowCodex(true)}
           onHome={() => {
             setShowPause(false);
             canvasRef.current?.stopDemo(false);
@@ -783,6 +798,8 @@ export const App: React.FC = () => {
           onToggleSfx={handleToggleSfx}
         />
       )}
+
+      {showCodex && <CodexModal onBack={() => setShowCodex(false)} />}
 
       {showWin && (
         <LevelCompleteModal

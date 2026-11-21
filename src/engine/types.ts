@@ -30,7 +30,7 @@ export interface TeleporterPair {
 
 export interface LevelDefinition {
   id: number;
-  world: number; // 1 to 8 (0 for daily/endless/custom)
+  world: number; // 1 to 9 (0 for daily/endless/custom)
   name: string;
   cols: number;
   rows: number;
@@ -42,6 +42,7 @@ export interface LevelDefinition {
   sticky?: Coordinate[];
   crumbling?: Coordinate[];
   ice?: Coordinate[];
+  springs?: Coordinate[];
   bonusTiles?: Coordinate[];
   crates?: Coordinate[];
   oneWay?: OneWayTile[];
@@ -62,7 +63,8 @@ export type MoveResultCode =
   | 'ERR_ONE_WAY'
   | 'ERR_NO_TILES'
   | 'ERR_OUT_OF_BOUNDS'
-  | 'ERR_CRATE_BLOCKED';
+  | 'ERR_CRATE_BLOCKED'
+  | 'ERR_SPRING_BLOCKED';
 
 export interface MoveResult {
   success: boolean;
@@ -77,6 +79,7 @@ export interface MoveResult {
   starCollected?: Coordinate;
   bonusTileCollected?: Coordinate;
   pushedCrate?: { from: Coordinate; to: Coordinate };
+  springPath?: Coordinate[];
   slidePath?: Coordinate[];
   doorToggled?: { id: string; open: boolean };
 }

@@ -18,9 +18,9 @@ In **Steal the Floor**, you guide **Puff** across floating islands suspended ove
 
 ---
 
-## 🌟 Highlights (v2.1.0)
+## 🌟 Highlights (v2.2.0)
 
-- **160 Solver-Validated Campaign Levels across 8 Worlds (480 Stars):**
+- **180 Solver-Validated Campaign Levels across 9 Worlds (540 Stars):**
   - **World 1 — First Steps (1–20):** Bridge reach, island reclamation, and gem detours.
   - **World 2 — Think Ahead (21–40):** Granite rock formations, tight corridors, and strict tile budgets.
   - **World 3 — Tricky Tiles (41–60):** Sticky honey traps, crumbling stones, and one-way arrows.
@@ -29,22 +29,24 @@ In **Steal the Floor**, you guide **Puff** across floating islands suspended ove
   - **World 6 — Frost & Spark (101–120):** Continuous **Ice Sliding (`I`)** and permanent **+1 Bonus Tile Pickups (`+`)**.
   - **World 7 — Clockwork Forge (121–140):** **Timed Switches & Countdown Gates** where every move counts down before the gate seals shut.
   - **World 8 — Obsidian Sanctum (141–160):** **Pushable Crates (`M`) & Weighted Pressure Plates** — shove crates across solid ground or ice to hold sanctum gates open.
+  - **World 9 — Skyward Spire (161–180):** **Golden Springboards (`J`)** — vault 2 tiles forward over rocks, honey, and void, chaining consecutive leaps or launching straight onto Ice and Portals.
 - **Automated Mathematical Quality Gates (BFS Solver):**
-  - Every campaign level is proven solvable, par-calibrated, and verified so no switch, portal, crumbling stone, one-way arrow, ice runway, `+1` bonus tile, sticky trap, timed gate, or pushable crate can be trivially bypassed.
+  - Every campaign level is proven solvable, par-calibrated, and verified so no switch, portal, crumbling stone, one-way arrow, ice runway, `+1` bonus tile, sticky trap, timed gate, pushable crate, or springboard can be trivially bypassed.
   - Powers real-time **State-Aware Hints** (`H`), **Live Deadlock Detection** (pulsing Undo warning when no winning path remains), and **Solution Theater ("Watch Optimal Par")** — an animated non-scoring replay of the optimal par route from Pause or after clearing over par.
-- **Speedrun Trials & Accessibility Suite:**
-  - Optional live **Speedrun Timer** in the HUD with per-level **Personal Best (`⚡ NEW BEST!`)** clear times and **Perfect 3★ / Fastest Clear** stats on the Achievements screen.
+- **Speedrun Trials, Mechanic Field Guide & Accessibility Suite:**
+  - Optional live **Speedrun Timer** in the HUD with per-level **Personal Best (`⚡ NEW BEST!`)** clear times, **World Speedrun Totals**, **All / Unsolved / Needs 3★** Level Select filters, and **Perfect 3★ / Fastest Clear** stats on the Achievements screen.
+  - Interactive **Mechanic Field Guide** (`Guide` on Home & Pause) documenting all 13 puzzle mechanics with rules and tactical tips.
   - **High-Contrast Patterns** (crisper tile outlines, corner rivets, and void grid clarity) and **Reduced Motion** (disables camera shake, confetti, ambient particles, and idle bobbing), all persisted in local storage and `STFSAVE:` backups.
 - **Endless Mode — Void Rush:**
   - Infinite stream of solver-verified procedural stages with escalating mechanics, personal-best streaks, and rewards.
 - **Daily Challenge Archive & Monthly Medals:**
   - Deterministic offline daily puzzles seeded by local calendar date, interactive **Monthly Archive Calendar** for replaying past days, **Bronze (5) / Silver (12) / Gold (20)** monthly trophies, and spoiler-free emoji share cards.
 - **Builder Studio (In-Game Level Editor + Offline Share Codes):**
-  - Tap-to-paint `6×7` puzzle creator supporting islands, rocks, gems, sticky honey, crumbling stone, ice, pushable crates, `+1` bonus tiles, portals, and Toggle / Weighted Hold / Timed gates.
+  - Tap-to-paint `6×7` puzzle creator supporting islands, rocks, gems, sticky honey, crumbling stone, ice, springboards, pushable crates, `+1` bonus tiles, portals, and Toggle / Weighted Hold / Timed gates.
   - Built-in BFS solver verification + zero-server `STF1:` Base64URL share & import codes.
 - **World-Themed Atmosphere, Cosmetics & Procedural Web Audio:**
-  - **8 Visual Themes** (*Floating Sky*, *Candy World*, *Ocean Islands*, *Neon Space*, *Forest Adventure*, *Arctic Frost*, *Clockwork Forge*, *Obsidian Sanctum*) each with distinct living background particles and custom 4-bar adaptive musical progressions.
-  - **8 Puff Skins**, **6 Jump Particle Trails**, and **15 Achievements** with live unlock toasts and Player Stats.
+  - **9 Visual Themes** (*Floating Sky*, *Candy World*, *Ocean Islands*, *Neon Space*, *Forest Adventure*, *Arctic Frost*, *Clockwork Forge*, *Obsidian Sanctum*, *Skyward Spire*) each with distinct living background particles and custom 4-bar adaptive musical progressions.
+  - **9 Puff Skins**, **7 Jump Particle Trails**, and **16 Achievements** with live unlock toasts and Player Stats.
 - **100% Offline, Ad-Free & Private:**
   - Zero ads, zero analytics, zero remote servers, and no `INTERNET` permission in `AndroidManifest.xml`.
   - Offline-first PWA (`public/manifest.json` + `public/sw.js`) and portable `STFSAVE:` backup codes in Settings to transfer saves across devices.
@@ -70,7 +72,7 @@ npm install
 # Run development server (http://localhost:5173)
 npm run dev
 
-# Run full unit & 160-level BFS Quality Gate test suite
+# Run full unit & 180-level BFS Quality Gate test suite
 npm test
 
 # Re-validate and regenerate src/levels/levelsData.ts from ASCII grids

@@ -41,6 +41,7 @@ const TRAIL_TINTS: Record<string, number[]> = {
   'trail-frost': [0xe0f2fe, 0x67e8f9, 0x38bdf8],
   'trail-neon': [0xf472b6, 0xc084fc, 0x38bdf8],
   'trail-ember': [0xfb923c, 0xfbbf24, 0xf43f5e],
+  'trail-gold': [0xfef08a, 0xf59e0b, 0xfffbeb],
   'trail-rainbow': [0xf43f5e, 0xfbbf24, 0x4ade80, 0x38bdf8, 0xc084fc],
 };
 
@@ -191,6 +192,14 @@ export class GameScene extends Phaser.Scene {
           speedY: { min: -18, max: -6 },
           scale: { min: 0.12, max: 0.28 },
           frequency: 280,
+        },
+        'skyward-spire': {
+          texture: 'item_star',
+          tint: [0xfef08a, 0x38bdf8, 0xffffff],
+          speedX: { min: 10, max: 24 },
+          speedY: { min: -26, max: -12 },
+          scale: { min: 0.06, max: 0.14 },
+          frequency: 260,
         },
       };
       const amb = ambientMap[this.config.themeId] || ambientMap['floating-sky'];
@@ -426,6 +435,9 @@ export class GameScene extends Phaser.Scene {
 
     // One-way arrow pads
     level.oneWay?.forEach((ow) => this.addStaticTile(ow, `tile_oneway_${ow.direction}`, 1));
+
+    // Springboard launch pads
+    level.springs?.forEach((sp) => this.addStaticTile(sp, 'tile_spring', 1));
 
     // Color-coded Switches & Doors (toggle, timed, or weighted hold-switch)
     const switchKeys = new Set<string>();
@@ -828,6 +840,8 @@ export class GameScene extends Phaser.Scene {
         const fromCoord =
           res.slidePath && res.slidePath.length > 0
             ? res.slidePath[res.slidePath.length - 1]
+            : res.springPath && res.springPath.length > 0
+            ? res.springPath[res.springPath.length - 1]
             : target;
         const fromPos = this.gridToScreen(fromCoord);
         const warpPos = this.gridToScreen(res.teleportedTo);
@@ -857,6 +871,32 @@ export class GameScene extends Phaser.Scene {
         });
       } else {
         this.finishMoveStep(res);
+      }
+    };
+
+    const runSlideOrFinish = () => {
+      // Smooth ice glide chain if Puff stepped/landed onto ice
+      if (res.slidePath && res.slidePath.length > 0) {
+        const glideTweens: Phaser.Types.Tweens.TweenBuilderConfig[] = res.slidePath.map(
+          (stepCoord, i) => {
+            const pos = this.gridToScreen(stepCoord);
+            return {
+              targets: this.playerSprite,
+              x: pos.x,
+              y: pos.y - 4,
+              duration: 85,
+              ease: 'Linear',
+              onStart: () => {
+                this.spawnBurst(this.playerSprite.x, this.playerSprite.y + 8, 0xbae6fd, 4);
+              },
+              onComplete:
+                i === res.slidePath!.length - 1 ? () => afterSlideOrLanding() : undefined,
+            };
+          }
+        );
+        this.tweens.chain({ tweens: glideTweens });
+      } else {
+        afterSlideOrLanding();
       }
     };
 
@@ -891,28 +931,53 @@ export class GameScene extends Phaser.Scene {
 
             this.handleTileDeparture(res);
 
-            // Smooth ice glide chain if Puff stepped onto ice
-            if (res.slidePath && res.slidePath.length > 0) {
-              const glideTweens: Phaser.Types.Tweens.TweenBuilderConfig[] = res.slidePath.map(
-                (stepCoord, i) => {
-                  const pos = this.gridToScreen(stepCoord);
-                  return {
+            // High parabolic Springboard vault chain if Puff stepped onto a spring pad
+            if (res.springPath && res.springPath.length > 0) {
+              const springTweens: Phaser.Types.Tweens.TweenBuilderConfig[] = [];
+              let prevPt = targetPos;
+              res.springPath.forEach((landCoord, i) => {
+                const landPos = this.gridToScreen(landCoord);
+                const arcMidX = (prevPt.x + landPos.x) / 2;
+                const arcPeakY = Math.min(prevPt.y, landPos.y) - 46;
+                const launchFrom = prevPt;
+                springTweens.push(
+                  {
                     targets: this.playerSprite,
-                    x: pos.x,
-                    y: pos.y - 4,
-                    duration: 85,
-                    ease: 'Linear',
+                    x: arcMidX,
+                    y: arcPeakY,
+                    scaleX: this.basePlayerScale * 1.25,
+                    scaleY: this.basePlayerScale * 1.25,
+                    duration: 135,
+                    ease: 'Quad.easeOut',
                     onStart: () => {
-                      this.spawnBurst(this.playerSprite.x, this.playerSprite.y + 8, 0xbae6fd, 4);
+                      sound.playSpring();
+                      sound.triggerHaptic('medium');
+                      this.spawnBurst(launchFrom.x, launchFrom.y, 0xfbbf24, 10);
                     },
-                    onComplete:
-                      i === res.slidePath!.length - 1 ? () => afterSlideOrLanding() : undefined,
-                  };
-                }
-              );
-              this.tweens.chain({ tweens: glideTweens });
+                  },
+                  {
+                    targets: this.playerSprite,
+                    x: landPos.x,
+                    y: landPos.y - 4,
+                    scaleX: this.basePlayerScale * 1.12,
+                    scaleY: this.basePlayerScale * 0.86,
+                    duration: 135,
+                    ease: 'Quad.easeIn',
+                    onComplete: () => {
+                      sound.playStep();
+                      this.spawnBurst(landPos.x, landPos.y, 0x2dd4bf, 8);
+                      this.playerSprite.setScale(this.basePlayerScale);
+                      if (i === res.springPath!.length - 1) {
+                        runSlideOrFinish();
+                      }
+                    },
+                  }
+                );
+                prevPt = landPos;
+              });
+              this.tweens.chain({ tweens: springTweens });
             } else {
-              afterSlideOrLanding();
+              runSlideOrFinish();
             }
           },
         },
