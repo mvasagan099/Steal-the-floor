@@ -5,6 +5,12 @@ import { ALL_LEVELS, WORLDS } from './levels/levelsData';
 import { getDailyChallenge, formatDailyShareText } from './levels/dailyChallenge';
 import { generateEndlessStage } from './levels/endlessMode';
 import {
+  getGauntletById,
+  getGauntletStages,
+  getGauntletParTotals,
+  evaluateGauntletMedal,
+} from './levels/gauntlets';
+import {
   storage,
   SKINS,
   Achievement,
@@ -29,9 +35,10 @@ import { AchievementsModal } from './components/AchievementsModal';
 import { SettingsModal } from './components/SettingsModal';
 import { LevelEditorModal } from './components/LevelEditorModal';
 import { CodexModal } from './components/CodexModal';
+import { GauntletsModal } from './components/GauntletsModal';
 
 type AppScreen = 'splash' | 'home' | 'game';
-type PlayMode = 'campaign' | 'daily' | 'endless' | 'custom';
+type PlayMode = 'campaign' | 'daily' | 'endless' | 'gauntlet' | 'custom';
 
 const MECHANIC_INTROS: Record<number, { icon: string; title: string; tip: string }> = {
   1: {
@@ -116,12 +123,19 @@ export const App: React.FC = () => {
   const [endlessStage, setEndlessStage] = useState(1);
   const [endlessSeed, setEndlessSeed] = useState(() => Date.now() % 100000);
 
+  // Master Trials (Gauntlets) state
+  const [activeGauntletId, setActiveGauntletId] = useState<string | null>(null);
+  const [gauntletStageIdx, setGauntletStageIdx] = useState(0);
+  const [gauntletMovesAcc, setGauntletMovesAcc] = useState(0);
+  const [gauntletTimeAcc, setGauntletTimeAcc] = useState(0);
+
   // Modals
   const [showPause, setShowPause] = useState(false);
   const [showWin, setShowWin] = useState(false);
   const [showLevels, setShowLevels] = useState(false);
   const [showThemes, setShowThemes] = useState(false);
   const [showDaily, setShowDaily] = useState(false);
+  const [showGauntlets, setShowGauntlets] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCodex, setShowCodex] = useState(false);
@@ -137,6 +151,8 @@ export const App: React.FC = () => {
   const [winCoins, setWinCoins] = useState(0);
   const [winElapsedMs, setWinElapsedMs] = useState(0);
   const [winIsNewBestTime, setWinIsNewBestTime] = useState(false);
+  const [winParOverride, setWinParOverride] = useState<number | null>(null);
+  const [winGauntletTitle, setWinGauntletTitle] = useState<string | null>(null);
   const [dailyShareText, setDailyShareText] = useState<string | undefined>(undefined);
 
   // Live game logic state
@@ -173,6 +189,8 @@ export const App: React.FC = () => {
   const usedUndoThisRunRef = useRef(false);
   const gemsCollectedRef = useRef(0);
   const elapsedMsRef = useRef(0);
+  const lastGauntletStageMovesRef = useRef(0);
+  const lastGauntletStageTimeRef = useRef(0);
 
   const syncAccessibilitySettings = () => {
     const settings = storage.getData().settings;
@@ -234,6 +252,7 @@ export const App: React.FC = () => {
         else if (showPause) setShowPause(false);
         else if (showLevels) setShowLevels(false);
         else if (showDaily) setShowDaily(false);
+        else if (showGauntlets) setShowGauntlets(false);
         else if (showEditor) setShowEditor(false);
         else if (showThemes) setShowThemes(false);
         else if (showAchievements) setShowAchievements(false);
@@ -301,6 +320,7 @@ export const App: React.FC = () => {
     isDemoPlaying,
     showLevels,
     showDaily,
+    showGauntlets,
     showEditor,
     showThemes,
     showAchievements,
@@ -320,6 +340,7 @@ export const App: React.FC = () => {
         setScreen('home');
       } else if (showLevels) setShowLevels(false);
       else if (showDaily) setShowDaily(false);
+      else if (showGauntlets) setShowGauntlets(false);
       else if (showEditor) setShowEditor(false);
       else if (showThemes) setShowThemes(false);
       else if (showAchievements) setShowAchievements(false);
@@ -348,6 +369,7 @@ export const App: React.FC = () => {
     isDemoPlaying,
     showLevels,
     showDaily,
+    showGauntlets,
     showEditor,
     showThemes,
     showAchievements,
@@ -370,6 +392,8 @@ export const App: React.FC = () => {
     setElapsedMs(0);
     setWinElapsedMs(0);
     setWinIsNewBestTime(false);
+    setWinParOverride(null);
+    setWinGauntletTitle(null);
     setIsDemoPlaying(false);
     setIsDeadlocked(false);
     setIntroDismissedFor(null);
@@ -379,6 +403,7 @@ export const App: React.FC = () => {
     setPlayMode(mode);
     setShowLevels(false);
     setShowDaily(false);
+    setShowGauntlets(false);
     setShowEditor(false);
     setShowWin(false);
     setShowPause(false);
@@ -425,6 +450,19 @@ export const App: React.FC = () => {
     launchLevel(generateEndlessStage(1, seed), 'endless');
   };
 
+  const handleStartGauntlet = (gauntletId: string) => {
+    const stages = getGauntletStages(gauntletId);
+    if (stages.length === 0) return;
+    setActiveGauntletId(gauntletId);
+    setGauntletStageIdx(0);
+    setGauntletMovesAcc(0);
+    setGauntletTimeAcc(0);
+    lastGauntletStageMovesRef.current = 0;
+    lastGauntletStageTimeRef.current = 0;
+    setShowGauntlets(false);
+    launchLevel(stages[0], 'gauntlet');
+  };
+
   const handlePlayCustomLevel = (level: LevelDefinition) => {
     launchLevel(level, 'custom');
   };
@@ -459,6 +497,8 @@ export const App: React.FC = () => {
     setWinMoves(movesUsed);
     setWinStars(starsEarned);
     setWinElapsedMs(clearTimeMs);
+    setWinParOverride(null);
+    setWinGauntletTitle(null);
 
     if (playMode === 'daily') {
       const todayStr = getLocalDateString();
@@ -482,6 +522,43 @@ export const App: React.FC = () => {
       setWinIsNewBestTime(false);
       setDailyShareText(undefined);
       showAchievementNotification(endlessRes.newlyUnlockedAchievements);
+    } else if (playMode === 'gauntlet' && activeGauntletId) {
+      const stages = getGauntletStages(activeGauntletId);
+      const gauntlet = getGauntletById(activeGauntletId);
+      const nextMovesAcc = gauntletMovesAcc + movesUsed;
+      const nextTimeAcc = gauntletTimeAcc + clearTimeMs;
+      lastGauntletStageMovesRef.current = movesUsed;
+      lastGauntletStageTimeRef.current = clearTimeMs;
+      setDailyShareText(undefined);
+
+      if (gauntletStageIdx < stages.length - 1) {
+        setWinCoins(0);
+        setWinIsNewBestTime(false);
+        setWinParOverride(null);
+        setWinGauntletTitle(
+          `Stage ${gauntletStageIdx + 1}/${stages.length} Cleared!`
+        );
+      } else {
+        const { totalPar, silverMaxMoves } = getGauntletParTotals(activeGauntletId);
+        const medal = evaluateGauntletMedal(nextMovesAcc, totalPar, silverMaxMoves);
+        const res = storage.recordGauntletCompletion(
+          activeGauntletId,
+          nextMovesAcc,
+          nextTimeAcc,
+          medal
+        );
+        const medalIcon = medal === 'gold' ? '🥇' : medal === 'silver' ? '🥈' : '🥉';
+        setWinMoves(nextMovesAcc);
+        setWinParOverride(totalPar);
+        setWinStars(medal === 'gold' ? 3 : medal === 'silver' ? 2 : 1);
+        setWinElapsedMs(nextTimeAcc);
+        setWinIsNewBestTime(res.isNewBestTime);
+        setWinCoins(res.coinsAwarded);
+        setWinGauntletTitle(
+          `${medalIcon} ${gauntlet?.name || 'Master Trial'} Complete!`
+        );
+        showAchievementNotification(res.newlyUnlockedAchievements);
+      }
     } else if (playMode === 'custom') {
       setWinCoins(0);
       setWinIsNewBestTime(false);
@@ -507,6 +584,21 @@ export const App: React.FC = () => {
       const nextStage = endlessStage + 1;
       setEndlessStage(nextStage);
       launchLevel(generateEndlessStage(nextStage, endlessSeed), 'endless');
+      return;
+    }
+
+    if (playMode === 'gauntlet' && activeGauntletId) {
+      const stages = getGauntletStages(activeGauntletId);
+      if (gauntletStageIdx + 1 < stages.length) {
+        const nextIdx = gauntletStageIdx + 1;
+        setGauntletMovesAcc((prev) => prev + lastGauntletStageMovesRef.current);
+        setGauntletTimeAcc((prev) => prev + lastGauntletStageTimeRef.current);
+        setGauntletStageIdx(nextIdx);
+        launchLevel(stages[nextIdx], 'gauntlet');
+      } else {
+        setScreen('home');
+        setShowGauntlets(true);
+      }
       return;
     }
 
@@ -549,6 +641,13 @@ export const App: React.FC = () => {
   };
 
   const currentWorld = WORLDS.find((w) => w.id === currentLevel.world);
+  const activeGauntlet = activeGauntletId ? getGauntletById(activeGauntletId) : undefined;
+  const activeGauntletStages = activeGauntletId ? getGauntletStages(activeGauntletId) : [];
+  const isFinalGauntletStage =
+    playMode === 'gauntlet' &&
+    activeGauntletStages.length > 0 &&
+    gauntletStageIdx >= activeGauntletStages.length - 1;
+
   const activeIntro =
     playMode === 'campaign' &&
     moves === 0 &&
@@ -567,6 +666,8 @@ export const App: React.FC = () => {
         : 'Daily Challenge'
       : playMode === 'endless'
       ? `Void Rush · Stage ${endlessStage}`
+      : playMode === 'gauntlet'
+      ? `${activeGauntlet?.icon || '⚔️'} Stage ${gauntletStageIdx + 1}/${activeGauntletStages.length || 4}: ${currentLevel.name}`
       : playMode === 'custom'
       ? currentLevel.name
       : `Level ${currentLevel.id}: ${currentLevel.name}`;
@@ -578,6 +679,8 @@ export const App: React.FC = () => {
         : `Daily · ${dailyDateStr}`
       : playMode === 'endless'
       ? `Best Streak: ${storage.getData().bestEndlessStreak}`
+      : playMode === 'gauntlet'
+      ? `${activeGauntlet?.name || 'Master Trial'} · Total Moves: ${gauntletMovesAcc + moves}`
       : playMode === 'custom'
       ? 'Builder Studio'
       : `World ${currentLevel.world}: ${currentWorld?.name}`;
@@ -607,6 +710,7 @@ export const App: React.FC = () => {
           onPlay={handleStartLevel}
           onOpenLevels={() => setShowLevels(true)}
           onOpenDaily={() => setShowDaily(true)}
+          onOpenGauntlets={() => setShowGauntlets(true)}
           onStartEndless={handleStartEndless}
           onOpenEditor={() => setShowEditor(true)}
           onOpenThemes={() => setShowThemes(true)}
@@ -627,6 +731,13 @@ export const App: React.FC = () => {
           <DailyChallengeModal
             onBack={() => setShowDaily(false)}
             onStartDaily={handleStartDaily}
+          />
+        )}
+
+        {showGauntlets && (
+          <GauntletsModal
+            onBack={() => setShowGauntlets(false)}
+            onStartGauntlet={handleStartGauntlet}
           />
         )}
 
@@ -813,16 +924,26 @@ export const App: React.FC = () => {
       {showWin && (
         <LevelCompleteModal
           levelId={currentLevel.id}
-          levelName={currentLevel.name}
+          levelName={
+            playMode === 'gauntlet' && isFinalGauntletStage && activeGauntlet
+              ? `${activeGauntlet.subtitle} · ${activeGauntletStages.length} Stages`
+              : currentLevel.name
+          }
           titleOverride={
-            playMode === 'endless'
+            playMode === 'gauntlet'
+              ? winGauntletTitle || undefined
+              : playMode === 'endless'
               ? `Stage ${endlessStage} Cleared!`
               : playMode === 'custom'
               ? 'Custom Puzzle Solved!'
               : undefined
           }
           nextLabel={
-            playMode === 'endless'
+            playMode === 'gauntlet'
+              ? isFinalGauntletStage
+                ? 'All Master Trials'
+                : `Next Trial Stage (${gauntletStageIdx + 2}/${activeGauntletStages.length}) →`
+              : playMode === 'endless'
               ? `Next Stage (${endlessStage + 1}) →`
               : playMode === 'custom'
               ? 'Back to Builder Studio'
@@ -831,22 +952,31 @@ export const App: React.FC = () => {
           isDaily={playMode === 'daily'}
           shareText={dailyShareText}
           moves={winMoves}
-          parMoves={currentLevel.parMoves}
+          parMoves={winParOverride ?? currentLevel.parMoves}
           starsEarned={winStars}
           coinsEarned={winCoins}
           elapsedMs={winElapsedMs}
           isNewBestTime={winIsNewBestTime}
           reducedMotion={reducedMotion}
           hasNextLevel={
+            playMode === 'gauntlet' ||
             playMode === 'endless' ||
             playMode === 'custom' ||
             (playMode === 'campaign' && currentLevel.id < TOTAL_CAMPAIGN_LEVELS)
           }
           onNext={handleNextLevel}
-          onWatchSolution={handleWatchSolution}
+          onWatchSolution={
+            playMode === 'gauntlet' && isFinalGauntletStage
+              ? undefined
+              : handleWatchSolution
+          }
           onReplay={() => {
             setShowWin(false);
-            handleRestartBoard();
+            if (playMode === 'gauntlet' && isFinalGauntletStage && activeGauntletId) {
+              handleStartGauntlet(activeGauntletId);
+            } else {
+              handleRestartBoard();
+            }
           }}
           onHome={() => {
             setShowWin(false);

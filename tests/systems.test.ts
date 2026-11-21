@@ -8,6 +8,12 @@ import {
 } from '../src/storage/gameStorage';
 import { getDailyChallenge, formatDailyShareText } from '../src/levels/dailyChallenge';
 import { generateEndlessStage } from '../src/levels/endlessMode';
+import {
+  MASTER_GAUNTLETS,
+  getGauntletStages,
+  getGauntletParTotals,
+  evaluateGauntletMedal,
+} from '../src/levels/gauntlets';
 import { encodeLevelCode, decodeLevelCode } from '../src/utils/levelShare';
 import { solveLevel } from '../src/engine/solver';
 import { LevelDefinition } from '../src/engine/types';
@@ -396,5 +402,69 @@ describe('Game Systems QA Test Suite', () => {
       expect(dec.level.locks).toEqual([{ x: 2, y: 0 }]);
       expect(dec.parMoves).toBe(4);
     }
+  });
+
+  it('validates all 5 Master Gauntlets, medal thresholds, anti-farming coin deltas, Trial Champion badge, and backup persistence', () => {
+    expect(MASTER_GAUNTLETS).toHaveLength(5);
+
+    for (const gauntlet of MASTER_GAUNTLETS) {
+      const stages = getGauntletStages(gauntlet.id);
+      expect(stages).toHaveLength(4);
+      const { totalPar, silverMaxMoves } = getGauntletParTotals(gauntlet.id);
+      expect(totalPar).toBeGreaterThan(0);
+      expect(silverMaxMoves).toBeGreaterThan(totalPar);
+
+      expect(evaluateGauntletMedal(totalPar, totalPar, silverMaxMoves)).toBe('gold');
+      expect(evaluateGauntletMedal(totalPar + 1, totalPar, silverMaxMoves)).toBe('silver');
+      expect(evaluateGauntletMedal(silverMaxMoves, totalPar, silverMaxMoves)).toBe('silver');
+      expect(evaluateGauntletMedal(silverMaxMoves + 1, totalPar, silverMaxMoves)).toBe('bronze');
+    }
+
+    // Anti-farming medal progression on first gauntlet: Bronze (+20) -> Silver (+20) -> Gold (+35) -> Gold replay (+0)
+    const firstId = MASTER_GAUNTLETS[0].id;
+    const { totalPar, silverMaxMoves } = getGauntletParTotals(firstId);
+
+    const bronze = storage.recordGauntletCompletion(firstId, silverMaxMoves + 5, 45000, 'bronze');
+    expect(bronze.coinsAwarded).toBe(20);
+    expect(bronze.upgradedMedal).toBe(true);
+    expect(bronze.isNewBestTime).toBe(true);
+
+    const silver = storage.recordGauntletCompletion(firstId, silverMaxMoves, 38000, 'silver');
+    expect(silver.coinsAwarded).toBe(20);
+    expect(silver.upgradedMedal).toBe(true);
+    expect(silver.isNewBestTime).toBe(true);
+
+    const gold = storage.recordGauntletCompletion(firstId, totalPar, 32000, 'gold');
+    expect(gold.coinsAwarded).toBe(35);
+    expect(gold.upgradedMedal).toBe(true);
+    expect(gold.isNewBestTime).toBe(true);
+
+    const goldReplay = storage.recordGauntletCompletion(firstId, totalPar, 35000, 'gold');
+    expect(goldReplay.coinsAwarded).toBe(0);
+    expect(goldReplay.upgradedMedal).toBe(false);
+    expect(goldReplay.isNewBestTime).toBe(false);
+    expect(storage.getData().gauntletProgress[firstId].bestTimeMs).toBe(32000);
+    expect(storage.getData().gauntletProgress[firstId].bestMoves).toBe(totalPar);
+
+    // Complete remaining 4 gauntlets to unlock Trial Champion (gauntlet_champion)
+    for (let i = 1; i < MASTER_GAUNTLETS.length; i++) {
+      const gId = MASTER_GAUNTLETS[i].id;
+      const res = storage.recordGauntletCompletion(gId, 40, 30000, 'bronze');
+      if (i === MASTER_GAUNTLETS.length - 1) {
+        expect(res.newlyUnlockedAchievements.map((a) => a.id)).toContain('gauntlet_champion');
+      }
+    }
+    expect(storage.getData().achievements['gauntlet_champion'].unlocked).toBe(true);
+
+    // Verify gauntletProgress survives STFSAVE backup export/import
+    const backup = storage.exportSaveCode();
+    storage.resetProgress();
+    expect(Object.keys(storage.getData().gauntletProgress)).toHaveLength(0);
+
+    const restored = storage.importSaveCode(backup);
+    expect(restored.ok).toBe(true);
+    expect(storage.getData().gauntletProgress[firstId].medal).toBe('gold');
+    expect(storage.getData().gauntletProgress[firstId].bestTimeMs).toBe(32000);
+    expect(storage.getData().achievements['gauntlet_champion'].unlocked).toBe(true);
   });
 });

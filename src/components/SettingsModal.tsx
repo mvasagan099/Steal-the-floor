@@ -380,7 +380,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         <div className="text-center text-[10px] text-slate-600 font-mono mt-2">
-          Steal the Floor v3.0.0 • 100% Offline Ad-Free Build
+          Steal the Floor v3.1.0 • 100% Offline Ad-Free Build
         </div>
       </div>
     </div>

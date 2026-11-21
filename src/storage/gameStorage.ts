@@ -8,6 +8,13 @@ export interface LevelProgress {
   bestTimeMs?: number;
 }
 
+export interface GauntletRecord {
+  completed: boolean;
+  medal: MonthlyMedal;
+  bestMoves: number;
+  bestTimeMs: number;
+}
+
 export interface Achievement {
   id: string;
   title: string;
@@ -23,6 +30,7 @@ export interface PlayerData {
   currentLevel: number;
   highestUnlockedLevel: number;
   levelProgress: Record<number, LevelProgress>;
+  gauntletProgress: Record<string, GauntletRecord>;
   noUndoLevelIds: number[];
   selectedTheme: string;
   unlockedThemes: string[];
@@ -81,7 +89,7 @@ export type MonthlyMedal = 'none' | 'bronze' | 'silver' | 'gold';
 export const TOTAL_CAMPAIGN_LEVELS = 200;
 export const MAX_CAMPAIGN_STARS = TOTAL_CAMPAIGN_LEVELS * 3;
 const STORAGE_KEY = 'steal_the_floor_save_v1';
-const CURRENT_VERSION = 8;
+const CURRENT_VERSION = 9;
 export const ACHIEVEMENT_REWARD_COINS = 15;
 
 export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
@@ -102,6 +110,7 @@ export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   { id: 'daily_challenger', title: 'Daily Devotee', description: 'Complete 3 daily challenges', unlocked: false, progress: 0, maxProgress: 3, icon: '📅' },
   { id: 'no_undo', title: 'Decisive Mind', description: 'Complete 10 unique levels without Undo', unlocked: false, progress: 0, maxProgress: 10, icon: '🧠' },
   { id: 'endless_5', title: 'Void Runner', description: 'Reach a 5-stage streak in Endless Void Rush', unlocked: false, progress: 0, maxProgress: 5, icon: '♾️' },
+  { id: 'gauntlet_champion', title: 'Trial Champion', description: 'Complete all 5 Master Gauntlets', unlocked: false, progress: 0, maxProgress: 5, icon: '⚔️' },
 ];
 
 export const THEMES = [
@@ -167,6 +176,7 @@ export class GameStorage {
       currentLevel: 1,
       highestUnlockedLevel: 1,
       levelProgress: {},
+      gauntletProgress: {},
       noUndoLevelIds: [],
       selectedTheme: 'floating-sky',
       unlockedThemes: ['floating-sky'],
@@ -239,6 +249,10 @@ export class GameStorage {
       ...base,
       ...parsed,
       version: CURRENT_VERSION,
+      gauntletProgress:
+        parsed.gauntletProgress && typeof parsed.gauntletProgress === 'object'
+          ? parsed.gauntletProgress
+          : {},
       noUndoLevelIds: Array.isArray(parsed.noUndoLevelIds) ? parsed.noUndoLevelIds : [],
       unlockedTrails: Array.isArray(parsed.unlockedTrails) ? parsed.unlockedTrails : ['trail-none'],
       completedDailyDates: migratedDailyDates,
@@ -523,6 +537,57 @@ export class GameStorage {
     return { completedDays, count, medal };
   }
 
+  public recordGauntletCompletion(
+    gauntletId: string,
+    totalMoves: number,
+    totalTimeMs: number,
+    medal: 'bronze' | 'silver' | 'gold'
+  ): {
+    coinsAwarded: number;
+    upgradedMedal: boolean;
+    isNewBestTime: boolean;
+    newlyUnlockedAchievements: Achievement[];
+  } {
+    const MEDAL_REWARDS: Record<MonthlyMedal, number> = {
+      none: 0,
+      bronze: 20,
+      silver: 40,
+      gold: 75,
+    };
+
+    const existing = this.data.gauntletProgress[gauntletId];
+    const prevMedal: MonthlyMedal = existing?.medal || 'none';
+    const medalDelta = Math.max(0, MEDAL_REWARDS[medal] - MEDAL_REWARDS[prevMedal]);
+    const upgradedMedal = medalDelta > 0;
+
+    const cleanTime = Math.max(0, Math.round(totalTimeMs));
+    const isNewBestTime =
+      cleanTime > 0 && (!existing?.bestTimeMs || cleanTime < existing.bestTimeMs);
+
+    this.data.gauntletProgress[gauntletId] = {
+      completed: true,
+      medal: upgradedMedal ? medal : prevMedal,
+      bestMoves:
+        existing && existing.bestMoves > 0
+          ? Math.min(existing.bestMoves, totalMoves)
+          : totalMoves,
+      bestTimeMs: isNewBestTime ? cleanTime : existing?.bestTimeMs || cleanTime,
+    };
+
+    let coinsAwarded = medalDelta;
+    this.data.coins += medalDelta;
+
+    const newlyUnlockedAchievements = this.checkAchievements();
+    if (newlyUnlockedAchievements.length > 0) {
+      const achBonus = newlyUnlockedAchievements.length * ACHIEVEMENT_REWARD_COINS;
+      this.data.coins += achBonus;
+      coinsAwarded += achBonus;
+    }
+
+    this.save();
+    return { coinsAwarded, upgradedMedal, isNewBestTime, newlyUnlockedAchievements };
+  }
+
   private checkAchievements(): Achievement[] {
     const newlyUnlocked: Achievement[] = [];
 
@@ -570,6 +635,11 @@ export class GameStorage {
     updateProgress('star_collector_300', totalStarsEarned);
     updateProgress('no_undo', this.data.noUndoLevelIds.length);
     updateProgress('endless_5', this.data.bestEndlessStreak);
+
+    const clearedGauntlets = Object.values(this.data.gauntletProgress || {}).filter(
+      (g) => g.completed
+    ).length;
+    updateProgress('gauntlet_champion', clearedGauntlets);
 
     return newlyUnlocked;
   }

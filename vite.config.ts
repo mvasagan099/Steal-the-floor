@@ -15,9 +15,16 @@ export default defineConfig({
     chunkSizeWarningLimit: 1600,
     rollupOptions: {
       output: {
-        manualChunks: {
-          phaser: ['phaser'],
-          'react-vendor': ['react', 'react-dom', 'lucide-react', 'canvas-confetti'],
+        manualChunks(id) {
+          if (id.includes('node_modules/phaser')) return 'phaser';
+          if (
+            id.includes('node_modules/react') ||
+            id.includes('node_modules/lucide-react') ||
+            id.includes('node_modules/canvas-confetti')
+          ) {
+            return 'react-vendor';
+          }
+          if (id.includes('src/levels/levelsData')) return 'levels-data';
         },
       },
     },
