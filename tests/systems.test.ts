@@ -166,6 +166,7 @@ describe('Game Systems QA Test Suite', () => {
       fixed: [{ x: 2, y: 3 }],
       ice: [{ x: 3, y: 3 }],
       stars: [{ x: 2, y: 3 }],
+      switches: [{ id: 'g1', switchPos: { x: 2, y: 1 }, doorPos: { x: 4, y: 4 }, timedDuration: 5 }],
       parMoves: 7,
     };
 
@@ -177,6 +178,7 @@ describe('Game Systems QA Test Suite', () => {
     if (decoded.ok) {
       expect(decoded.level.name).toBe('Studio Gem Run');
       expect(decoded.level.ice).toEqual([{ x: 3, y: 3 }]);
+      expect(decoded.level.switches?.[0]?.timedDuration).toBe(5);
       expect(decoded.parMoves).toBeGreaterThan(0);
     }
 

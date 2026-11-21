@@ -1,6 +1,6 @@
 // Steal the Floor — Offline-first Service Worker
-const CACHE_NAME = 'steal-the-floor-v1';
-const APP_SHELL = ['/', '/index.html', '/manifest.json'];
+const CACHE_NAME = 'steal-the-floor-v2';
+const APP_SHELL = ['/', '/index.html', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

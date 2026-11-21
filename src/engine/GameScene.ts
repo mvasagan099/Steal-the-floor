@@ -105,15 +105,79 @@ export class GameScene extends Phaser.Scene {
     this.bgGraphics.setDepth(-2);
     this.drawBackground(width, height);
 
-    // Floating ambient background particles
-    const particles = this.add.particles(0, 0, 'item_star', {
+    // World-themed living ambient atmosphere
+    const ambientMap: Record<
+      string,
+      { texture: string; tint: number[]; speedX: { min: number; max: number }; speedY: { min: number; max: number }; scale: { min: number; max: number }; frequency: number }
+    > = {
+      'floating-sky': {
+        texture: 'fx_particle',
+        tint: [0xe0f2fe, 0x38bdf8, 0xffffff],
+        speedX: { min: 6, max: 18 },
+        speedY: { min: -12, max: -4 },
+        scale: { min: 0.16, max: 0.36 },
+        frequency: 360,
+      },
+      'candy-world': {
+        texture: 'item_star',
+        tint: [0xf9a8d4, 0xfef08a, 0xffffff],
+        speedX: { min: -8, max: 8 },
+        speedY: { min: -22, max: -10 },
+        scale: { min: 0.06, max: 0.14 },
+        frequency: 340,
+      },
+      'ocean-islands': {
+        texture: 'fx_particle',
+        tint: [0x99f6e4, 0x38bdf8, 0xe0f2fe],
+        speedX: { min: -6, max: 6 },
+        speedY: { min: -34, max: -16 },
+        scale: { min: 0.14, max: 0.32 },
+        frequency: 280,
+      },
+      'neon-space': {
+        texture: 'item_star',
+        tint: [0xd8b4fe, 0x38bdf8, 0xf472b6],
+        speedX: { min: -10, max: 10 },
+        speedY: { min: -14, max: 14 },
+        scale: { min: 0.05, max: 0.13 },
+        frequency: 260,
+      },
+      'forest-adventure': {
+        texture: 'fx_particle',
+        tint: [0xbef264, 0xfef08a, 0x4ade80],
+        speedX: { min: -14, max: 14 },
+        speedY: { min: -16, max: 8 },
+        scale: { min: 0.14, max: 0.28 },
+        frequency: 300,
+      },
+      'arctic-frost': {
+        texture: 'fx_particle',
+        tint: [0xffffff, 0xe0f2fe, 0xbae6fd],
+        speedX: { min: -14, max: 14 },
+        speedY: { min: 18, max: 42 },
+        scale: { min: 0.12, max: 0.28 },
+        frequency: 220,
+      },
+      'clockwork-forge': {
+        texture: 'fx_particle',
+        tint: [0xfb923c, 0xfbbf24, 0xf43f5e],
+        speedX: { min: -12, max: 12 },
+        speedY: { min: -44, max: -20 },
+        scale: { min: 0.14, max: 0.3 },
+        frequency: 220,
+      },
+    };
+    const amb = ambientMap[this.config.themeId] || ambientMap['floating-sky'];
+    const particles = this.add.particles(0, 0, amb.texture, {
       x: { min: 0, max: Math.max(width, 320) },
       y: { min: 0, max: Math.max(height, 480) },
-      scale: { min: 0.05, max: 0.14 },
-      alpha: { min: 0.08, max: 0.28 },
-      speedY: { min: -10, max: -26 },
-      lifespan: 6500,
-      frequency: 420,
+      scale: amb.scale,
+      alpha: { min: 0.12, max: 0.36 },
+      speedX: amb.speedX,
+      speedY: amb.speedY,
+      tint: amb.tint,
+      lifespan: 6000,
+      frequency: amb.frequency,
     });
     particles.setDepth(0);
 

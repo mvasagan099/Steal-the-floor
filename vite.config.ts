@@ -12,5 +12,14 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsInlineLimit: 4096,
+    chunkSizeWarningLimit: 1600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          phaser: ['phaser'],
+          'react-vendor': ['react', 'react-dom', 'lucide-react', 'canvas-confetti'],
+        },
+      },
+    },
   },
 });

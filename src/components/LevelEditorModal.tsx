@@ -103,6 +103,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
   const [brush, setBrush] = useState<BrushType>('fixed');
   const [name, setName] = useState('My Custom Puzzle');
   const [maxTiles, setMaxTiles] = useState(2);
+  const [gateTimer, setGateTimer] = useState<number>(0);
   const [statusMsg, setStatusMsg] = useState<{ kind: 'info' | 'ok' | 'err'; text: string }>({
     kind: 'info',
     text: 'Paint your puzzle, then tap Verify & Play to solve-check it!',
@@ -242,7 +243,10 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
       ice: ice.length ? ice : undefined,
       bonusTiles: bonusTiles.length ? bonusTiles : undefined,
       stars: stars.length ? stars : undefined,
-      switches: switchPos && doorPos ? [{ id: 'g1', switchPos, doorPos }] : undefined,
+      switches:
+        switchPos && doorPos
+          ? [{ id: 'g1', switchPos, doorPos, ...(gateTimer > 0 ? { timedDuration: gateTimer } : {}) }]
+          : undefined,
       teleporters: portals.length === 2 ? [{ id: 'tp-1', posA: portals[0], posB: portals[1] }] : undefined,
       parMoves: 0,
       hint: 'Custom puzzle built in Builder Studio!',
@@ -306,6 +310,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
     setGrid(levelToGrid(res.level));
     setName(res.level.name);
     setMaxTiles(res.level.maxTiles);
+    setGateTimer(res.level.switches?.[0]?.timedDuration || 0);
     setImportText('');
     setStatusMsg({
       kind: 'ok',
@@ -383,6 +388,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
                       setGrid(levelToGrid(lvl));
                       setName(lvl.name);
                       setMaxTiles(lvl.maxTiles);
+                      setGateTimer(lvl.switches?.[0]?.timedDuration || 0);
                       setShowSaved(false);
                     }}
                     className="text-left flex-1 min-w-0"
@@ -438,6 +444,29 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
                 }`}
               >
                 {n}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Optional Timed Gate Countdown */}
+        <div className="flex items-center justify-between bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-1.5 text-xs font-bold">
+          <span className="text-slate-400 text-[10px] uppercase tracking-wider">⏱️ Gate Timer</span>
+          <div className="flex items-center gap-1">
+            {[0, 3, 4, 5, 6].map((t) => (
+              <button
+                key={t}
+                onClick={() => {
+                  sound.playTap();
+                  setGateTimer(t);
+                }}
+                className={`px-2 py-0.5 rounded-lg text-[11px] font-black transition-all ${
+                  gateTimer === t
+                    ? 'bg-amber-500 text-slate-950'
+                    : 'bg-slate-800 text-slate-400 hover:text-white'
+                }`}
+              >
+                {t === 0 ? 'Off' : `${t}t`}
               </button>
             ))}
           </div>

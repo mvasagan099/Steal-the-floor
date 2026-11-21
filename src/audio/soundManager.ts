@@ -363,6 +363,12 @@ export class SoundManager {
     this.playAmbientChordLoop();
   }
 
+  private currentTheme = 'floating-sky';
+
+  public setTheme(themeId: string): void {
+    this.currentTheme = themeId || 'floating-sky';
+  }
+
   public stopMusic(): void {
     this.isMusicPlaying = false;
     if (this.musicTimer !== null) {
@@ -376,14 +382,55 @@ export class SoundManager {
     const ctx = this.ensureCtx();
     if (!ctx || !this.musicGainNode) return;
 
-    // Structured relaxing 4-bar lo-fi progression (Cmaj7 -> Am7 -> Fmaj7 -> G6)
-    const progression = [
-      { pad: [261.63, 329.63, 392.0, 493.88], chime: [523.25, 659.25, 783.99] },
-      { pad: [220.0, 261.63, 329.63, 392.0], chime: [440.0, 523.25, 659.25] },
-      { pad: [174.61, 220.0, 261.63, 329.63], chime: [523.25, 587.33, 659.25] },
-      { pad: [196.0, 246.94, 293.66, 392.0], chime: [587.33, 659.25, 783.99] },
-    ];
+    const themeProgressions: Record<
+      string,
+      Array<{ pad: number[]; chime: number[]; wave?: OscillatorType }>
+    > = {
+      'floating-sky': [
+        { pad: [261.63, 329.63, 392.0, 493.88], chime: [523.25, 659.25, 783.99] },
+        { pad: [220.0, 261.63, 329.63, 392.0], chime: [440.0, 523.25, 659.25] },
+        { pad: [174.61, 220.0, 261.63, 329.63], chime: [523.25, 587.33, 659.25] },
+        { pad: [196.0, 246.94, 293.66, 392.0], chime: [587.33, 659.25, 783.99] },
+      ],
+      'candy-world': [
+        { pad: [293.66, 369.99, 440.0, 554.37], chime: [587.33, 739.99, 880.0] },
+        { pad: [246.94, 293.66, 369.99, 440.0], chime: [493.88, 587.33, 739.99] },
+        { pad: [196.0, 246.94, 293.66, 369.99], chime: [587.33, 659.25, 739.99] },
+        { pad: [220.0, 277.18, 329.63, 440.0], chime: [659.25, 739.99, 880.0] },
+      ],
+      'ocean-islands': [
+        { pad: [174.61, 220.0, 261.63, 329.63], chime: [523.25, 659.25, 783.99] },
+        { pad: [196.0, 246.94, 293.66, 349.23], chime: [493.88, 587.33, 698.46] },
+        { pad: [164.81, 196.0, 246.94, 293.66], chime: [493.88, 587.33, 659.25] },
+        { pad: [220.0, 261.63, 329.63, 392.0], chime: [523.25, 659.25, 783.99] },
+      ],
+      'neon-space': [
+        { pad: [146.83, 220.0, 261.63, 329.63], chime: [587.33, 659.25, 880.0], wave: 'triangle' },
+        { pad: [130.81, 196.0, 246.94, 329.63], chime: [523.25, 659.25, 783.99], wave: 'triangle' },
+        { pad: [116.54, 174.61, 220.0, 293.66], chime: [466.16, 587.33, 698.46], wave: 'triangle' },
+        { pad: [130.81, 196.0, 261.63, 311.13], chime: [523.25, 622.25, 783.99], wave: 'triangle' },
+      ],
+      'forest-adventure': [
+        { pad: [196.0, 246.94, 293.66, 369.99], chime: [392.0, 493.88, 587.33] },
+        { pad: [164.81, 196.0, 246.94, 293.66], chime: [329.63, 392.0, 493.88] },
+        { pad: [130.81, 164.81, 196.0, 246.94], chime: [392.0, 440.0, 493.88] },
+        { pad: [146.83, 185.0, 220.0, 293.66], chime: [440.0, 493.88, 587.33] },
+      ],
+      'arctic-frost': [
+        { pad: [329.63, 392.0, 493.88, 587.33], chime: [783.99, 987.77, 1174.66] },
+        { pad: [261.63, 329.63, 392.0, 493.88], chime: [659.25, 783.99, 987.77] },
+        { pad: [220.0, 261.63, 329.63, 392.0], chime: [659.25, 783.99, 880.0] },
+        { pad: [246.94, 293.66, 369.99, 493.88], chime: [739.99, 880.0, 987.77] },
+      ],
+      'clockwork-forge': [
+        { pad: [146.83, 174.61, 220.0, 261.63], chime: [440.0, 523.25, 587.33], wave: 'triangle' },
+        { pad: [116.54, 146.83, 174.61, 220.0], chime: [349.23, 440.0, 523.25], wave: 'triangle' },
+        { pad: [130.81, 164.81, 196.0, 261.63], chime: [392.0, 493.88, 523.25], wave: 'triangle' },
+        { pad: [110.0, 138.59, 164.81, 220.0], chime: [440.0, 554.37, 659.25], wave: 'triangle' },
+      ],
+    };
 
+    const progression = themeProgressions[this.currentTheme] || themeProgressions['floating-sky'];
     const bar = progression[this.chordStep % progression.length];
     this.chordStep = (this.chordStep + 1) % progression.length;
 
@@ -394,7 +441,7 @@ export class SoundManager {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
-      osc.type = 'sine';
+      osc.type = bar.wave || 'sine';
       osc.frequency.setValueAtTime(freq, t);
 
       gain.gain.setValueAtTime(0.0001, t);

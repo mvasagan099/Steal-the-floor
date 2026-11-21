@@ -147,6 +147,7 @@ export const App: React.FC = () => {
   // Init audio and persisted settings
   useEffect(() => {
     const data = storage.getData();
+    sound.setTheme(data.selectedTheme);
     sound.setMusicVolume(data.settings.musicVolume);
     sound.setSfxVolume(data.settings.sfxVolume);
     sound.musicEnabled = data.settings.musicEnabled;
@@ -162,6 +163,10 @@ export const App: React.FC = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    sound.setTheme(themeId);
+  }, [themeId]);
 
   // Keyboard controls
   useEffect(() => {

@@ -18,7 +18,7 @@ interface CompactLevelPayload {
   b?: [number, number][]; // bonusTiles
   g?: [number, number][]; // stars/gems
   o?: [number, number, OneWayTile['direction']][]; // oneWay
-  sw?: [string, [number, number], [number, number], number?][]; // switches
+  sw?: [string, [number, number], [number, number], number?, number?][]; // switches (+ optional timedDuration)
   tp?: [string, [number, number], [number, number]][]; // teleporters
 }
 
@@ -67,12 +67,11 @@ export function encodeLevelCode(level: LevelDefinition): string {
   if (level.stars?.length) payload.g = level.stars.map(toPair);
   if (level.oneWay?.length) payload.o = level.oneWay.map((o) => [o.x, o.y, o.direction]);
   if (level.switches?.length) {
-    payload.sw = level.switches.map((sw) => [
-      sw.id,
-      toPair(sw.switchPos),
-      toPair(sw.doorPos),
-      sw.doorInitiallyOpen ? 1 : 0,
-    ]);
+    payload.sw = level.switches.map((sw) =>
+      sw.timedDuration
+        ? [sw.id, toPair(sw.switchPos), toPair(sw.doorPos), sw.doorInitiallyOpen ? 1 : 0, sw.timedDuration]
+        : [sw.id, toPair(sw.switchPos), toPair(sw.doorPos), sw.doorInitiallyOpen ? 1 : 0]
+    );
   }
   if (level.teleporters?.length) {
     payload.tp = level.teleporters.map((tp) => [tp.id, toPair(tp.posA), toPair(tp.posB)]);
@@ -109,11 +108,12 @@ export function decodeLevelCode(
       return { ok: false, error: 'Invalid puzzle dimensions or start/exit data.' };
     }
 
-    const switches: SwitchDoorPair[] | undefined = p.sw?.map(([id, sp, dp, open]) => ({
+    const switches: SwitchDoorPair[] | undefined = p.sw?.map(([id, sp, dp, open, timed]) => ({
       id,
       switchPos: fromPair(sp),
       doorPos: fromPair(dp),
       ...(open ? { doorInitiallyOpen: true } : {}),
+      ...(typeof timed === 'number' && timed > 0 ? { timedDuration: timed } : {}),
     }));
 
     const teleporters: TeleporterPair[] | undefined = p.tp?.map(([id, a, b]) => ({
