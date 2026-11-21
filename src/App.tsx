@@ -123,6 +123,8 @@ export const App: React.FC = () => {
   const [winMoves, setWinMoves] = useState(0);
   const [winStars, setWinStars] = useState(0);
   const [winCoins, setWinCoins] = useState(0);
+  const [winElapsedMs, setWinElapsedMs] = useState(0);
+  const [winIsNewBestTime, setWinIsNewBestTime] = useState(false);
   const [dailyShareText, setDailyShareText] = useState<string | undefined>(undefined);
 
   // Live game logic state
@@ -133,8 +135,10 @@ export const App: React.FC = () => {
   const [starsCollected, setStarsCollected] = useState(0);
   const [isDeadlocked, setIsDeadlocked] = useState(false);
   const [notice, setNotice] = useState('Tap or swipe to place a floor and walk.');
+  const [elapsedMs, setElapsedMs] = useState(0);
+  const [isDemoPlaying, setIsDemoPlaying] = useState(false);
 
-  // Customization & persisted audio
+  // Customization, persisted audio & accessibility
   const [themeId, setThemeId] = useState(() => storage.getData().selectedTheme);
   const [skinColor, setSkinColor] = useState(() => {
     const s = SKINS.find((sk) => sk.id === storage.getData().selectedSkin);
@@ -143,11 +147,26 @@ export const App: React.FC = () => {
   const [trailId, setTrailId] = useState(() => storage.getData().selectedTrail);
   const [musicEnabled, setMusicEnabled] = useState(() => storage.getData().settings.musicEnabled);
   const [sfxEnabled, setSfxEnabled] = useState(() => storage.getData().settings.sfxEnabled);
+  const [speedrunTimer, setSpeedrunTimer] = useState(
+    () => storage.getData().settings.speedrunTimer
+  );
+  const [reducedMotion, setReducedMotion] = useState(
+    () => storage.getData().settings.reducedMotion
+  );
+  const [highContrast, setHighContrast] = useState(() => storage.getData().settings.highContrast);
 
   const canvasRef = useRef<GameCanvasHandle>(null);
   const prevTrappedRef = useRef(0);
   const usedUndoThisRunRef = useRef(false);
   const gemsCollectedRef = useRef(0);
+  const elapsedMsRef = useRef(0);
+
+  const syncAccessibilitySettings = () => {
+    const settings = storage.getData().settings;
+    setSpeedrunTimer(settings.speedrunTimer);
+    setReducedMotion(settings.reducedMotion);
+    setHighContrast(settings.highContrast);
+  };
 
   // Init audio and persisted settings
   useEffect(() => {
@@ -173,13 +192,32 @@ export const App: React.FC = () => {
     sound.setTheme(themeId);
   }, [themeId]);
 
+  // Speedrun elapsed clock (runs smoothly after first move, pauses cleanly during modals/demos)
+  const isTimerRunning =
+    screen === 'game' && moves > 0 && !showPause && !showWin && !isDemoPlaying;
+
+  useEffect(() => {
+    if (!isTimerRunning) return;
+    let lastTick = Date.now();
+    const id = window.setInterval(() => {
+      const now = Date.now();
+      const delta = now - lastTick;
+      lastTick = now;
+      elapsedMsRef.current += delta;
+      setElapsedMs(elapsedMsRef.current);
+    }, 100);
+    return () => window.clearInterval(id);
+  }, [isTimerRunning]);
+
   // Keyboard controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
       if (e.key === 'Escape') {
-        if (showPause) setShowPause(false);
+        if (isDemoPlaying) {
+          canvasRef.current?.stopDemo();
+        } else if (showPause) setShowPause(false);
         else if (showLevels) setShowLevels(false);
         else if (showDaily) setShowDaily(false);
         else if (showEditor) setShowEditor(false);
@@ -190,7 +228,7 @@ export const App: React.FC = () => {
         return;
       }
 
-      if (screen !== 'game' || showPause || showWin) return;
+      if (screen !== 'game' || showPause || showWin || isDemoPlaying) return;
 
       switch (e.key) {
         case 'ArrowUp':
@@ -227,6 +265,8 @@ export const App: React.FC = () => {
         case 'R':
           e.preventDefault();
           usedUndoThisRunRef.current = false;
+          elapsedMsRef.current = 0;
+          setElapsedMs(0);
           canvasRef.current?.restart();
           break;
         case 'h':
@@ -243,6 +283,7 @@ export const App: React.FC = () => {
     screen,
     showPause,
     showWin,
+    isDemoPlaying,
     showLevels,
     showDaily,
     showEditor,
@@ -256,7 +297,8 @@ export const App: React.FC = () => {
     if (!Capacitor.isNativePlatform()) return;
 
     const backPromise = CapacitorApp.addListener('backButton', () => {
-      if (showPause) setShowPause(false);
+      if (isDemoPlaying) canvasRef.current?.stopDemo();
+      else if (showPause) setShowPause(false);
       else if (showWin) {
         setShowWin(false);
         setScreen('home');
@@ -286,6 +328,7 @@ export const App: React.FC = () => {
     screen,
     showPause,
     showWin,
+    isDemoPlaying,
     showLevels,
     showDaily,
     showEditor,
@@ -306,6 +349,11 @@ export const App: React.FC = () => {
     prevTrappedRef.current = 0;
     usedUndoThisRunRef.current = false;
     gemsCollectedRef.current = 0;
+    elapsedMsRef.current = 0;
+    setElapsedMs(0);
+    setWinElapsedMs(0);
+    setWinIsNewBestTime(false);
+    setIsDemoPlaying(false);
     setIsDeadlocked(false);
     setIntroDismissedFor(null);
     setCurrentMaxTiles(target.maxTiles);
@@ -320,6 +368,26 @@ export const App: React.FC = () => {
     setDailyShareText(undefined);
     setNotice(target.hint || 'Tap or swipe to place a floor and walk.');
     setScreen('game');
+  };
+
+  const handleRestartBoard = () => {
+    usedUndoThisRunRef.current = false;
+    elapsedMsRef.current = 0;
+    setElapsedMs(0);
+    canvasRef.current?.stopDemo(false);
+    canvasRef.current?.restart();
+  };
+
+  const handleWatchSolution = () => {
+    setShowPause(false);
+    setShowWin(false);
+    usedUndoThisRunRef.current = false;
+    elapsedMsRef.current = 0;
+    setElapsedMs(0);
+    const started = canvasRef.current?.watchSolution();
+    if (!started) {
+      setNotice('Unable to compute an optimal solution preview for this board.');
+    }
   };
 
   const handleStartLevel = (levelId: number) => {
@@ -369,14 +437,17 @@ export const App: React.FC = () => {
   };
 
   const handleWin = (movesUsed: number, starsEarned: number, parMoves: number) => {
+    const clearTimeMs = elapsedMsRef.current;
     setWinMoves(movesUsed);
     setWinStars(starsEarned);
+    setWinElapsedMs(clearTimeMs);
 
     if (playMode === 'daily') {
       const todayStr = getLocalDateString();
       const isArchive = dailyDateStr !== todayStr;
       const dailyResult = storage.recordDailyCompletion(dailyDateStr, isArchive);
       setWinCoins(dailyResult.coinsAwarded);
+      setWinIsNewBestTime(false);
       setDailyShareText(
         formatDailyShareText(
           dailyDateStr,
@@ -390,17 +461,21 @@ export const App: React.FC = () => {
     } else if (playMode === 'endless') {
       const endlessRes = storage.recordEndlessClear(endlessStage);
       setWinCoins(endlessRes.coinsAwarded);
+      setWinIsNewBestTime(false);
       setDailyShareText(undefined);
       showAchievementNotification(endlessRes.newlyUnlockedAchievements);
     } else if (playMode === 'custom') {
       setWinCoins(0);
+      setWinIsNewBestTime(false);
       setDailyShareText(undefined);
     } else {
       const victory = storage.recordLevelVictory(currentLevel.id, movesUsed, starsEarned, {
         usedUndo: usedUndoThisRunRef.current,
         gemsCollected: gemsCollectedRef.current,
+        elapsedMs: clearTimeMs,
       });
       setWinCoins(victory.coinsAwarded);
+      setWinIsNewBestTime(victory.isNewBestTime);
       setDailyShareText(undefined);
       showAchievementNotification(victory.newlyUnlockedAchievements);
     }
@@ -459,6 +534,7 @@ export const App: React.FC = () => {
   const activeIntro =
     playMode === 'campaign' &&
     moves === 0 &&
+    !isDemoPlaying &&
     introDismissedFor !== currentLevel.id &&
     MECHANIC_INTROS[currentLevel.id]
       ? MECHANIC_INTROS[currentLevel.id]
@@ -560,14 +636,19 @@ export const App: React.FC = () => {
         {showSettings && (
           <SettingsModal
             onBack={() => setShowSettings(false)}
+            onSettingsChanged={syncAccessibilitySettings}
             onReset={() => {
               const resetData = storage.getData();
+              const matchedSkin = SKINS.find((sk) => sk.id === resetData.selectedSkin) || SKINS[0];
               setCurrentLevel(ALL_LEVELS[0]);
               setThemeId(resetData.selectedTheme);
-              setSkinColor(SKINS[0].color);
+              setSkinColor(matchedSkin.color);
               setTrailId(resetData.selectedTrail);
               setMusicEnabled(resetData.settings.musicEnabled);
               setSfxEnabled(resetData.settings.sfxEnabled);
+              setSpeedrunTimer(resetData.settings.speedrunTimer);
+              setReducedMotion(resetData.settings.reducedMotion);
+              setHighContrast(resetData.settings.highContrast);
               sound.hapticsEnabled = resetData.settings.hapticsEnabled;
               setShowSettings(false);
             }}
@@ -600,12 +681,31 @@ export const App: React.FC = () => {
         parMoves={currentLevel.parMoves}
         starsCollected={starsCollected}
         totalStars={currentLevel.stars?.length || 0}
+        elapsedMs={elapsedMs}
+        showTimer={speedrunTimer}
         onPause={() => setShowPause(true)}
-        onRestart={() => {
-          usedUndoThisRunRef.current = false;
-          canvasRef.current?.restart();
-        }}
+        onRestart={handleRestartBoard}
       />
+
+      {isDemoPlaying && (
+        <div className="px-3 py-2 bg-indigo-950/95 border-b border-indigo-400/40 flex items-center justify-between gap-2 z-20">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-sm flex-none">🎬</span>
+            <p className="text-[11px] font-bold text-indigo-100 truncate">
+              Watching Optimal Par Solution ({currentLevel.parMoves} moves)
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              sound.playTap();
+              canvasRef.current?.stopDemo();
+            }}
+            className="px-2.5 py-1 text-[10px] font-extrabold uppercase bg-indigo-500/30 hover:bg-indigo-500/40 border border-indigo-300/50 rounded-lg text-white flex-none active:scale-95 transition-all"
+          >
+            Stop &amp; Play
+          </button>
+        </div>
+      )}
 
       {activeIntro && (
         <div className="px-3 py-2 bg-sky-950/90 border-b border-sky-500/30 flex items-center justify-between gap-2 z-20">
@@ -633,6 +733,9 @@ export const App: React.FC = () => {
         themeId={themeId}
         skinColor={skinColor}
         trailId={trailId}
+        reducedMotion={reducedMotion}
+        highContrast={highContrast}
+        onDemoStateChange={setIsDemoPlaying}
         onStateChange={handleStateChange}
         onWin={handleWin}
         onError={(msg) => setNotice(msg)}
@@ -648,9 +751,13 @@ export const App: React.FC = () => {
         available={availableTiles}
         maxTiles={currentMaxTiles}
         trappedCount={trappedTiles}
-        canUndo={moves > 0}
-        isDeadlocked={isDeadlocked}
-        notice={notice}
+        canUndo={moves > 0 && !isDemoPlaying}
+        isDeadlocked={isDeadlocked && !isDemoPlaying}
+        notice={
+          isDemoPlaying
+            ? 'Solution Theater playing — tap "Stop & Play" anytime to try it yourself.'
+            : notice
+        }
         onUndo={() => canvasRef.current?.undo()}
         onHint={() => canvasRef.current?.hint()}
       />
@@ -662,11 +769,12 @@ export const App: React.FC = () => {
           onResume={() => setShowPause(false)}
           onRestart={() => {
             setShowPause(false);
-            usedUndoThisRunRef.current = false;
-            canvasRef.current?.restart();
+            handleRestartBoard();
           }}
+          onWatchSolution={handleWatchSolution}
           onHome={() => {
             setShowPause(false);
+            canvasRef.current?.stopDemo(false);
             setScreen('home');
           }}
           musicEnabled={musicEnabled}
@@ -700,16 +808,19 @@ export const App: React.FC = () => {
           parMoves={currentLevel.parMoves}
           starsEarned={winStars}
           coinsEarned={winCoins}
+          elapsedMs={winElapsedMs}
+          isNewBestTime={winIsNewBestTime}
+          reducedMotion={reducedMotion}
           hasNextLevel={
             playMode === 'endless' ||
             playMode === 'custom' ||
             (playMode === 'campaign' && currentLevel.id < TOTAL_CAMPAIGN_LEVELS)
           }
           onNext={handleNextLevel}
+          onWatchSolution={handleWatchSolution}
           onReplay={() => {
             setShowWin(false);
-            usedUndoThisRunRef.current = false;
-            canvasRef.current?.restart();
+            handleRestartBoard();
           }}
           onHome={() => {
             setShowWin(false);

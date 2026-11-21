@@ -3,19 +3,22 @@ import { Coordinate, Direction, LevelDefinition, MoveResult } from './types';
 import { PuzzleGame, coordToKey, keyToCoord, areCoordsEqual } from './logic';
 import { generateAllTextures, THEME_PALETTES } from './textureGenerator';
 import { sound } from '../audio/soundManager';
-import { solveFromState } from './solver';
+import { solveFromState, solveLevel } from './solver';
 
 export interface GameSceneConfig {
   level: LevelDefinition;
   themeId: string;
   skinColor: string;
   trailId?: string;
+  reducedMotion?: boolean;
+  highContrast?: boolean;
   onStateChange: (game: PuzzleGame) => void;
   onWin: (moves: number, starsEarned: number, parMoves: number) => void;
   onError: (message: string) => void;
   onDeadlock?: (isDeadlocked: boolean) => void;
   onTilePlaced?: () => void;
   onUndoUsed?: () => void;
+  onDemoStateChange?: (isDemoPlaying: boolean) => void;
 }
 
 interface PositionedSprite {
@@ -69,6 +72,8 @@ export class GameScene extends Phaser.Scene {
   private playerSprite!: Phaser.GameObjects.Sprite;
   private playerIdleTween: Phaser.Tweens.Tween | null = null;
   private isAnimating = false;
+  private isDemoPlaying = false;
+  private demoTimer: Phaser.Time.TimerEvent | null = null;
   private trailColorIndex = 0;
 
   // Swipe gesture tracking
@@ -97,6 +102,8 @@ export class GameScene extends Phaser.Scene {
     this.playerIdleTween = null;
     this.pointerDownPos = null;
     this.isAnimating = false;
+    this.isDemoPlaying = false;
+    this.demoTimer = null;
   }
 
   public create(): void {
@@ -104,95 +111,102 @@ export class GameScene extends Phaser.Scene {
 
     const { width, height } = this.scale;
 
-    generateAllTextures(this, this.config.themeId, this.config.skinColor);
+    generateAllTextures(
+      this,
+      this.config.themeId,
+      this.config.skinColor,
+      !!this.config.highContrast
+    );
 
     this.bgGraphics = this.add.graphics();
     this.bgGraphics.setDepth(-2);
     this.drawBackground(width, height);
 
-    // World-themed living ambient atmosphere
-    const ambientMap: Record<
-      string,
-      { texture: string; tint: number[]; speedX: { min: number; max: number }; speedY: { min: number; max: number }; scale: { min: number; max: number }; frequency: number }
-    > = {
-      'floating-sky': {
-        texture: 'fx_particle',
-        tint: [0xe0f2fe, 0x38bdf8, 0xffffff],
-        speedX: { min: 6, max: 18 },
-        speedY: { min: -12, max: -4 },
-        scale: { min: 0.16, max: 0.36 },
-        frequency: 360,
-      },
-      'candy-world': {
-        texture: 'item_star',
-        tint: [0xf9a8d4, 0xfef08a, 0xffffff],
-        speedX: { min: -8, max: 8 },
-        speedY: { min: -22, max: -10 },
-        scale: { min: 0.06, max: 0.14 },
-        frequency: 340,
-      },
-      'ocean-islands': {
-        texture: 'fx_particle',
-        tint: [0x99f6e4, 0x38bdf8, 0xe0f2fe],
-        speedX: { min: -6, max: 6 },
-        speedY: { min: -34, max: -16 },
-        scale: { min: 0.14, max: 0.32 },
-        frequency: 280,
-      },
-      'neon-space': {
-        texture: 'item_star',
-        tint: [0xd8b4fe, 0x38bdf8, 0xf472b6],
-        speedX: { min: -10, max: 10 },
-        speedY: { min: -14, max: 14 },
-        scale: { min: 0.05, max: 0.13 },
-        frequency: 260,
-      },
-      'forest-adventure': {
-        texture: 'fx_particle',
-        tint: [0xbef264, 0xfef08a, 0x4ade80],
-        speedX: { min: -14, max: 14 },
-        speedY: { min: -16, max: 8 },
-        scale: { min: 0.14, max: 0.28 },
-        frequency: 300,
-      },
-      'arctic-frost': {
-        texture: 'fx_particle',
-        tint: [0xffffff, 0xe0f2fe, 0xbae6fd],
-        speedX: { min: -14, max: 14 },
-        speedY: { min: 18, max: 42 },
-        scale: { min: 0.12, max: 0.28 },
-        frequency: 220,
-      },
-      'clockwork-forge': {
-        texture: 'fx_particle',
-        tint: [0xfb923c, 0xfbbf24, 0xf43f5e],
-        speedX: { min: -12, max: 12 },
-        speedY: { min: -44, max: -20 },
-        scale: { min: 0.14, max: 0.3 },
-        frequency: 220,
-      },
-      'crate-sanctum': {
-        texture: 'fx_particle',
-        tint: [0xfde047, 0x34d399, 0xa5b4fc],
-        speedX: { min: -10, max: 10 },
-        speedY: { min: -18, max: -6 },
-        scale: { min: 0.12, max: 0.28 },
-        frequency: 280,
-      },
-    };
-    const amb = ambientMap[this.config.themeId] || ambientMap['floating-sky'];
-    const particles = this.add.particles(0, 0, amb.texture, {
-      x: { min: 0, max: Math.max(width, 320) },
-      y: { min: 0, max: Math.max(height, 480) },
-      scale: amb.scale,
-      alpha: { min: 0.12, max: 0.36 },
-      speedX: amb.speedX,
-      speedY: amb.speedY,
-      tint: amb.tint,
-      lifespan: 6000,
-      frequency: amb.frequency,
-    });
-    particles.setDepth(0);
+    // World-themed living ambient atmosphere (respects Reduced Motion accessibility)
+    if (!this.config.reducedMotion) {
+      const ambientMap: Record<
+        string,
+        { texture: string; tint: number[]; speedX: { min: number; max: number }; speedY: { min: number; max: number }; scale: { min: number; max: number }; frequency: number }
+      > = {
+        'floating-sky': {
+          texture: 'fx_particle',
+          tint: [0xe0f2fe, 0x38bdf8, 0xffffff],
+          speedX: { min: 6, max: 18 },
+          speedY: { min: -12, max: -4 },
+          scale: { min: 0.16, max: 0.36 },
+          frequency: 360,
+        },
+        'candy-world': {
+          texture: 'item_star',
+          tint: [0xf9a8d4, 0xfef08a, 0xffffff],
+          speedX: { min: -8, max: 8 },
+          speedY: { min: -22, max: -10 },
+          scale: { min: 0.06, max: 0.14 },
+          frequency: 340,
+        },
+        'ocean-islands': {
+          texture: 'fx_particle',
+          tint: [0x99f6e4, 0x38bdf8, 0xe0f2fe],
+          speedX: { min: -6, max: 6 },
+          speedY: { min: -34, max: -16 },
+          scale: { min: 0.14, max: 0.32 },
+          frequency: 280,
+        },
+        'neon-space': {
+          texture: 'item_star',
+          tint: [0xd8b4fe, 0x38bdf8, 0xf472b6],
+          speedX: { min: -10, max: 10 },
+          speedY: { min: -14, max: 14 },
+          scale: { min: 0.05, max: 0.13 },
+          frequency: 260,
+        },
+        'forest-adventure': {
+          texture: 'fx_particle',
+          tint: [0xbef264, 0xfef08a, 0x4ade80],
+          speedX: { min: -14, max: 14 },
+          speedY: { min: -16, max: 8 },
+          scale: { min: 0.14, max: 0.28 },
+          frequency: 300,
+        },
+        'arctic-frost': {
+          texture: 'fx_particle',
+          tint: [0xffffff, 0xe0f2fe, 0xbae6fd],
+          speedX: { min: -14, max: 14 },
+          speedY: { min: 18, max: 42 },
+          scale: { min: 0.12, max: 0.28 },
+          frequency: 220,
+        },
+        'clockwork-forge': {
+          texture: 'fx_particle',
+          tint: [0xfb923c, 0xfbbf24, 0xf43f5e],
+          speedX: { min: -12, max: 12 },
+          speedY: { min: -44, max: -20 },
+          scale: { min: 0.14, max: 0.3 },
+          frequency: 220,
+        },
+        'crate-sanctum': {
+          texture: 'fx_particle',
+          tint: [0xfde047, 0x34d399, 0xa5b4fc],
+          speedX: { min: -10, max: 10 },
+          speedY: { min: -18, max: -6 },
+          scale: { min: 0.12, max: 0.28 },
+          frequency: 280,
+        },
+      };
+      const amb = ambientMap[this.config.themeId] || ambientMap['floating-sky'];
+      const particles = this.add.particles(0, 0, amb.texture, {
+        x: { min: 0, max: Math.max(width, 320) },
+        y: { min: 0, max: Math.max(height, 480) },
+        scale: amb.scale,
+        alpha: { min: 0.12, max: 0.36 },
+        speedX: amb.speedX,
+        speedY: amb.speedY,
+        tint: amb.tint,
+        lifespan: 6000,
+        frequency: amb.frequency,
+      });
+      particles.setDepth(0);
+    }
 
     this.recalculateLayout(width, height);
 
@@ -202,10 +216,12 @@ export class GameScene extends Phaser.Scene {
 
     // Tap + Swipe gesture input
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (this.isDemoPlaying) return;
       this.pointerDownPos = { x: pointer.x, y: pointer.y };
     });
 
     this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+      if (this.isDemoPlaying) return;
       if (!this.pointerDownPos) {
         this.handlePointerTap(pointer.x, pointer.y);
         return;
@@ -228,12 +244,14 @@ export class GameScene extends Phaser.Scene {
 
     this.scale.on('resize', this.handleResize, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.stopDemo(false);
       this.scale.off('resize', this.handleResize, this);
       this.stopPlayerIdleTween();
     });
 
     this.config.onStateChange(this.gameLogic);
     this.config.onDeadlock?.(false);
+    this.config.onDemoStateChange?.(false);
   }
 
   private drawBackground(width: number, height: number): void {
@@ -574,6 +592,7 @@ export class GameScene extends Phaser.Scene {
 
     const pos = this.gridToScreen(this.gameLogic.player);
     this.playerSprite.setPosition(pos.x, pos.y - 4);
+    if (this.config.reducedMotion) return;
     this.playerIdleTween = this.tweens.add({
       targets: this.playerSprite,
       y: pos.y - 8,
@@ -592,6 +611,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private spawnBurst(x: number, y: number, tint: number, count = 10): void {
+    if (this.config.reducedMotion) return;
     const emitter = this.add.particles(x, y, 'fx_particle', {
       speed: { min: 40, max: 130 },
       scale: { start: 0.45, end: 0 },
@@ -625,7 +645,7 @@ export class GameScene extends Phaser.Scene {
     this.highlightSprites.forEach((s) => s.destroy());
     this.highlightSprites = [];
 
-    if (this.gameLogic.status === 'won' || this.isAnimating) return;
+    if (this.gameLogic.status === 'won' || this.isAnimating || this.isDemoPlaying) return;
 
     const legalMoves = this.gameLogic.getLegalMoves();
     legalMoves.forEach((coord) => {
@@ -635,20 +655,22 @@ export class GameScene extends Phaser.Scene {
       hl.setAlpha(0.7);
       hl.setDepth(3);
 
-      this.tweens.add({
-        targets: hl,
-        alpha: 0.22,
-        duration: 800,
-        yoyo: true,
-        repeat: -1,
-      });
+      if (!this.config.reducedMotion) {
+        this.tweens.add({
+          targets: hl,
+          alpha: 0.22,
+          duration: 800,
+          yoyo: true,
+          repeat: -1,
+        });
+      }
 
       this.highlightSprites.push(hl);
     });
   }
 
   public moveByDirection(dir: Direction): void {
-    if (this.isAnimating || this.gameLogic.status === 'won') return;
+    if (this.isAnimating || this.isDemoPlaying || this.gameLogic.status === 'won') return;
     const delta =
       dir === 'up'
         ? { x: 0, y: -1 }
@@ -666,7 +688,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handlePointerTap(screenX: number, screenY: number): void {
-    if (this.isAnimating || this.gameLogic.status === 'won') return;
+    if (this.isAnimating || this.isDemoPlaying || this.gameLogic.status === 'won') return;
     const targetCoord = this.screenToGrid(screenX, screenY);
     if (!targetCoord) return;
     this.attemptMove(targetCoord);
@@ -678,7 +700,9 @@ export class GameScene extends Phaser.Scene {
       sound.playError();
       sound.triggerHaptic('warning');
       this.config.onError(check.reason || 'Invalid move');
-      this.cameras.main.shake(90, 0.003);
+      if (!this.config.reducedMotion) {
+        this.cameras.main.shake(90, 0.003);
+      }
 
       const restX = this.gridToScreen(this.gameLogic.player).x;
       this.tweens.killTweensOf(this.playerSprite);
@@ -988,7 +1012,9 @@ export class GameScene extends Phaser.Scene {
 
     if (res.crumbledTile) {
       sound.playCrumble();
-      this.cameras.main.shake(110, 0.004);
+      if (!this.config.reducedMotion) {
+        this.cameras.main.shake(110, 0.004);
+      }
       const key = coordToKey(res.crumbledTile);
       const pos = this.gridToScreen(res.crumbledTile);
       this.spawnBurst(pos.x, pos.y, 0x94a3b8, 12);
@@ -1058,6 +1084,37 @@ export class GameScene extends Phaser.Scene {
     const pPos = this.gridToScreen(this.gameLogic.player);
     this.spawnBurst(pPos.x, pPos.y, 0xfbbf24, 18);
 
+    // If Solution Theater demo reached the exit, reset cleanly after a brief beat without awarding stars/coins
+    if (this.isDemoPlaying) {
+      this.isAnimating = false;
+      this.config.onStateChange(this.gameLogic);
+      this.demoTimer = this.time.delayedCall(900, () => {
+        this.stopDemo(true);
+        this.config.onError('Optimal Par replay finished — now try it yourself!');
+      });
+      return;
+    }
+
+    const completeWin = () => {
+      this.playerSprite.setAngle(0);
+      this.isAnimating = false;
+      let stars = 1;
+      if (this.gameLogic.moves <= this.config.level.parMoves) {
+        stars = 3;
+      } else if (
+        this.gameLogic.moves <= (this.config.level.star2Moves || this.config.level.parMoves + 2)
+      ) {
+        stars = 2;
+      }
+
+      this.config.onWin(this.gameLogic.moves, stars, this.config.level.parMoves);
+    };
+
+    if (this.config.reducedMotion) {
+      this.time.delayedCall(180, completeWin);
+      return;
+    }
+
     const baseY = this.playerSprite.y;
     this.tweens.add({
       targets: this.playerSprite,
@@ -1066,25 +1123,69 @@ export class GameScene extends Phaser.Scene {
       duration: 420,
       yoyo: true,
       repeat: 1,
-      onComplete: () => {
-        this.playerSprite.setAngle(0);
-        this.isAnimating = false;
-        let stars = 1;
-        if (this.gameLogic.moves <= this.config.level.parMoves) {
-          stars = 3;
-        } else if (
-          this.gameLogic.moves <= (this.config.level.star2Moves || this.config.level.parMoves + 2)
-        ) {
-          stars = 2;
-        }
-
-        this.config.onWin(this.gameLogic.moves, stars, this.config.level.parMoves);
-      },
+      onComplete: completeWin,
     });
   }
 
+  public playOptimalDemo(): boolean {
+    if (!this.config) return false;
+    this.stopDemo(false);
+
+    const solution = solveLevel(this.config.level, 45);
+    if (!solution.solvable || solution.solutionPath.length < 2) {
+      return false;
+    }
+
+    this.isAnimating = false;
+    this.gameLogic.restart();
+    this.isDemoPlaying = true;
+    this.config.onDemoStateChange?.(true);
+    this.syncVisualsWithState();
+    this.config.onError(`Watching Optimal Par (${solution.minMoves} moves)…`);
+
+    const steps = solution.solutionPath.slice(1);
+    let idx = 0;
+
+    const runNextStep = () => {
+      if (!this.isDemoPlaying) return;
+      if (idx >= steps.length) {
+        this.stopDemo(true);
+        return;
+      }
+      if (this.isAnimating) {
+        this.demoTimer = this.time.delayedCall(120, runNextStep);
+        return;
+      }
+      const nextCoord = steps[idx++];
+      this.executeMoveAnimation(nextCoord);
+      if (idx < steps.length) {
+        this.demoTimer = this.time.delayedCall(420, runNextStep);
+      }
+    };
+
+    this.demoTimer = this.time.delayedCall(320, runNextStep);
+    return true;
+  }
+
+  public stopDemo(resetBoard = true): void {
+    if (this.demoTimer) {
+      this.demoTimer.remove(false);
+      this.demoTimer = null;
+    }
+    const wasPlaying = this.isDemoPlaying;
+    this.isDemoPlaying = false;
+    if (wasPlaying) {
+      this.config?.onDemoStateChange?.(false);
+      if (resetBoard && this.gameLogic) {
+        this.isAnimating = false;
+        this.gameLogic.restart();
+        this.syncVisualsWithState();
+      }
+    }
+  }
+
   public undo(): void {
-    if (this.isAnimating) return;
+    if (this.isAnimating || this.isDemoPlaying) return;
     const ok = this.gameLogic.undo();
     if (ok) {
       sound.playRecoverTile();
@@ -1095,6 +1196,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   public restart(): void {
+    if (this.isDemoPlaying) {
+      this.stopDemo(true);
+      sound.playTap();
+      return;
+    }
     if (this.isAnimating) return;
     this.gameLogic.restart();
     sound.playTap();
@@ -1102,7 +1208,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   public showHint(): void {
-    if (this.isAnimating || this.gameLogic.status === 'won') return;
+    if (this.isAnimating || this.isDemoPlaying || this.gameLogic.status === 'won') return;
 
     const solution = solveFromState(this.gameLogic, 40, 25000);
     if (!solution.solvable || solution.solutionPath.length < 2) {

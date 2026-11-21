@@ -5,6 +5,7 @@ export interface LevelProgress {
   completed: boolean;
   stars: number; // 0, 1, 2, or 3
   bestMoves: number;
+  bestTimeMs?: number;
 }
 
 export interface Achievement {
@@ -42,6 +43,9 @@ export interface PlayerData {
     musicEnabled: boolean;
     sfxEnabled: boolean;
     hapticsEnabled: boolean;
+    speedrunTimer: boolean;
+    reducedMotion: boolean;
+    highContrast: boolean;
   };
   achievements: Record<string, Achievement>;
   stats: {
@@ -59,12 +63,25 @@ export function getLocalDateString(date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
+export function formatElapsedTime(ms: number): string {
+  const safeMs = Math.max(0, Math.floor(ms));
+  const totalTenths = Math.floor(safeMs / 100);
+  const tenths = totalTenths % 10;
+  const totalSeconds = Math.floor(totalTenths / 10);
+  const seconds = totalSeconds % 60;
+  const minutes = Math.floor(totalSeconds / 60);
+  if (minutes > 0) {
+    return `${minutes}:${String(seconds).padStart(2, '0')}.${tenths}`;
+  }
+  return `${seconds}.${tenths}s`;
+}
+
 export type MonthlyMedal = 'none' | 'bronze' | 'silver' | 'gold';
 
 export const TOTAL_CAMPAIGN_LEVELS = 160;
 export const MAX_CAMPAIGN_STARS = TOTAL_CAMPAIGN_LEVELS * 3;
 const STORAGE_KEY = 'steal_the_floor_save_v1';
-const CURRENT_VERSION = 5;
+const CURRENT_VERSION = 6;
 export const ACHIEVEMENT_REWARD_COINS = 15;
 
 export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
@@ -162,6 +179,9 @@ export class GameStorage {
         musicEnabled: true,
         sfxEnabled: true,
         hapticsEnabled: true,
+        speedrunTimer: false,
+        reducedMotion: false,
+        highContrast: false,
       },
       achievements: achMap,
       stats: {
@@ -251,21 +271,37 @@ export class GameStorage {
     levelId: number,
     moves: number,
     starsEarned: number,
-    options?: { usedUndo?: boolean; gemsCollected?: number }
+    options?: { usedUndo?: boolean; gemsCollected?: number; elapsedMs?: number }
   ): {
     newStars: number;
     unlockedNext: boolean;
     coinsAwarded: number;
+    isNewBestTime: boolean;
     newlyUnlockedAchievements: Achievement[];
   } {
     const current = this.getLevelProgress(levelId);
     const isFirstClear = !current.completed;
     const starDelta = Math.max(0, starsEarned - current.stars);
 
+    const elapsedMs =
+      typeof options?.elapsedMs === 'number' && options.elapsedMs > 0
+        ? Math.round(options.elapsedMs)
+        : undefined;
+    const prevBestTime = current.bestTimeMs;
+    const isNewBestTime =
+      elapsedMs !== undefined && (prevBestTime === undefined || elapsedMs < prevBestTime);
+    const bestTimeMs =
+      elapsedMs !== undefined
+        ? prevBestTime !== undefined
+          ? Math.min(prevBestTime, elapsedMs)
+          : elapsedMs
+        : prevBestTime;
+
     const updated: LevelProgress = {
       completed: true,
       stars: Math.max(current.stars, starsEarned),
       bestMoves: current.bestMoves === 0 ? moves : Math.min(current.bestMoves, moves),
+      ...(bestTimeMs !== undefined ? { bestTimeMs } : {}),
     };
 
     this.data.levelProgress[levelId] = updated;
@@ -298,7 +334,13 @@ export class GameStorage {
 
     this.save();
 
-    return { newStars: starDelta, unlockedNext, coinsAwarded, newlyUnlockedAchievements };
+    return {
+      newStars: starDelta,
+      unlockedNext,
+      coinsAwarded,
+      isNewBestTime,
+      newlyUnlockedAchievements,
+    };
   }
 
   public recordEndlessClear(streak: number): {

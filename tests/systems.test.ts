@@ -4,6 +4,7 @@ import {
   THEMES,
   TRAILS,
   ACHIEVEMENT_REWARD_COINS,
+  formatElapsedTime,
 } from '../src/storage/gameStorage';
 import { getDailyChallenge, formatDailyShareText } from '../src/levels/dailyChallenge';
 import { generateEndlessStage } from '../src/levels/endlessMode';
@@ -291,5 +292,50 @@ describe('Game Systems QA Test Suite', () => {
       expect(dec.level.crates).toEqual([{ x: 1, y: 0 }]);
       expect(dec.level.switches?.[0]?.holdSwitch).toBe(true);
     }
+  });
+
+  it('formats speedrun times cleanly and tracks personal best clear times', () => {
+    expect(formatElapsedTime(0)).toBe('0.0s');
+    expect(formatElapsedTime(12450)).toBe('12.4s');
+    expect(formatElapsedTime(65300)).toBe('1:05.3');
+
+    // First clear sets bestTimeMs and flags isNewBestTime
+    const first = storage.recordLevelVictory(1, 5, 2, { elapsedMs: 14200 });
+    expect(first.isNewBestTime).toBe(true);
+    expect(storage.getData().levelProgress[1].bestTimeMs).toBe(14200);
+
+    // Slower replay keeps faster record and does not flag new best
+    const slower = storage.recordLevelVictory(1, 5, 2, { elapsedMs: 18500 });
+    expect(slower.isNewBestTime).toBe(false);
+    expect(storage.getData().levelProgress[1].bestTimeMs).toBe(14200);
+
+    // Faster replay updates bestTimeMs and flags isNewBestTime
+    const faster = storage.recordLevelVictory(1, 4, 3, { elapsedMs: 9300 });
+    expect(faster.isNewBestTime).toBe(true);
+    expect(storage.getData().levelProgress[1].bestTimeMs).toBe(9300);
+  });
+
+  it('persists speedrunTimer, reducedMotion, and highContrast settings across backup codes', () => {
+    const data = storage.getData();
+    expect(data.settings.speedrunTimer).toBe(false);
+    expect(data.settings.reducedMotion).toBe(false);
+    expect(data.settings.highContrast).toBe(false);
+
+    data.settings.speedrunTimer = true;
+    data.settings.reducedMotion = true;
+    data.settings.highContrast = true;
+    storage.save();
+
+    const backup = storage.exportSaveCode();
+    storage.resetProgress();
+    expect(storage.getData().settings.speedrunTimer).toBe(false);
+    expect(storage.getData().settings.reducedMotion).toBe(false);
+    expect(storage.getData().settings.highContrast).toBe(false);
+
+    const restored = storage.importSaveCode(backup);
+    expect(restored.ok).toBe(true);
+    expect(storage.getData().settings.speedrunTimer).toBe(true);
+    expect(storage.getData().settings.reducedMotion).toBe(true);
+    expect(storage.getData().settings.highContrast).toBe(true);
   });
 });

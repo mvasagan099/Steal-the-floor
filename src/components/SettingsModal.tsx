@@ -8,6 +8,9 @@ import {
   Download,
   Upload,
   Check,
+  Timer,
+  Eye,
+  Sparkles,
 } from 'lucide-react';
 import { storage } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
@@ -15,9 +18,14 @@ import { sound } from '../audio/soundManager';
 interface SettingsModalProps {
   onBack: () => void;
   onReset: () => void;
+  onSettingsChanged?: () => void;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({ onBack, onReset }) => {
+export const SettingsModal: React.FC<SettingsModalProps> = ({
+  onBack,
+  onReset,
+  onSettingsChanged,
+}) => {
   const [data, setData] = useState(() => storage.getData());
   const [showConfirmReset, setShowConfirmReset] = useState(false);
   const [backupCopied, setBackupCopied] = useState(false);
@@ -51,6 +59,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onBack, onReset })
     if (updated.settings.hapticsEnabled) {
       sound.triggerHaptic('medium');
     }
+    onSettingsChanged?.();
+  };
+
+  const handleToggleSetting = (key: 'speedrunTimer' | 'highContrast' | 'reducedMotion') => {
+    sound.playTap();
+    const updated = storage.getData();
+    updated.settings[key] = !updated.settings[key];
+    storage.save();
+    setData({ ...updated });
+    onSettingsChanged?.();
   };
 
   const handleExportBackup = async () => {
@@ -80,6 +98,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onBack, onReset })
     setData({ ...fresh });
     setRestoreInput('');
     setBackupMsg({ kind: 'ok', text: 'Progress restored successfully!' });
+    onSettingsChanged?.();
     onReset();
   };
 
@@ -87,6 +106,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onBack, onReset })
     sound.playError();
     storage.resetProgress();
     setShowConfirmReset(false);
+    onSettingsChanged?.();
     onReset();
   };
 
@@ -159,7 +179,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onBack, onReset })
           </div>
           <button
             onClick={handleToggleHaptics}
-            className={`w-12 h-7 rounded-full transition-all relative p-1 ${
+            aria-label="Toggle Haptic Vibration"
+            className={`w-12 h-7 rounded-full transition-all relative p-1 flex-none ${
               data.settings.hapticsEnabled ? 'bg-sky-500' : 'bg-slate-800'
             }`}
           >
@@ -169,6 +190,86 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onBack, onReset })
               }`}
             />
           </button>
+        </div>
+
+        {/* Gameplay & Accessibility */}
+        <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col gap-3.5">
+          <div className="flex items-center gap-2 text-xs font-bold text-sky-400 uppercase tracking-wider">
+            <Eye size={16} />
+            <span>Gameplay & Accessibility</span>
+          </div>
+
+          {/* Speedrun Timer */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <Timer size={17} className="text-indigo-400 flex-none" />
+              <div className="min-w-0">
+                <div className="text-xs font-bold text-white">Speedrun Timer</div>
+                <div className="text-[11px] text-slate-400">Live clear clock & personal bests</div>
+              </div>
+            </div>
+            <button
+              onClick={() => handleToggleSetting('speedrunTimer')}
+              aria-label="Toggle Speedrun Timer"
+              className={`w-12 h-7 rounded-full transition-all relative p-1 flex-none ${
+                data.settings.speedrunTimer ? 'bg-indigo-500' : 'bg-slate-800'
+              }`}
+            >
+              <div
+                className={`w-5 h-5 bg-white rounded-full transition-all ${
+                  data.settings.speedrunTimer ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* High-Contrast Patterns */}
+          <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-slate-800/80">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <Eye size={17} className="text-amber-400 flex-none" />
+              <div className="min-w-0">
+                <div className="text-xs font-bold text-white">High-Contrast Patterns</div>
+                <div className="text-[11px] text-slate-400">Crisper tile borders & rivets</div>
+              </div>
+            </div>
+            <button
+              onClick={() => handleToggleSetting('highContrast')}
+              aria-label="Toggle High-Contrast Patterns"
+              className={`w-12 h-7 rounded-full transition-all relative p-1 flex-none ${
+                data.settings.highContrast ? 'bg-amber-500' : 'bg-slate-800'
+              }`}
+            >
+              <div
+                className={`w-5 h-5 bg-white rounded-full transition-all ${
+                  data.settings.highContrast ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Reduced Motion */}
+          <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-slate-800/80">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <Sparkles size={17} className="text-emerald-400 flex-none" />
+              <div className="min-w-0">
+                <div className="text-xs font-bold text-white">Reduced Motion</div>
+                <div className="text-[11px] text-slate-400">Turns off shake, confetti & particles</div>
+              </div>
+            </div>
+            <button
+              onClick={() => handleToggleSetting('reducedMotion')}
+              aria-label="Toggle Reduced Motion"
+              className={`w-12 h-7 rounded-full transition-all relative p-1 flex-none ${
+                data.settings.reducedMotion ? 'bg-emerald-500' : 'bg-slate-800'
+              }`}
+            >
+              <div
+                className={`w-5 h-5 bg-white rounded-full transition-all ${
+                  data.settings.reducedMotion ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Offline Save Backup / Device Transfer */}
@@ -279,7 +380,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onBack, onReset })
         </div>
 
         <div className="text-center text-[10px] text-slate-600 font-mono mt-2">
-          Steal the Floor v2.0.0 • 100% Offline Ad-Free Build
+          Steal the Floor v2.1.0 • 100% Offline Ad-Free Build
         </div>
       </div>
     </div>

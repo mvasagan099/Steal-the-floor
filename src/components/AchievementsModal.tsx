@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft, Check, Trophy } from 'lucide-react';
-import { storage } from '../storage/gameStorage';
+import { storage, formatElapsedTime } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
 
 interface AchievementsModalProps {
@@ -11,6 +11,13 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({ onBack }) 
   const data = storage.getData();
   const achievements = Object.values(data.achievements);
   const unlockedCount = achievements.filter((a) => a.unlocked).length;
+  const progressEntries = Object.values(data.levelProgress);
+  const clearedCount = progressEntries.filter((p) => p.completed).length;
+  const perfectCount = progressEntries.filter((p) => p.stars >= 3).length;
+  const bestTimes = progressEntries
+    .map((p) => p.bestTimeMs)
+    .filter((t): t is number => typeof t === 'number' && t > 0);
+  const fastestMs = bestTimes.length > 0 ? Math.min(...bestTimes) : null;
 
   return (
     <div className="fixed inset-0 z-40 bg-slate-950 text-white flex flex-col overflow-hidden animate-in fade-in duration-200">
@@ -37,12 +44,20 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({ onBack }) 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 safe-bottom">
         {/* Player Stats Summary */}
-        <div className="grid grid-cols-4 gap-2 bg-slate-900/90 border border-slate-800 rounded-2xl p-3 text-center">
+        <div className="grid grid-cols-3 gap-2.5 bg-slate-900/90 border border-slate-800 rounded-2xl p-3 text-center">
           <div>
-            <div className="text-sm font-black text-sky-400 font-mono">
-              {Object.values(data.levelProgress).filter((p) => p.completed).length}
-            </div>
+            <div className="text-sm font-black text-sky-400 font-mono">{clearedCount}</div>
             <div className="text-[10px] text-slate-400 font-bold uppercase">Cleared</div>
+          </div>
+          <div>
+            <div className="text-sm font-black text-amber-400 font-mono">{perfectCount}</div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase">Perfect 3★</div>
+          </div>
+          <div>
+            <div className="text-sm font-black text-indigo-400 font-mono">
+              {fastestMs !== null ? formatElapsedTime(fastestMs) : '—'}
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase">Fastest</div>
           </div>
           <div>
             <div className="text-sm font-black text-emerald-400 font-mono">
@@ -51,7 +66,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({ onBack }) 
             <div className="text-[10px] text-slate-400 font-bold uppercase">No-Undo</div>
           </div>
           <div>
-            <div className="text-sm font-black text-amber-400 font-mono">
+            <div className="text-sm font-black text-yellow-300 font-mono">
               {data.stats.totalTilesPlaced}
             </div>
             <div className="text-[10px] text-slate-400 font-bold uppercase">Tiles</div>

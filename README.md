@@ -18,7 +18,7 @@ In **Steal the Floor**, you guide **Puff** across floating islands suspended ove
 
 ---
 
-## 🌟 Highlights (v2.0.0)
+## 🌟 Highlights (v2.1.0)
 
 - **160 Solver-Validated Campaign Levels across 8 Worlds (480 Stars):**
   - **World 1 — First Steps (1–20):** Bridge reach, island reclamation, and gem detours.
@@ -31,7 +31,10 @@ In **Steal the Floor**, you guide **Puff** across floating islands suspended ove
   - **World 8 — Obsidian Sanctum (141–160):** **Pushable Crates (`M`) & Weighted Pressure Plates** — shove crates across solid ground or ice to hold sanctum gates open.
 - **Automated Mathematical Quality Gates (BFS Solver):**
   - Every campaign level is proven solvable, par-calibrated, and verified so no switch, portal, crumbling stone, one-way arrow, ice runway, `+1` bonus tile, sticky trap, timed gate, or pushable crate can be trivially bypassed.
-  - Powers real-time **State-Aware Hints** (`H`) and **Live Deadlock Detection** (pulsing Undo warning when no winning path remains).
+  - Powers real-time **State-Aware Hints** (`H`), **Live Deadlock Detection** (pulsing Undo warning when no winning path remains), and **Solution Theater ("Watch Optimal Par")** — an animated non-scoring replay of the optimal par route from Pause or after clearing over par.
+- **Speedrun Trials & Accessibility Suite:**
+  - Optional live **Speedrun Timer** in the HUD with per-level **Personal Best (`⚡ NEW BEST!`)** clear times and **Perfect 3★ / Fastest Clear** stats on the Achievements screen.
+  - **High-Contrast Patterns** (crisper tile outlines, corner rivets, and void grid clarity) and **Reduced Motion** (disables camera shake, confetti, ambient particles, and idle bobbing), all persisted in local storage and `STFSAVE:` backups.
 - **Endless Mode — Void Rush:**
   - Infinite stream of solver-verified procedural stages with escalating mechanics, personal-best streaks, and rewards.
 - **Daily Challenge Archive & Monthly Medals:**
@@ -67,7 +70,7 @@ npm install
 # Run development server (http://localhost:5173)
 npm run dev
 
-# Run full unit & 140-level BFS Quality Gate test suite
+# Run full unit & 160-level BFS Quality Gate test suite
 npm test
 
 # Re-validate and regenerate src/levels/levelsData.ts from ASCII grids

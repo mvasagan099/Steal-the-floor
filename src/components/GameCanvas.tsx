@@ -9,6 +9,8 @@ export interface GameCanvasHandle {
   restart: () => void;
   hint: () => void;
   move: (dir: Direction) => void;
+  watchSolution: () => boolean;
+  stopDemo: (resetBoard?: boolean) => void;
 }
 
 interface GameCanvasProps {
@@ -16,12 +18,15 @@ interface GameCanvasProps {
   themeId: string;
   skinColor: string;
   trailId?: string;
+  reducedMotion?: boolean;
+  highContrast?: boolean;
   onStateChange: (game: PuzzleGame) => void;
   onWin: (moves: number, stars: number, par: number) => void;
   onError: (message: string) => void;
   onDeadlock?: (isDeadlocked: boolean) => void;
   onTilePlaced?: () => void;
   onUndoUsed?: () => void;
+  onDemoStateChange?: (isDemoPlaying: boolean) => void;
 }
 
 export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
@@ -31,12 +36,15 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       themeId,
       skinColor,
       trailId = 'trail-none',
+      reducedMotion = false,
+      highContrast = false,
       onStateChange,
       onWin,
       onError,
       onDeadlock,
       onTilePlaced,
       onUndoUsed,
+      onDemoStateChange,
     },
     ref
   ) => {
@@ -53,6 +61,7 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       onDeadlock,
       onTilePlaced,
       onUndoUsed,
+      onDemoStateChange,
     });
     callbacksRef.current = {
       onStateChange,
@@ -61,24 +70,30 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       onDeadlock,
       onTilePlaced,
       onUndoUsed,
+      onDemoStateChange,
     };
 
     const buildSceneData = (
       lvl: LevelDefinition,
       theme: string,
       skin: string,
-      trail: string
+      trail: string,
+      rm: boolean,
+      hc: boolean
     ): GameSceneConfig => ({
       level: lvl,
       themeId: theme,
       skinColor: skin,
       trailId: trail,
+      reducedMotion: rm,
+      highContrast: hc,
       onStateChange: (game) => callbacksRef.current.onStateChange(game),
       onWin: (moves, stars, par) => callbacksRef.current.onWin(moves, stars, par),
       onError: (message) => callbacksRef.current.onError(message),
       onDeadlock: (deadlocked) => callbacksRef.current.onDeadlock?.(deadlocked),
       onTilePlaced: () => callbacksRef.current.onTilePlaced?.(),
       onUndoUsed: () => callbacksRef.current.onUndoUsed?.(),
+      onDemoStateChange: (playing) => callbacksRef.current.onDemoStateChange?.(playing),
     });
 
     useImperativeHandle(ref, () => ({
@@ -93,6 +108,12 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       },
       move: (dir: Direction) => {
         sceneRef.current?.moveByDirection(dir);
+      },
+      watchSolution: () => {
+        return sceneRef.current?.playOptimalDemo() ?? false;
+      },
+      stopDemo: (resetBoard?: boolean) => {
+        sceneRef.current?.stopDemo(resetBoard);
       },
     }));
 
@@ -121,7 +142,10 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       const game = new Phaser.Game(config);
       gameInstanceRef.current = game;
 
-      game.scene.start('GameScene', buildSceneData(level, themeId, skinColor, trailId));
+      game.scene.start(
+        'GameScene',
+        buildSceneData(level, themeId, skinColor, trailId, reducedMotion, highContrast)
+      );
       isBootedRef.current = true;
 
       return () => {
@@ -130,15 +154,17 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
         gameInstanceRef.current = null;
         sceneRef.current = null;
       };
-      // Intentionally mount Phaser once; level/theme/skin/trail changes restart the scene below.
+      // Intentionally mount Phaser once; config changes restart the scene below.
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Restart GameScene cleanly when level, theme, skin, or trail changes
+    // Restart GameScene cleanly when level, theme, skin, trail, or accessibility flags change
     useEffect(() => {
       if (!isBootedRef.current || !sceneRef.current) return;
-      sceneRef.current.scene.restart(buildSceneData(level, themeId, skinColor, trailId));
-    }, [level, themeId, skinColor, trailId]);
+      sceneRef.current.scene.restart(
+        buildSceneData(level, themeId, skinColor, trailId, reducedMotion, highContrast)
+      );
+    }, [level, themeId, skinColor, trailId, reducedMotion, highContrast]);
 
     return (
       <div

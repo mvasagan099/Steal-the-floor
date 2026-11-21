@@ -132,7 +132,12 @@ const PORTAL_COLORS = [
   { outer: '#2dd4bf', inner: '#38bdf8', core: '#a7f3d0', bg: '#042f2e', side: '#021d1c', label: 'II' },
 ];
 
-export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky', skinColor = '#f59e0b'): void {
+export function generateAllTextures(
+  scene: Phaser.Scene,
+  themeId = 'floating-sky',
+  skinColor = '#f59e0b',
+  highContrast = false
+): void {
   const palette = THEME_PALETTES[themeId] || THEME_PALETTES['floating-sky'];
   const S = 128;
 
@@ -180,16 +185,16 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.roundRect(14, 14, S - 28, S - 36, 20);
     ctx.fill();
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = highContrast ? 'rgba(255, 255, 255, 0.32)' : 'rgba(255, 255, 255, 0.08)';
+    ctx.lineWidth = highContrast ? 4 : 3;
     ctx.beginPath();
     ctx.roundRect(14, 14, S - 28, S - 36, 20);
     ctx.stroke();
 
     // Faint center dot
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.fillStyle = highContrast ? 'rgba(255, 255, 255, 0.28)' : 'rgba(255, 255, 255, 0.1)';
     ctx.beginPath();
-    ctx.arc(S / 2, S / 2 - 4, 4, 0, Math.PI * 2);
+    ctx.arc(S / 2, S / 2 - 4, highContrast ? 5 : 4, 0, Math.PI * 2);
     ctx.fill();
   });
 
@@ -201,9 +206,23 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, S, S);
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-    ctx.lineWidth = 4;
+    ctx.strokeStyle = highContrast ? 'rgba(255, 255, 255, 0.92)' : 'rgba(255, 255, 255, 0.35)';
+    ctx.lineWidth = highContrast ? 7 : 4;
     ctx.strokeRect(10, 10, S - 20, S - 32);
+
+    if (highContrast) {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      [
+        [24, 24],
+        [S - 24, 24],
+        [24, S - 42],
+        [S - 24, S - 42],
+      ].forEach(([rx, ry]) => {
+        ctx.beginPath();
+        ctx.arc(rx, ry, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
   }, palette.tileFixedSide);
 
   // 1b. Start Island (fixed platform with subtle spawn emblem)
@@ -214,8 +233,8 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, S, S);
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
-    ctx.lineWidth = 4;
+    ctx.strokeStyle = highContrast ? '#ffffff' : 'rgba(255, 255, 255, 0.55)';
+    ctx.lineWidth = highContrast ? 6 : 4;
     ctx.strokeRect(10, 10, S - 20, S - 32);
 
     ctx.fillStyle = 'rgba(15, 23, 42, 0.24)';
@@ -223,7 +242,7 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.arc(64, 52, 22, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
     ctx.font = '900 28px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -238,15 +257,15 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, S, S);
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.32)';
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = highContrast ? 'rgba(15, 23, 42, 0.55)' : 'rgba(255, 255, 255, 0.32)';
+    ctx.lineWidth = highContrast ? 5 : 3;
     ctx.beginPath();
     ctx.moveTo(35, 12); ctx.lineTo(35, S - 20);
     ctx.moveTo(S - 35, 12); ctx.lineTo(S - 35, S - 20);
     ctx.stroke();
 
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = highContrast ? 5 : 2;
     ctx.strokeRect(12, 12, S - 24, S - 34);
   }, palette.tileBridgeSide);
 
