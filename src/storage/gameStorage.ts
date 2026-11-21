@@ -1,4 +1,5 @@
 // Versioned offline save and progress manager
+import { LevelDefinition } from '../engine/types';
 
 export interface LevelProgress {
   completed: boolean;
@@ -26,10 +27,14 @@ export interface PlayerData {
   unlockedThemes: string[];
   selectedSkin: string;
   unlockedSkins: string[];
+  selectedTrail: string;
+  unlockedTrails: string[];
   coins: number;
   totalStars: number;
   dailyStreak: number;
   lastDailyCompletedDate: string; // Local YYYY-MM-DD
+  bestEndlessStreak: number;
+  customLevels: LevelDefinition[];
   settings: {
     musicVolume: number;
     sfxVolume: number;
@@ -53,8 +58,10 @@ export function getLocalDateString(date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
+export const TOTAL_CAMPAIGN_LEVELS = 120;
+export const MAX_CAMPAIGN_STARS = TOTAL_CAMPAIGN_LEVELS * 3;
 const STORAGE_KEY = 'steal_the_floor_save_v1';
-const CURRENT_VERSION = 2;
+const CURRENT_VERSION = 3;
 export const ACHIEVEMENT_REWARD_COINS = 15;
 
 export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
@@ -63,12 +70,14 @@ export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   { id: 'world2_cleared', title: 'Mountain Climber', description: 'Complete all 20 levels in World 2', unlocked: false, progress: 0, maxProgress: 20, icon: '⛰️' },
   { id: 'world3_cleared', title: 'Hazard Master', description: 'Complete all 20 levels in World 3', unlocked: false, progress: 0, maxProgress: 20, icon: '⚡' },
   { id: 'world4_cleared', title: 'Portal Wanderer', description: 'Complete all 20 levels in World 4', unlocked: false, progress: 0, maxProgress: 20, icon: '🌀' },
-  { id: 'grand_master', title: 'Master Builder', description: 'Complete all 100 levels!', unlocked: false, progress: 0, maxProgress: 100, icon: '👑' },
+  { id: 'world6_cleared', title: 'Frost Master', description: 'Complete all 20 levels in World 6', unlocked: false, progress: 0, maxProgress: 20, icon: '❄️' },
+  { id: 'grand_master', title: 'Master Builder', description: 'Complete all 120 campaign levels!', unlocked: false, progress: 0, maxProgress: 120, icon: '👑' },
   { id: 'star_collector_50', title: 'Stargazer', description: 'Earn 50 par stars total', unlocked: false, progress: 0, maxProgress: 50, icon: '⭐' },
   { id: 'star_collector_150', title: 'Constellation', description: 'Earn 150 par stars total', unlocked: false, progress: 0, maxProgress: 150, icon: '🌟' },
   { id: 'star_collector_300', title: 'Galactic Brilliance', description: 'Earn 300 par stars across all levels!', unlocked: false, progress: 0, maxProgress: 300, icon: '✨' },
   { id: 'daily_challenger', title: 'Daily Devotee', description: 'Complete 3 daily challenges', unlocked: false, progress: 0, maxProgress: 3, icon: '📅' },
   { id: 'no_undo', title: 'Decisive Mind', description: 'Complete 10 unique levels without Undo', unlocked: false, progress: 0, maxProgress: 10, icon: '🧠' },
+  { id: 'endless_5', title: 'Void Runner', description: 'Reach a 5-stage streak in Endless Void Rush', unlocked: false, progress: 0, maxProgress: 5, icon: '♾️' },
 ];
 
 export const THEMES = [
@@ -77,6 +86,7 @@ export const THEMES = [
   { id: 'ocean-islands', name: 'Ocean Islands', price: 40, bg: 'linear-gradient(to bottom, #0d9488, #042f2e)', tileColor: '#2dd4bf', previewColor: '#2dd4bf', unlockedByDefault: false },
   { id: 'neon-space', name: 'Neon Space', price: 60, bg: 'linear-gradient(to bottom, #7e22ce, #180828)', tileColor: '#a855f7', previewColor: '#a855f7', unlockedByDefault: false },
   { id: 'forest-adventure', name: 'Forest Adventure', price: 80, bg: 'linear-gradient(to bottom, #15803d, #052e16)', tileColor: '#4ade80', previewColor: '#4ade80', unlockedByDefault: false },
+  { id: 'arctic-frost', name: 'Arctic Frost', price: 100, bg: 'linear-gradient(to bottom, #0c4a6e, #082f49)', tileColor: '#67e8f9', previewColor: '#67e8f9', unlockedByDefault: false },
 ];
 
 export const SKINS = [
@@ -84,7 +94,16 @@ export const SKINS = [
   { id: 'puff-pink', name: 'Berry Puff', color: '#ec4899', price: 15, unlockedByDefault: false },
   { id: 'puff-cyan', name: 'Aqua Puff', color: '#06b6d4', price: 30, unlockedByDefault: false },
   { id: 'puff-emerald', name: 'Moss Puff', color: '#10b981', price: 45, unlockedByDefault: false },
+  { id: 'puff-frost', name: 'Frost Puff', color: '#7dd3fc', price: 70, unlockedByDefault: false },
   { id: 'puff-gold', name: 'Royal Gold', color: '#fbbf24', price: 100, unlockedByDefault: false },
+];
+
+export const TRAILS = [
+  { id: 'trail-none', name: 'Classic Step', preview: 'linear-gradient(135deg, #334155, #1e293b)', price: 0, unlockedByDefault: true },
+  { id: 'trail-sparkle', name: 'Starlight Dust', preview: 'linear-gradient(135deg, #fef08a, #f59e0b)', price: 35, unlockedByDefault: false },
+  { id: 'trail-frost', name: 'Frost Shards', preview: 'linear-gradient(135deg, #e0f2fe, #38bdf8)', price: 50, unlockedByDefault: false },
+  { id: 'trail-neon', name: 'Cyber Pulse', preview: 'linear-gradient(135deg, #f472b6, #a855f7)', price: 75, unlockedByDefault: false },
+  { id: 'trail-rainbow', name: 'Prism Glow', preview: 'linear-gradient(135deg, #f43f5e, #fbbf24, #4ade80, #38bdf8)', price: 120, unlockedByDefault: false },
 ];
 
 export class GameStorage {
@@ -118,10 +137,14 @@ export class GameStorage {
       unlockedThemes: ['floating-sky'],
       selectedSkin: 'puff-yellow',
       unlockedSkins: ['puff-yellow'],
+      selectedTrail: 'trail-none',
+      unlockedTrails: ['trail-none'],
       coins: 0,
       totalStars: 0,
       dailyStreak: 0,
       lastDailyCompletedDate: '',
+      bestEndlessStreak: 0,
+      customLevels: [],
       settings: {
         musicVolume: 0.4,
         sfxVolume: 0.7,
@@ -154,16 +177,30 @@ export class GameStorage {
 
   private migrate(parsed: Partial<PlayerData>): PlayerData {
     const base = this.getDefaultData();
-    const merged: PlayerData = {
+    const mergedAchievements: Record<string, Achievement> = { ...base.achievements };
+    if (parsed.achievements) {
+      for (const [key, val] of Object.entries(parsed.achievements)) {
+        if (mergedAchievements[key]) {
+          mergedAchievements[key] = {
+            ...mergedAchievements[key],
+            ...val,
+            maxProgress: mergedAchievements[key].maxProgress,
+          };
+        }
+      }
+    }
+
+    return {
       ...base,
       ...parsed,
       version: CURRENT_VERSION,
       noUndoLevelIds: Array.isArray(parsed.noUndoLevelIds) ? parsed.noUndoLevelIds : [],
+      unlockedTrails: Array.isArray(parsed.unlockedTrails) ? parsed.unlockedTrails : ['trail-none'],
+      customLevels: Array.isArray(parsed.customLevels) ? parsed.customLevels : [],
       settings: { ...base.settings, ...(parsed.settings || {}) },
       stats: { ...base.stats, ...(parsed.stats || {}) },
-      achievements: { ...base.achievements, ...(parsed.achievements || {}) },
+      achievements: mergedAchievements,
     };
-    return merged;
   }
 
   public save(): void {
@@ -220,17 +257,15 @@ export class GameStorage {
       this.data.stats.totalStarsCollected += options.gemsCollected;
     }
 
-    // Track unique levels cleared without using Undo
     if (!options?.usedUndo && !this.data.noUndoLevelIds.includes(levelId)) {
       this.data.noUndoLevelIds.push(levelId);
     }
 
-    // Anti-farming coin economy: award 5 coins per newly earned star (+5 bonus on first clear)
     let coinsAwarded = starDelta * 5 + (isFirstClear ? 5 : 0);
     this.data.coins += coinsAwarded;
 
     let unlockedNext = false;
-    if (levelId === this.data.highestUnlockedLevel && levelId < 100) {
+    if (levelId === this.data.highestUnlockedLevel && levelId < TOTAL_CAMPAIGN_LEVELS) {
       this.data.highestUnlockedLevel = levelId + 1;
       this.data.currentLevel = levelId + 1;
       unlockedNext = true;
@@ -248,8 +283,47 @@ export class GameStorage {
     return { newStars: starDelta, unlockedNext, coinsAwarded, newlyUnlockedAchievements };
   }
 
+  public recordEndlessClear(streak: number): {
+    coinsAwarded: number;
+    isNewRecord: boolean;
+    newlyUnlockedAchievements: Achievement[];
+  } {
+    const isNewRecord = streak > this.data.bestEndlessStreak;
+    if (isNewRecord) {
+      this.data.bestEndlessStreak = streak;
+    }
+    let coinsAwarded = 10 + (streak % 5 === 0 ? 15 : 0);
+    this.data.coins += coinsAwarded;
+    this.data.stats.totalLevelsWon++;
+
+    const newlyUnlockedAchievements = this.checkAchievements();
+    if (newlyUnlockedAchievements.length > 0) {
+      const achBonus = newlyUnlockedAchievements.length * ACHIEVEMENT_REWARD_COINS;
+      this.data.coins += achBonus;
+      coinsAwarded += achBonus;
+    }
+
+    this.save();
+    return { coinsAwarded, isNewRecord, newlyUnlockedAchievements };
+  }
+
+  public saveCustomLevel(level: LevelDefinition): void {
+    const existingIdx = this.data.customLevels.findIndex((l) => l.name === level.name);
+    if (existingIdx >= 0) {
+      this.data.customLevels[existingIdx] = level;
+    } else {
+      this.data.customLevels = [level, ...this.data.customLevels].slice(0, 12);
+    }
+    this.save();
+  }
+
+  public deleteCustomLevel(id: number): void {
+    this.data.customLevels = this.data.customLevels.filter((l) => l.id !== id);
+    this.save();
+  }
+
   public setCurrentLevel(id: number): void {
-    if (id <= this.data.highestUnlockedLevel && id >= 1 && id <= 100) {
+    if (id <= this.data.highestUnlockedLevel && id >= 1 && id <= TOTAL_CAMPAIGN_LEVELS) {
       this.data.currentLevel = id;
       this.save();
     }
@@ -291,6 +365,24 @@ export class GameStorage {
     }
   }
 
+  public unlockTrail(trailId: string, cost: number): boolean {
+    if (this.data.coins >= cost && !this.data.unlockedTrails.includes(trailId)) {
+      this.data.coins -= cost;
+      this.data.unlockedTrails.push(trailId);
+      this.data.selectedTrail = trailId;
+      this.save();
+      return true;
+    }
+    return false;
+  }
+
+  public selectTrail(trailId: string): void {
+    if (this.data.unlockedTrails.includes(trailId)) {
+      this.data.selectedTrail = trailId;
+      this.save();
+    }
+  }
+
   public recordDailyCompletion(todayStr = getLocalDateString()): {
     completedNow: boolean;
     coinsAwarded: number;
@@ -300,7 +392,6 @@ export class GameStorage {
       return { completedNow: false, coinsAwarded: 0, newlyUnlockedAchievements: [] };
     }
 
-    // Compute local yesterday string from todayStr
     const [y, m, d] = todayStr.split('-').map(Number);
     const yesterdayDate = new Date(y, m - 1, d - 1);
     const yesterdayStr = getLocalDateString(yesterdayDate);
@@ -361,6 +452,7 @@ export class GameStorage {
     updateProgress('world2_cleared', countRange(21, 40));
     updateProgress('world3_cleared', countRange(41, 60));
     updateProgress('world4_cleared', countRange(61, 80));
+    updateProgress('world6_cleared', countRange(101, 120));
     updateProgress('grand_master', wonCount);
 
     let totalStarsEarned = 0;
@@ -372,6 +464,7 @@ export class GameStorage {
     updateProgress('star_collector_150', totalStarsEarned);
     updateProgress('star_collector_300', totalStarsEarned);
     updateProgress('no_undo', this.data.noUndoLevelIds.length);
+    updateProgress('endless_5', this.data.bestEndlessStreak);
 
     return newlyUnlocked;
   }

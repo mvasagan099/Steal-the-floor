@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Star, Lock } from 'lucide-react';
 import { WORLDS, ALL_LEVELS } from '../levels/levelsData';
-import { storage } from '../storage/gameStorage';
+import { storage, MAX_CAMPAIGN_STARS } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
 
 interface LevelSelectModalProps {
@@ -40,7 +40,9 @@ export const LevelSelectModal: React.FC<LevelSelectModalProps> = ({
         <h2 className="text-base font-extrabold tracking-tight">Select Level</h2>
         <div className="flex items-center gap-1 px-2.5 py-1 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400 font-bold text-xs">
           <Star size={13} className="fill-amber-400" />
-          <span>{playerData.totalStars}/300</span>
+          <span>
+            {playerData.totalStars}/{MAX_CAMPAIGN_STARS}
+          </span>
         </div>
       </div>
 

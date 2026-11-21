@@ -27,6 +27,13 @@ export const getDirection = (from: Coordinate, to: Coordinate): Direction | null
   return null;
 };
 
+const DIR_DELTA: Record<Direction, Coordinate> = {
+  up: { x: 0, y: -1 },
+  down: { x: 0, y: 1 },
+  left: { x: -1, y: 0 },
+  right: { x: 1, y: 0 },
+};
+
 export class PuzzleGame {
   public level: LevelDefinition;
   public player: Coordinate;
@@ -34,6 +41,7 @@ export class PuzzleGame {
   public trapped: Set<string>; // Tiles trapped on sticky ground (lost from inventory)
   public crumbled: Set<string>; // Cells that crumbled away
   public collectedStars: Set<string>;
+  public collectedBonusTiles: Set<string>; // +1 maxTiles pickups collected
   public openDoors: Set<string>;
   public moves: number;
   public status: 'playing' | 'won';
@@ -44,6 +52,8 @@ export class PuzzleGame {
   private rockSet: Set<string>;
   private stickySet: Set<string>;
   private crumblingSet: Set<string>;
+  private iceSet: Set<string>;
+  private bonusTileSet: Set<string>;
   private oneWayMap: Map<string, Direction>;
   private switchMap: Map<string, string>; // coordKey -> switchDoorId
   private doorMap: Map<string, string>; // coordKey -> switchDoorId
@@ -57,6 +67,7 @@ export class PuzzleGame {
     this.trapped = new Set<string>();
     this.crumbled = new Set<string>();
     this.collectedStars = new Set<string>();
+    this.collectedBonusTiles = new Set<string>();
     this.openDoors = new Set<string>();
     this.moves = 0;
     this.status = 'playing';
@@ -77,11 +88,21 @@ export class PuzzleGame {
     this.crumblingSet = new Set<string>();
     level.crumbling?.forEach((c) => this.crumblingSet.add(coordToKey(c)));
 
+    this.iceSet = new Set<string>();
+    level.ice?.forEach((c) => {
+      const key = coordToKey(c);
+      this.iceSet.add(key);
+      // Ice tiles are solid platforms that slide the player in their move direction
+      this.fixedSet.add(key);
+    });
+
+    this.bonusTileSet = new Set<string>();
+    level.bonusTiles?.forEach((c) => this.bonusTileSet.add(coordToKey(c)));
+
     this.oneWayMap = new Map<string, Direction>();
     level.oneWay?.forEach((ow) => {
       const key = coordToKey(ow);
       this.oneWayMap.set(key, ow.direction);
-      // One-way arrows are permanent directional platforms
       this.fixedSet.add(key);
     });
 
@@ -90,7 +111,6 @@ export class PuzzleGame {
     level.switches?.forEach((sw) => {
       const swKey = coordToKey(sw.switchPos);
       this.switchMap.set(swKey, sw.id);
-      // Switch pressure pads are permanent platforms
       this.fixedSet.add(swKey);
       this.doorMap.set(coordToKey(sw.doorPos), sw.id);
       if (sw.doorInitiallyOpen) {
@@ -104,7 +124,6 @@ export class PuzzleGame {
       const keyB = coordToKey(tp.posB);
       this.teleporterMap.set(keyA, { ...tp.posB });
       this.teleporterMap.set(keyB, { ...tp.posA });
-      // Teleporter pads are permanent platforms
       this.fixedSet.add(keyA);
       this.fixedSet.add(keyB);
     });
@@ -112,8 +131,12 @@ export class PuzzleGame {
     this.totalStars = level.stars?.length || 0;
   }
 
+  public get currentMaxTiles(): number {
+    return this.level.maxTiles + this.collectedBonusTiles.size;
+  }
+
   public get inventory(): number {
-    return this.level.maxTiles - (this.tiles.size + this.trapped.size);
+    return this.currentMaxTiles - (this.tiles.size + this.trapped.size);
   }
 
   public canMoveTo(target: Coordinate): { allowed: boolean; reason?: string } {
@@ -121,7 +144,6 @@ export class PuzzleGame {
       return { allowed: false, reason: 'Level already completed!' };
     }
 
-    // Bounds check
     if (
       target.x < 0 ||
       target.x >= this.level.cols ||
@@ -131,17 +153,14 @@ export class PuzzleGame {
       return { allowed: false, reason: 'Outside map boundaries' };
     }
 
-    // Cannot step in place
     if (areCoordsEqual(this.player, target)) {
       return { allowed: false, reason: 'Already on this square' };
     }
 
-    // Adjacency check
     if (!isAdjacent(this.player, target)) {
       return { allowed: false, reason: 'Only tap adjacent tiles' };
     }
 
-    // One-way restriction on current cell
     const currentKey = coordToKey(this.player);
     const oneWayDir = this.oneWayMap.get(currentKey);
     if (oneWayDir) {
@@ -156,18 +175,15 @@ export class PuzzleGame {
 
     const targetKey = coordToKey(target);
 
-    // Rock obstacle
     if (this.rockSet.has(targetKey)) {
       return { allowed: false, reason: 'That rock blocks the path' };
     }
 
-    // Closed door
     const doorId = this.doorMap.get(targetKey);
     if (doorId && !this.openDoors.has(doorId)) {
       return { allowed: false, reason: 'This gate is closed! Find a switch.' };
     }
 
-    // Has floor or needs bridge tile?
     const hasFloor = this.hasWalkableFloor(targetKey);
     if (!hasFloor && this.inventory <= 0) {
       return {
@@ -182,7 +198,7 @@ export class PuzzleGame {
   /**
    * Solid ground platforms reclaim all un-trapped bridge tiles when landed upon.
    * Includes start, exit, fixed islands, switches, one-way pads, teleporters,
-   * open gates, and intact (not yet crumbled) crumbling stones.
+   * ice tiles, open gates, and intact (not yet crumbled) crumbling stones.
    */
   public isSolidGround(coordKey: string): boolean {
     if (this.fixedSet.has(coordKey)) return true;
@@ -195,7 +211,7 @@ export class PuzzleGame {
   public hasWalkableFloor(coordKey: string): boolean {
     if (this.isSolidGround(coordKey)) return true;
     if (this.tiles.has(coordKey)) return true;
-    if (this.trapped.has(coordKey)) return true; // Stuck bridge still acts as floor
+    if (this.trapped.has(coordKey)) return true;
     return false;
   }
 
@@ -224,6 +240,7 @@ export class PuzzleGame {
       trapped: Array.from(this.trapped),
       crumbled: Array.from(this.crumbled),
       collectedStars: Array.from(this.collectedStars),
+      collectedBonusTiles: Array.from(this.collectedBonusTiles),
       openDoors: Array.from(this.openDoors),
       moves: this.moves,
       status: this.status,
@@ -236,9 +253,22 @@ export class PuzzleGame {
     this.trapped = new Set(snapshot.trapped);
     this.crumbled = new Set(snapshot.crumbled);
     this.collectedStars = new Set(snapshot.collectedStars);
+    this.collectedBonusTiles = new Set(snapshot.collectedBonusTiles || []);
     this.openDoors = new Set(snapshot.openDoors);
     this.moves = snapshot.moves;
     this.status = snapshot.status;
+  }
+
+  private canSlideInto(coord: Coordinate): boolean {
+    if (coord.x < 0 || coord.x >= this.level.cols || coord.y < 0 || coord.y >= this.level.rows) {
+      return false;
+    }
+    const key = coordToKey(coord);
+    if (this.rockSet.has(key)) return false;
+    const doorId = this.doorMap.get(key);
+    if (doorId && !this.openDoors.has(doorId)) return false;
+    // Slide continues onto any existing floor (ice, solid islands, bridges) and stops before empty void
+    return this.hasWalkableFloor(key);
   }
 
   public move(target: Coordinate): MoveResult {
@@ -258,12 +288,12 @@ export class PuzzleGame {
       };
     }
 
-    // Save snapshot for undo
     this.history.push(this.snapshot());
 
     const prevCoord = { ...this.player };
     const prevKey = coordToKey(prevCoord);
     const targetKey = coordToKey(target);
+    const moveDir = getDirection(prevCoord, target)!;
 
     const result: MoveResult = {
       success: true,
@@ -271,7 +301,7 @@ export class PuzzleGame {
       message: 'Moved successfully',
     };
 
-    // 1. Place bridge tile if target is empty void (or sticky/crumbled void)
+    // 1. Place bridge tile if target is empty void
     const targetHadFloor = this.hasWalkableFloor(targetKey);
     if (!targetHadFloor) {
       this.tiles.add(targetKey);
@@ -282,39 +312,46 @@ export class PuzzleGame {
     this.player = { ...target };
     this.moves++;
 
-    // 3. Handle departure hazards from previous cell (before any solid-ground reclaim!)
+    // 3. Handle departure hazards from previous cell
     const isPrevSticky = this.stickySet.has(prevKey);
     const isPrevCrumbling = this.crumblingSet.has(prevKey);
 
     if (isPrevSticky && this.tiles.has(prevKey)) {
-      // Bridge tile left on sticky honey becomes permanently trapped
       this.tiles.delete(prevKey);
       this.trapped.add(prevKey);
       result.trappedTile = { ...prevCoord };
     } else if (isPrevCrumbling && !this.crumbled.has(prevKey)) {
-      // Natural crumbling stone shatters behind the player into void
       this.crumbled.add(prevKey);
       result.crumbledTile = { ...prevCoord };
     }
 
-    // 4. Solid-Ground Reclamation: landing on any solid platform reclaims all active bridge tiles!
-    if (this.isSolidGround(targetKey) && this.tiles.size > 0) {
-      const reclaimed: Coordinate[] = [];
-      for (const key of Array.from(this.tiles)) {
-        this.tiles.delete(key);
-        reclaimed.push(keyToCoord(key));
+    // 4. Solid-Ground Reclamation
+    const reclaimOnSolid = (key: string) => {
+      if (this.isSolidGround(key) && this.tiles.size > 0) {
+        const reclaimed: Coordinate[] = result.recoveredTiles || [];
+        for (const tKey of Array.from(this.tiles)) {
+          this.tiles.delete(tKey);
+          reclaimed.push(keyToCoord(tKey));
+        }
+        result.recoveredTiles = reclaimed;
+        result.recoveredTile = reclaimed[0];
       }
-      result.recoveredTiles = reclaimed;
-      result.recoveredTile = reclaimed[0];
-    }
+    };
+    reclaimOnSolid(targetKey);
 
-    // Helper to trigger cell collectibles & switches at current player position
+    // Helper to trigger collectibles, bonus tiles, and switches at current cell
     const triggerCellEffects = () => {
       const pKey = coordToKey(this.player);
+
       const isStar = this.level.stars?.some((s) => areCoordsEqual(s, this.player));
       if (isStar && !this.collectedStars.has(pKey)) {
         this.collectedStars.add(pKey);
         result.starCollected = { ...this.player };
+      }
+
+      if (this.bonusTileSet.has(pKey) && !this.collectedBonusTiles.has(pKey)) {
+        this.collectedBonusTiles.add(pKey);
+        result.bonusTileCollected = { ...this.player };
       }
 
       const switchId = this.switchMap.get(pKey);
@@ -329,10 +366,44 @@ export class PuzzleGame {
       }
     };
 
-    // 5. Star collection & Switches at stepped cell
+    // 5. Initial landing cell effects
     triggerCellEffects();
 
-    // 6. Teleporter (pads are solid ground; trigger any star/switch on destination pad too)
+    // 6. Ice Sliding: if standing on ice, glide along moveDir across walkable tiles until off-ice or blocked
+    if (this.iceSet.has(coordToKey(this.player))) {
+      const slidePath: Coordinate[] = [];
+      const delta = DIR_DELTA[moveDir];
+      let safety = 0;
+
+      while (this.iceSet.has(coordToKey(this.player)) && safety < 20) {
+        safety++;
+        const nextCell: Coordinate = {
+          x: this.player.x + delta.x,
+          y: this.player.y + delta.y,
+        };
+        if (!this.canSlideInto(nextCell)) break;
+
+        this.player = nextCell;
+        slidePath.push({ ...nextCell });
+        reclaimOnSolid(coordToKey(nextCell));
+        triggerCellEffects();
+
+        // Stop sliding if we reached exit with all gems or entered a teleporter
+        if (
+          (areCoordsEqual(this.player, this.level.exit) &&
+            this.collectedStars.size === this.totalStars) ||
+          this.teleporterMap.has(coordToKey(this.player))
+        ) {
+          break;
+        }
+      }
+
+      if (slidePath.length > 0) {
+        result.slidePath = slidePath;
+      }
+    }
+
+    // 7. Teleporter
     const dest = this.teleporterMap.get(coordToKey(this.player));
     if (dest) {
       this.player = { ...dest };
@@ -340,7 +411,7 @@ export class PuzzleGame {
       triggerCellEffects();
     }
 
-    // 7. Win check
+    // 8. Win check
     if (areCoordsEqual(this.player, this.level.exit)) {
       if (this.collectedStars.size === this.totalStars) {
         this.status = 'won';
@@ -371,6 +442,7 @@ export class PuzzleGame {
       this.trapped.clear();
       this.crumbled.clear();
       this.collectedStars.clear();
+      this.collectedBonusTiles.clear();
       this.openDoors.clear();
       this.level.switches?.forEach((sw) => {
         if (sw.doorInitiallyOpen) this.openDoors.add(sw.id);

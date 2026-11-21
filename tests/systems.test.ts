@@ -2,10 +2,14 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import {
   GameStorage,
   THEMES,
+  TRAILS,
   ACHIEVEMENT_REWARD_COINS,
 } from '../src/storage/gameStorage';
 import { getDailyChallenge, formatDailyShareText } from '../src/levels/dailyChallenge';
+import { generateEndlessStage } from '../src/levels/endlessMode';
+import { encodeLevelCode, decodeLevelCode } from '../src/utils/levelShare';
 import { solveLevel } from '../src/engine/solver';
+import { LevelDefinition } from '../src/engine/types';
 
 if (typeof globalThis.localStorage === 'undefined') {
   const store = new Map<string, string>();
@@ -133,5 +137,60 @@ describe('Game Systems QA Test Suite', () => {
     expect(share).toContain('⭐⭐⭐');
     expect(share).toContain('11/11 moves');
     expect(share).toContain('2-day streak');
+  });
+
+  it('generates solvable Endless Void Rush stages and tracks best streak + achievement', () => {
+    const stage1 = generateEndlessStage(1, 4242);
+    const stage5 = generateEndlessStage(5, 4242);
+    expect(solveLevel(stage1, 35).solvable).toBe(true);
+    expect(solveLevel(stage5, 35).solvable).toBe(true);
+
+    for (let s = 1; s <= 5; s++) {
+      storage.recordEndlessClear(s);
+    }
+    const data = storage.getData();
+    expect(data.bestEndlessStreak).toBe(5);
+    expect(data.achievements['endless_5'].unlocked).toBe(true);
+  });
+
+  it('encodes and decodes Builder Studio custom puzzles with offline STF1 share codes', () => {
+    const custom: LevelDefinition = {
+      id: 30001,
+      world: 0,
+      name: 'Studio Gem Run',
+      cols: 6,
+      rows: 7,
+      maxTiles: 2,
+      start: { x: 1, y: 1 },
+      exit: { x: 4, y: 5 },
+      fixed: [{ x: 2, y: 3 }],
+      ice: [{ x: 3, y: 3 }],
+      stars: [{ x: 2, y: 3 }],
+      parMoves: 7,
+    };
+
+    const code = encodeLevelCode(custom);
+    expect(code.startsWith('STF1:')).toBe(true);
+
+    const decoded = decodeLevelCode(code);
+    expect(decoded.ok).toBe(true);
+    if (decoded.ok) {
+      expect(decoded.level.name).toBe('Studio Gem Run');
+      expect(decoded.level.ice).toEqual([{ x: 3, y: 3 }]);
+      expect(decoded.parMoves).toBeGreaterThan(0);
+    }
+
+    const bad = decodeLevelCode('INVALID_CODE');
+    expect(bad.ok).toBe(false);
+  });
+
+  it('supports purchasing and equipping Trails cosmetics', () => {
+    storage.getData().coins = 100;
+    storage.save();
+
+    const frostTrail = TRAILS.find((t) => t.id === 'trail-frost')!;
+    expect(storage.unlockTrail(frostTrail.id, frostTrail.price)).toBe(true);
+    expect(storage.getData().selectedTrail).toBe('trail-frost');
+    expect(storage.getData().coins).toBe(100 - frostTrail.price);
   });
 });

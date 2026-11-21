@@ -1,32 +1,36 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Check, Lock, Palette, Sparkles } from 'lucide-react';
-import { THEMES, SKINS, storage } from '../storage/gameStorage';
+import { ArrowLeft, Check, Lock, Palette, Sparkles, Wind } from 'lucide-react';
+import { THEMES, SKINS, TRAILS, storage } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
 
 interface ThemesModalProps {
   onBack: () => void;
-  onThemeChanged: (themeId: string, skinColor: string) => void;
+  onThemeChanged: (themeId: string, skinColor: string, trailId: string) => void;
 }
 
 export const ThemesModal: React.FC<ThemesModalProps> = ({ onBack, onThemeChanged }) => {
-  const [tab, setTab] = useState<'themes' | 'skins'>('themes');
+  const [tab, setTab] = useState<'themes' | 'skins' | 'trails'>('themes');
   const [data, setData] = useState(() => storage.getData());
+
+  const notifyChange = () => {
+    const latest = storage.getData();
+    const skin = SKINS.find((s) => s.id === latest.selectedSkin);
+    onThemeChanged(latest.selectedTheme, skin?.color || '#f59e0b', latest.selectedTrail);
+  };
 
   const handleSelectTheme = (themeId: string) => {
     sound.playTap();
     storage.selectTheme(themeId);
     setData({ ...storage.getData() });
-    const currentSkin = SKINS.find((s) => s.id === storage.getData().selectedSkin);
-    onThemeChanged(themeId, currentSkin?.color || '#f59e0b');
+    notifyChange();
   };
 
   const handleUnlockTheme = (themeId: string, price: number) => {
-    sound.playStar();
     const ok = storage.unlockTheme(themeId, price);
     if (ok) {
+      sound.playStar();
       setData({ ...storage.getData() });
-      const currentSkin = SKINS.find((s) => s.id === storage.getData().selectedSkin);
-      onThemeChanged(themeId, currentSkin?.color || '#f59e0b');
+      notifyChange();
     } else {
       sound.playError();
     }
@@ -36,17 +40,33 @@ export const ThemesModal: React.FC<ThemesModalProps> = ({ onBack, onThemeChanged
     sound.playTap();
     storage.selectSkin(skinId);
     setData({ ...storage.getData() });
-    const skin = SKINS.find((s) => s.id === skinId);
-    onThemeChanged(storage.getData().selectedTheme, skin?.color || '#f59e0b');
+    notifyChange();
   };
 
   const handleUnlockSkin = (skinId: string, price: number) => {
-    sound.playStar();
     const ok = storage.unlockSkin(skinId, price);
     if (ok) {
+      sound.playStar();
       setData({ ...storage.getData() });
-      const skin = SKINS.find((s) => s.id === skinId);
-      onThemeChanged(storage.getData().selectedTheme, skin?.color || '#f59e0b');
+      notifyChange();
+    } else {
+      sound.playError();
+    }
+  };
+
+  const handleSelectTrail = (trailId: string) => {
+    sound.playTap();
+    storage.selectTrail(trailId);
+    setData({ ...storage.getData() });
+    notifyChange();
+  };
+
+  const handleUnlockTrail = (trailId: string, price: number) => {
+    const ok = storage.unlockTrail(trailId, price);
+    if (ok) {
+      sound.playStar();
+      setData({ ...storage.getData() });
+      notifyChange();
     } else {
       sound.playError();
     }
@@ -72,41 +92,55 @@ export const ThemesModal: React.FC<ThemesModalProps> = ({ onBack, onThemeChanged
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center p-2 bg-slate-900 border-b border-slate-800">
+      {/* Tabs: Environments, Skins, Trails */}
+      <div className="flex items-center p-2 bg-slate-900 border-b border-slate-800 gap-1">
         <button
           onClick={() => {
             sound.playTap();
             setTab('themes');
           }}
-          className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+          className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
             tab === 'themes'
               ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
               : 'text-slate-400 hover:text-white'
           }`}
         >
-          <Palette size={15} />
-          <span>Environments</span>
+          <Palette size={14} />
+          <span>Themes</span>
         </button>
         <button
           onClick={() => {
             sound.playTap();
             setTab('skins');
           }}
-          className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+          className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
             tab === 'skins'
               ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
               : 'text-slate-400 hover:text-white'
           }`}
         >
-          <Sparkles size={15} />
-          <span>Mascot Skins</span>
+          <Sparkles size={14} />
+          <span>Skins</span>
+        </button>
+        <button
+          onClick={() => {
+            sound.playTap();
+            setTab('trails');
+          }}
+          className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
+            tab === 'trails'
+              ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <Wind size={14} />
+          <span>Trails</span>
         </button>
       </div>
 
       {/* Content List */}
       <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 safe-bottom">
-        {tab === 'themes' ? (
+        {tab === 'themes' &&
           THEMES.map((theme) => {
             const isUnlocked = data.unlockedThemes.includes(theme.id);
             const isSelected = data.selectedTheme === theme.id;
@@ -167,8 +201,9 @@ export const ThemesModal: React.FC<ThemesModalProps> = ({ onBack, onThemeChanged
                 )}
               </div>
             );
-          })
-        ) : (
+          })}
+
+        {tab === 'skins' &&
           SKINS.map((skin) => {
             const isUnlocked = data.unlockedSkins.includes(skin.id);
             const isSelected = data.selectedSkin === skin.id;
@@ -227,8 +262,67 @@ export const ThemesModal: React.FC<ThemesModalProps> = ({ onBack, onThemeChanged
                 )}
               </div>
             );
-          })
-        )}
+          })}
+
+        {tab === 'trails' &&
+          TRAILS.map((trail) => {
+            const isUnlocked = data.unlockedTrails.includes(trail.id);
+            const isSelected = data.selectedTrail === trail.id;
+            const canAfford = data.coins >= trail.price;
+
+            return (
+              <div
+                key={trail.id}
+                className={`p-3.5 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
+                  isSelected
+                    ? 'border-sky-400 bg-sky-950/40 ring-2 ring-sky-500/30'
+                    : 'border-slate-800 bg-slate-900/60'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-12 h-12 rounded-xl border border-white/20 shadow-inner flex items-center justify-center"
+                    style={{ background: trail.preview }}
+                  >
+                    <Wind size={18} className="text-white drop-shadow" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-extrabold text-white">{trail.name}</h3>
+                    <p className="text-[11px] text-slate-400">
+                      {isUnlocked ? (isSelected ? 'Active trail' : 'Unlocked') : `${trail.price} Coins`}
+                    </p>
+                  </div>
+                </div>
+
+                {isSelected ? (
+                  <div className="px-3 py-1.5 bg-sky-500/20 text-sky-400 border border-sky-500/40 rounded-xl text-xs font-bold flex items-center gap-1">
+                    <Check size={14} />
+                    <span>Active</span>
+                  </div>
+                ) : isUnlocked ? (
+                  <button
+                    onClick={() => handleSelectTrail(trail.id)}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 rounded-xl text-xs font-bold text-white transition-all"
+                  >
+                    Equip
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleUnlockTrail(trail.id, trail.price)}
+                    disabled={!canAfford}
+                    className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1 border transition-all ${
+                      canAfford
+                        ? 'bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 border-amber-400 shadow-md shadow-amber-500/20'
+                        : 'bg-slate-800/60 text-slate-500 border-slate-800 cursor-not-allowed'
+                    }`}
+                  >
+                    <Lock size={12} />
+                    <span>Unlock</span>
+                  </button>
+                )}
+              </div>
+            );
+          })}
       </div>
     </div>
   );

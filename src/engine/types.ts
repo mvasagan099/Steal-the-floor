@@ -26,17 +26,19 @@ export interface TeleporterPair {
 
 export interface LevelDefinition {
   id: number;
-  world: number; // 1 to 5
+  world: number; // 1 to 6 (0 for daily/endless/custom)
   name: string;
   cols: number;
   rows: number;
-  maxTiles: number; // Default: 3
+  maxTiles: number; // Default: 2 or 3
   start: Coordinate;
   exit: Coordinate;
   fixed?: Coordinate[];
   rocks?: Coordinate[];
   sticky?: Coordinate[];
   crumbling?: Coordinate[];
+  ice?: Coordinate[];
+  bonusTiles?: Coordinate[];
   oneWay?: OneWayTile[];
   switches?: SwitchDoorPair[];
   teleporters?: TeleporterPair[];
@@ -67,6 +69,8 @@ export interface MoveResult {
   crumbledTile?: Coordinate;
   teleportedTo?: Coordinate;
   starCollected?: Coordinate;
+  bonusTileCollected?: Coordinate;
+  slidePath?: Coordinate[];
   doorToggled?: { id: string; open: boolean };
 }
 
@@ -76,6 +80,7 @@ export interface GameStateSnapshot {
   trapped: string[]; // "x,y" keys
   crumbled: string[]; // "x,y" keys
   collectedStars: string[]; // "x,y" keys
+  collectedBonusTiles: string[]; // "x,y" keys
   openDoors: string[]; // IDs
   moves: number;
   status: 'playing' | 'won';

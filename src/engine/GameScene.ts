@@ -9,6 +9,7 @@ export interface GameSceneConfig {
   level: LevelDefinition;
   themeId: string;
   skinColor: string;
+  trailId?: string;
   onStateChange: (game: PuzzleGame) => void;
   onWin: (moves: number, starsEarned: number, parMoves: number) => void;
   onError: (message: string) => void;
@@ -29,6 +30,14 @@ interface DoorEntry {
   sprite: Phaser.GameObjects.Sprite;
 }
 
+const TRAIL_TINTS: Record<string, number[]> = {
+  'trail-none': [],
+  'trail-sparkle': [0xfef08a, 0xfbbf24, 0xffffff],
+  'trail-frost': [0xe0f2fe, 0x67e8f9, 0x38bdf8],
+  'trail-neon': [0xf472b6, 0xc084fc, 0x38bdf8],
+  'trail-rainbow': [0xf43f5e, 0xfbbf24, 0x4ade80, 0x38bdf8, 0xc084fc],
+};
+
 export class GameScene extends Phaser.Scene {
   private config!: GameSceneConfig;
   public gameLogic!: PuzzleGame;
@@ -46,6 +55,7 @@ export class GameScene extends Phaser.Scene {
   private crumblingSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private tileSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private starSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
+  private bonusTileSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private doorSprites: Map<string, DoorEntry> = new Map();
   private highlightSprites: Phaser.GameObjects.Sprite[] = [];
   private hintHighlight: Phaser.GameObjects.Sprite | null = null;
@@ -54,6 +64,7 @@ export class GameScene extends Phaser.Scene {
   private playerSprite!: Phaser.GameObjects.Sprite;
   private playerIdleTween: Phaser.Tweens.Tween | null = null;
   private isAnimating = false;
+  private trailColorIndex = 0;
 
   // Swipe gesture tracking
   private pointerDownPos: { x: number; y: number } | null = null;
@@ -71,6 +82,7 @@ export class GameScene extends Phaser.Scene {
     this.crumblingSprites.clear();
     this.tileSprites.clear();
     this.starSprites.clear();
+    this.bonusTileSprites.clear();
     this.doorSprites.clear();
     this.highlightSprites = [];
     this.hintHighlight = null;
@@ -217,6 +229,14 @@ export class GameScene extends Phaser.Scene {
       this.addStarFloatTween(sprite, pos.y);
     }
 
+    for (const [key, sprite] of this.bonusTileSprites.entries()) {
+      this.tweens.killTweensOf(sprite);
+      const pos = this.gridToScreen(keyToCoord(key));
+      sprite.setPosition(pos.x, pos.y);
+      sprite.setScale(this.baseStarScale);
+      this.addStarFloatTween(sprite, pos.y);
+    }
+
     if (!this.isAnimating) {
       this.stopPlayerIdleTween();
       const pPos = this.gridToScreen(this.gameLogic.player);
@@ -269,6 +289,9 @@ export class GameScene extends Phaser.Scene {
 
     // Fixed islands
     level.fixed?.forEach((c) => this.addStaticTile(c, 'tile_fixed', 1));
+
+    // Ice sliding platforms
+    level.ice?.forEach((c) => this.addStaticTile(c, 'tile_ice', 1));
 
     // Rocks
     level.rocks?.forEach((c) => this.addStaticTile(c, 'tile_rock', 1));
@@ -325,6 +348,11 @@ export class GameScene extends Phaser.Scene {
     level.stars?.forEach((gem) => {
       this.spawnStarSprite(gem);
     });
+
+    // Bonus Tile (+1) Pickups
+    level.bonusTiles?.forEach((bonus) => {
+      this.spawnBonusTileSprite(bonus);
+    });
   }
 
   private addStaticTile(
@@ -350,6 +378,18 @@ export class GameScene extends Phaser.Scene {
     starSprite.setDepth(4);
     this.addStarFloatTween(starSprite, pos.y);
     this.starSprites.set(key, starSprite);
+  }
+
+  private spawnBonusTileSprite(coord: Coordinate): void {
+    const key = coordToKey(coord);
+    if (this.bonusTileSprites.has(key)) return;
+
+    const pos = this.gridToScreen(coord);
+    const sprite = this.add.sprite(pos.x, pos.y, 'item_bonus_tile');
+    sprite.setScale(this.baseStarScale);
+    sprite.setDepth(4);
+    this.addStarFloatTween(sprite, pos.y);
+    this.bonusTileSprites.set(key, sprite);
   }
 
   private addStarFloatTween(sprite: Phaser.GameObjects.Sprite, baseY: number): void {
@@ -515,6 +555,14 @@ export class GameScene extends Phaser.Scene {
     this.executeMoveAnimation(targetCoord);
   }
 
+  private spawnTrailPuff(x: number, y: number): void {
+    const colors = TRAIL_TINTS[this.config.trailId || 'trail-none'];
+    if (!colors || colors.length === 0) return;
+    const tint = colors[this.trailColorIndex % colors.length];
+    this.trailColorIndex++;
+    this.spawnBurst(x, y + 6, tint, 5);
+  }
+
   private executeMoveAnimation(target: Coordinate): void {
     this.isAnimating = true;
     this.clearHint();
@@ -523,6 +571,9 @@ export class GameScene extends Phaser.Scene {
 
     this.highlightSprites.forEach((s) => s.destroy());
     this.highlightSprites = [];
+
+    const startScreen = { x: this.playerSprite.x, y: this.playerSprite.y };
+    this.spawnTrailPuff(startScreen.x, startScreen.y);
 
     const res = this.gameLogic.move(target);
 
@@ -551,10 +602,67 @@ export class GameScene extends Phaser.Scene {
       this.tileSprites.set(coordToKey(res.placedTile), tileSprite);
     }
 
-    // 2. Player arc jump
+    // 2. Player arc jump to initial target
     const targetPos = this.gridToScreen(target);
     const midX = (this.playerSprite.x + targetPos.x) / 2;
     const peakY = Math.min(this.playerSprite.y, targetPos.y) - 22;
+
+    const afterSlideOrLanding = () => {
+      this.animateCollectedStars();
+      this.animateCollectedBonusTiles();
+
+      if (res.doorToggled) {
+        sound.playSwitch();
+        const doorEntry = this.doorSprites.get(res.doorToggled.id);
+        if (doorEntry) {
+          const tex = res.doorToggled.open
+            ? `tile_door_open_${doorEntry.pairIndex}`
+            : `tile_door_closed_${doorEntry.pairIndex}`;
+          doorEntry.sprite.setTexture(tex);
+          const beamColor = doorEntry.pairIndex === 0 ? 0x38bdf8 : 0xf59e0b;
+          this.drawSwitchBeam(doorEntry.switchPos, doorEntry.coord, beamColor);
+          const doorPos = this.gridToScreen(doorEntry.coord);
+          this.spawnBurst(doorPos.x, doorPos.y, beamColor, 10);
+        }
+      }
+
+      if (res.teleportedTo) {
+        sound.playTeleport();
+        sound.triggerHaptic('medium');
+        const fromCoord =
+          res.slidePath && res.slidePath.length > 0
+            ? res.slidePath[res.slidePath.length - 1]
+            : target;
+        const fromPos = this.gridToScreen(fromCoord);
+        const warpPos = this.gridToScreen(res.teleportedTo);
+        this.spawnBurst(fromPos.x, fromPos.y, 0xc084fc, 12);
+
+        this.tweens.add({
+          targets: this.playerSprite,
+          scaleX: this.basePlayerScale * 0.1,
+          scaleY: this.basePlayerScale * 0.1,
+          alpha: 0,
+          duration: 135,
+          onComplete: () => {
+            this.playerSprite.setPosition(warpPos.x, warpPos.y - 4);
+            this.spawnBurst(warpPos.x, warpPos.y, 0x38bdf8, 12);
+            this.tweens.add({
+              targets: this.playerSprite,
+              scaleX: this.basePlayerScale,
+              scaleY: this.basePlayerScale,
+              alpha: 1,
+              duration: 175,
+              ease: 'Back.easeOut',
+              onComplete: () => {
+                this.finishMoveStep(res);
+              },
+            });
+          },
+        });
+      } else {
+        this.finishMoveStep(res);
+      }
+    };
 
     this.tweens.chain({
       tweens: [
@@ -577,7 +685,6 @@ export class GameScene extends Phaser.Scene {
           ease: 'Quad.easeIn',
           onComplete: () => {
             sound.playStep();
-
             this.tweens.add({
               targets: this.playerSprite,
               scaleY: this.basePlayerScale,
@@ -587,54 +694,29 @@ export class GameScene extends Phaser.Scene {
             });
 
             this.handleTileDeparture(res);
-            this.animateCollectedStars();
 
-            if (res.doorToggled) {
-              sound.playSwitch();
-              const doorEntry = this.doorSprites.get(res.doorToggled.id);
-              if (doorEntry) {
-                const tex = res.doorToggled.open
-                  ? `tile_door_open_${doorEntry.pairIndex}`
-                  : `tile_door_closed_${doorEntry.pairIndex}`;
-                doorEntry.sprite.setTexture(tex);
-                const beamColor = doorEntry.pairIndex === 0 ? 0x38bdf8 : 0xf59e0b;
-                this.drawSwitchBeam(doorEntry.switchPos, doorEntry.coord, beamColor);
-                const doorPos = this.gridToScreen(doorEntry.coord);
-                this.spawnBurst(doorPos.x, doorPos.y, beamColor, 10);
-              }
-            }
-
-            if (res.teleportedTo) {
-              sound.playTeleport();
-              sound.triggerHaptic('medium');
-              const fromPos = this.gridToScreen(target);
-              const warpPos = this.gridToScreen(res.teleportedTo);
-              this.spawnBurst(fromPos.x, fromPos.y, 0xc084fc, 12);
-
-              this.tweens.add({
-                targets: this.playerSprite,
-                scaleX: this.basePlayerScale * 0.1,
-                scaleY: this.basePlayerScale * 0.1,
-                alpha: 0,
-                duration: 135,
-                onComplete: () => {
-                  this.playerSprite.setPosition(warpPos.x, warpPos.y - 4);
-                  this.spawnBurst(warpPos.x, warpPos.y, 0x38bdf8, 12);
-                  this.tweens.add({
+            // Smooth ice glide chain if Puff stepped onto ice
+            if (res.slidePath && res.slidePath.length > 0) {
+              const glideTweens: Phaser.Types.Tweens.TweenBuilderConfig[] = res.slidePath.map(
+                (stepCoord, i) => {
+                  const pos = this.gridToScreen(stepCoord);
+                  return {
                     targets: this.playerSprite,
-                    scaleX: this.basePlayerScale,
-                    scaleY: this.basePlayerScale,
-                    alpha: 1,
-                    duration: 175,
-                    ease: 'Back.easeOut',
-                    onComplete: () => {
-                      this.finishMoveStep(res);
+                    x: pos.x,
+                    y: pos.y - 4,
+                    duration: 85,
+                    ease: 'Linear',
+                    onStart: () => {
+                      this.spawnBurst(this.playerSprite.x, this.playerSprite.y + 8, 0xbae6fd, 4);
                     },
-                  });
-                },
-              });
+                    onComplete:
+                      i === res.slidePath!.length - 1 ? () => afterSlideOrLanding() : undefined,
+                  };
+                }
+              );
+              this.tweens.chain({ tweens: glideTweens });
             } else {
-              this.finishMoveStep(res);
+              afterSlideOrLanding();
             }
           },
         },
@@ -664,6 +746,32 @@ export class GameScene extends Phaser.Scene {
     if (collectedAny) {
       sound.playStar();
       sound.triggerHaptic('medium');
+    }
+  }
+
+  private animateCollectedBonusTiles(): void {
+    let collectedAny = false;
+    for (const [bonusKey, sprite] of Array.from(this.bonusTileSprites.entries())) {
+      if (this.gameLogic.collectedBonusTiles.has(bonusKey)) {
+        collectedAny = true;
+        this.bonusTileSprites.delete(bonusKey);
+        this.tweens.killTweensOf(sprite);
+        this.spawnBurst(sprite.x, sprite.y, 0xfef08a, 14);
+        this.tweens.add({
+          targets: sprite,
+          y: sprite.y - 38,
+          alpha: 0,
+          scaleX: this.baseStarScale * 1.6,
+          scaleY: this.baseStarScale * 1.6,
+          duration: 320,
+          onComplete: () => sprite.destroy(),
+        });
+      }
+    }
+    if (collectedAny) {
+      sound.playStar();
+      sound.triggerHaptic('success');
+      this.config.onError('Bonus tile collected! Your tile capacity grew by +1!');
     }
   }
 
@@ -945,6 +1053,20 @@ export class GameScene extends Phaser.Scene {
       const key = coordToKey(gem);
       if (!this.gameLogic.collectedStars.has(key) && !this.starSprites.has(key)) {
         this.spawnStarSprite(gem);
+      }
+    });
+
+    for (const [key, sprite] of Array.from(this.bonusTileSprites.entries())) {
+      if (this.gameLogic.collectedBonusTiles.has(key)) {
+        this.tweens.killTweensOf(sprite);
+        sprite.destroy();
+        this.bonusTileSprites.delete(key);
+      }
+    }
+    this.config.level.bonusTiles?.forEach((bonus) => {
+      const key = coordToKey(bonus);
+      if (!this.gameLogic.collectedBonusTiles.has(key) && !this.bonusTileSprites.has(key)) {
+        this.spawnBonusTileSprite(bonus);
       }
     });
 

@@ -14,8 +14,9 @@ function encodeGameState(game: PuzzleGame): string {
   const tr = Array.from(game.trapped).sort().join(';');
   const c = Array.from(game.crumbled).sort().join(';');
   const s = Array.from(game.collectedStars).sort().join(';');
+  const b = Array.from(game.collectedBonusTiles).sort().join(';');
   const d = Array.from(game.openDoors).sort().join(';');
-  return `${p}|${t}|${tr}|${c}|${s}|${d}`;
+  return `${p}|${t}|${tr}|${c}|${s}|${b}|${d}`;
 }
 
 interface BFSNode {

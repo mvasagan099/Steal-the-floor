@@ -329,4 +329,73 @@ describe('PuzzleGame Engine Mechanics', () => {
     expect(game.status).toBe('playing');
     expect(exitRes.message).toContain('Collect all 1 stars');
   });
+
+  it('glides smoothly across ice tiles and stops before void or rocks', () => {
+    const level: LevelDefinition = {
+      id: 12,
+      world: 6,
+      name: 'Ice Glide Test',
+      cols: 6,
+      rows: 1,
+      maxTiles: 1,
+      start: { x: 0, y: 0 },
+      exit: { x: 5, y: 0 },
+      ice: [{ x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }],
+      fixed: [{ x: 4, y: 0 }],
+      stars: [{ x: 2, y: 0 }],
+      parMoves: 2,
+    };
+
+    const game = new PuzzleGame(level);
+    // Single step onto (1,0) ice slides through (2,0) collecting star, across (3,0), and stops on solid (4,0)!
+    const res = game.move({ x: 1, y: 0 });
+    expect(res.success).toBe(true);
+    expect(res.slidePath).toEqual([
+      { x: 2, y: 0 },
+      { x: 3, y: 0 },
+      { x: 4, y: 0 },
+    ]);
+    expect(game.player).toEqual({ x: 4, y: 0 });
+    expect(game.collectedStars.has('2,0')).toBe(true);
+
+    // Step to exit (5,0) wins in 2 moves total
+    const winRes = game.move({ x: 5, y: 0 });
+    expect(winRes.code).toBe('SUCCESS_WIN');
+    expect(game.moves).toBe(2);
+  });
+
+  it('expands maxTiles capacity with +1 bonus tile pickups and restores on undo', () => {
+    const level: LevelDefinition = {
+      id: 13,
+      world: 6,
+      name: 'Bonus Tile Test',
+      cols: 5,
+      rows: 1,
+      maxTiles: 1,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 0 },
+      fixed: [{ x: 1, y: 0 }],
+      bonusTiles: [{ x: 1, y: 0 }],
+      parMoves: 4,
+    };
+
+    const game = new PuzzleGame(level);
+    expect(game.currentMaxTiles).toBe(1);
+    expect(game.inventory).toBe(1);
+
+    // Step onto (1,0) to collect +1 bonus tile
+    const pickupRes = game.move({ x: 1, y: 0 });
+    expect(pickupRes.bonusTileCollected).toEqual({ x: 1, y: 0 });
+    expect(game.currentMaxTiles).toBe(2);
+    expect(game.inventory).toBe(2);
+
+    // Now we can cross the 2-void-tile chasm (2,0) & (3,0) to reach exit (4,0)!
+    expect(solveLevel(level).solvable).toBe(true);
+
+    // Undo restores maxTiles back to 1
+    game.undo();
+    expect(game.currentMaxTiles).toBe(1);
+    expect(game.inventory).toBe(1);
+    expect(game.collectedBonusTiles.size).toBe(0);
+  });
 });

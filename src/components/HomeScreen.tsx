@@ -1,5 +1,15 @@
 import React from 'react';
-import { Play, Grid, Calendar, Palette, Trophy, Settings, Star } from 'lucide-react';
+import {
+  Play,
+  Grid,
+  Calendar,
+  Palette,
+  Trophy,
+  Settings,
+  Star,
+  Infinity as InfinityIcon,
+  Hammer,
+} from 'lucide-react';
 import { storage, THEMES, SKINS } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
 
@@ -7,6 +17,8 @@ interface HomeScreenProps {
   onPlay: (levelId: number) => void;
   onOpenLevels: () => void;
   onOpenDaily: () => void;
+  onStartEndless: () => void;
+  onOpenEditor: () => void;
   onOpenThemes: () => void;
   onOpenAchievements: () => void;
   onOpenSettings: () => void;
@@ -16,6 +28,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onPlay,
   onOpenLevels,
   onOpenDaily,
+  onStartEndless,
+  onOpenEditor,
   onOpenThemes,
   onOpenAchievements,
   onOpenSettings,
@@ -45,7 +59,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
       {/* Hero Mascot & Title */}
       <div className="flex flex-col items-center text-center my-auto z-10 max-w-sm">
-        {/* Floating Mascot Avatar styled with active skin */}
         <div className="relative mb-4">
           <div
             className="w-28 h-28 rounded-full border-4 border-white/30 shadow-2xl flex items-center justify-center animate-bounce duration-1000"
@@ -54,7 +67,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               boxShadow: `0 20px 45px ${activeSkin.color}55`,
             }}
           >
-            {/* Mascot Face */}
             <div className="relative flex flex-col items-center">
               <div className="flex items-center gap-6 mb-2">
                 <div className="w-3.5 h-3.5 bg-slate-950 rounded-full" />
@@ -63,7 +75,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div className="w-6 h-3 border-b-4 border-slate-950 rounded-b-full" />
             </div>
           </div>
-          {/* Shadow underneath */}
           <div className="w-20 h-4 bg-black/40 rounded-full mx-auto blur-sm -mt-1" />
         </div>
 
@@ -80,7 +91,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
       {/* Main Buttons */}
       <div className="w-full max-w-xs flex flex-col gap-2.5 z-10 mb-2">
-        {/* Continue / Play Primary Button */}
         <button
           onClick={() => {
             sound.playTap();
@@ -92,7 +102,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <span>Continue Level {nextLevelId}</span>
         </button>
 
-        {/* Secondary Navigation Grid */}
+        {/* Primary Modes Grid */}
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={() => {
@@ -102,7 +112,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             className="py-3 bg-slate-900/90 active:scale-95 border border-slate-800 hover:border-slate-700 rounded-2xl text-xs font-bold text-slate-200 flex items-center justify-center gap-2 shadow"
           >
             <Grid size={16} className="text-sky-400" />
-            <span>100 Levels</span>
+            <span>120 Levels</span>
           </button>
 
           <button
@@ -113,11 +123,35 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             className="py-3 bg-slate-900/90 active:scale-95 border border-slate-800 hover:border-slate-700 rounded-2xl text-xs font-bold text-slate-200 flex items-center justify-center gap-2 shadow"
           >
             <Calendar size={16} className="text-orange-400" />
-            <span>Daily Challenge</span>
+            <span>Daily Puzzle</span>
+          </button>
+
+          <button
+            onClick={() => {
+              sound.playTap();
+              onStartEndless();
+            }}
+            className="py-3 bg-slate-900/90 active:scale-95 border border-slate-800 hover:border-slate-700 rounded-2xl text-xs font-bold text-slate-200 flex items-center justify-center gap-2 shadow"
+          >
+            <InfinityIcon size={16} className="text-emerald-400" />
+            <span>
+              Void Rush{data.bestEndlessStreak > 0 ? ` (${data.bestEndlessStreak})` : ''}
+            </span>
+          </button>
+
+          <button
+            onClick={() => {
+              sound.playTap();
+              onOpenEditor();
+            }}
+            className="py-3 bg-slate-900/90 active:scale-95 border border-slate-800 hover:border-slate-700 rounded-2xl text-xs font-bold text-slate-200 flex items-center justify-center gap-2 shadow"
+          >
+            <Hammer size={15} className="text-violet-400" />
+            <span>Studio</span>
           </button>
         </div>
 
-        {/* Utilities Row: Themes, Achievements, Settings */}
+        {/* Utilities Row */}
         <div className="grid grid-cols-3 gap-2">
           <button
             onClick={() => {
@@ -127,7 +161,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             className="py-2.5 bg-slate-900/70 active:scale-95 border border-slate-800/80 rounded-xl text-[11px] font-bold text-slate-300 flex flex-col items-center justify-center gap-1"
           >
             <Palette size={15} className="text-pink-400" />
-            <span>Themes</span>
+            <span>Shop</span>
           </button>
 
           <button

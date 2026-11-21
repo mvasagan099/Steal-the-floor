@@ -24,15 +24,19 @@ interface GridLevelInput {
    *  X = rock wall
    *  H = sticky honey (void that traps placed bridge tile permanently)
    *  C = crumbling stone (one-use solid reclaim island)
+   *  I = ice sliding platform (glides across consecutive walkable tiles)
+   *  + = fixed island containing a +1 Bonus Tile pickup
    *  ^ v < > = one-way arrow platform
    *  a / A = switch 'g1' / closed door 'g1' (O = initially open door 'g1')
    *  b / B = switch 'g2' / closed door 'g2'
    *  1 / 2 = teleporter pair 'tp-1' / 'tp-2'
-   *  * = void cell containing a star
+   *  * = void cell containing a gem
    */
   grid: string[];
-  /** Extra stars placed on islands, switches, portals, crumbling tiles, etc. */
+  /** Extra gems placed on islands, switches, portals, crumbling tiles, etc. */
   stars?: Coordinate[];
+  /** Extra bonus tile (+1 maxTiles) coordinates */
+  bonusTiles?: Coordinate[];
   hint: string;
 }
 
@@ -46,6 +50,8 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   const rocks: Coordinate[] = [];
   const sticky: Coordinate[] = [];
   const crumbling: Coordinate[] = [];
+  const ice: Coordinate[] = [];
+  const bonusTiles: Coordinate[] = [...(input.bonusTiles || [])];
   const oneWay: OneWayTile[] = [];
   const stars: Coordinate[] = [...(input.stars || [])];
 
@@ -81,6 +87,13 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
           break;
         case 'C':
           crumbling.push(coord);
+          break;
+        case 'I':
+          ice.push(coord);
+          break;
+        case '+':
+          fixed.push(coord);
+          bonusTiles.push(coord);
           break;
         case '^':
           oneWay.push({ x, y, direction: 'up' });
@@ -168,6 +181,8 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   if (rocks.length) level.rocks = rocks;
   if (sticky.length) level.sticky = sticky;
   if (crumbling.length) level.crumbling = crumbling;
+  if (ice.length) level.ice = ice;
+  if (bonusTiles.length) level.bonusTiles = bonusTiles;
   if (oneWay.length) level.oneWay = oneWay;
   if (switches.length) level.switches = switches;
   if (teleporters.length) level.teleporters = teleporters;
@@ -2154,11 +2169,295 @@ for (const d of drafts) {
   }
 }
 
+// =========================================================================
+// WORLD 6: FROST & SPARK (Levels 101 - 120)
+// New Mechanics: Ice Sliding (I) & +1 Bonus Tile Pickups (+)
+// =========================================================================
+const world6Drafts: GridLevelInput[] = [
+  {
+    id: 101, world: 6, name: 'First Freeze', maxTiles: 2,
+    grid: [
+      '......',
+      'SIIII#',
+      '.....X',
+      '.....I',
+      '.....I',
+      '.....I',
+      '.....E',
+    ],
+    hint: 'Step onto glistening ice to glide across solid tiles in a single move!',
+  },
+  {
+    id: 102, world: 6, name: 'Power Up +1', maxTiles: 1,
+    grid: [
+      'S.#.+.',
+      '......',
+      'XXXX..',
+      '....#.',
+      '......',
+      '......',
+      '....E.',
+    ],
+    hint: 'With only 1 tile you cannot cross the final 2-tile chasm—grab the +1 Bonus Tile first!',
+  },
+  {
+    id: 103, world: 6, name: 'Glacier Rink', maxTiles: 2,
+    grid: [
+      'S.III#',
+      '.....I',
+      '.#...I',
+      '.....I',
+      '#III.#',
+      '......',
+      'E.....',
+    ],
+    stars: [{ x: 0, y: 4 }],
+    hint: 'Glide around the perimeter ice rinks to reach the western gem and exit.',
+  },
+  {
+    id: 104, world: 6, name: 'Spark Collector', maxTiles: 1,
+    grid: [
+      'S.#...',
+      '..X+..',
+      '....X.',
+      '..#...',
+      '....#.',
+      '......',
+      '.....E',
+    ],
+    stars: [{ x: 2, y: 3 }],
+    hint: 'Claim the +1 tile on the northeast island to unlock 2-tile bridges!',
+  },
+  {
+    id: 105, world: 6, name: 'Ice Express', maxTiles: 2,
+    grid: [
+      'SII#..',
+      '...I..',
+      '#..I.#',
+      '...I..',
+      '...#II',
+      '.....I',
+      '.....E',
+    ],
+    stars: [{ x: 0, y: 2 }, { x: 5, y: 2 }],
+    hint: 'Use the central ice spine to zip quickly between northern and southern islands.',
+  },
+  {
+    id: 106, world: 6, name: 'Double Boost', maxTiles: 1,
+    grid: [
+      'S.#+..',
+      'XXX...',
+      '....+.',
+      '......',
+      '......',
+      '....#.',
+      '.E....',
+    ],
+    hint: 'Pick up BOTH +1 Bonus Tiles to expand your reach from 1 tile to 3 tiles!',
+  },
+  {
+    id: 107, world: 6, name: 'Frozen Switch', maxTiles: 2,
+    grid: [
+      'S.IIIa',
+      '......',
+      'XXXAXX',
+      '...I..',
+      '#..I..',
+      '...I..',
+      '...#E.',
+    ],
+    stars: [{ x: 0, y: 4 }],
+    hint: 'Glide east to hit the switch, then skate south through the unlocked laser gate!',
+  },
+  {
+    id: 108, world: 6, name: 'Frost & Crumble', maxTiles: 2,
+    grid: [
+      'S.IIIC',
+      'XXX..I',
+      '#...XI',
+      '.....I',
+      '#CIII#',
+      '......',
+      'E.....',
+    ],
+    stars: [{ x: 0, y: 2 }],
+    hint: 'Skate east across the crumbling ice anchor, glide south, then sweep the western gem!',
+  },
+  {
+    id: 109, world: 6, name: 'Bonus Bridge', maxTiles: 1,
+    grid: [
+      'S.#.+.',
+      '.X.X..',
+      '#..#..',
+      'XXXX..',
+      '....#.',
+      '......',
+      '...E..',
+    ],
+    stars: [{ x: 0, y: 2 }],
+    hint: 'Start with 1 tile, grab the gem and +1 boost, then bridge the 2-tile southern chasm!',
+  },
+  {
+    id: 110, world: 6, name: 'Polar Warp', maxTiles: 2,
+    grid: [
+      'S.III1',
+      'XXXXXX',
+      '1II#..',
+      '...I..',
+      '#..I..',
+      '...I..',
+      '...#.E',
+    ],
+    stars: [{ x: 0, y: 4 }],
+    hint: 'Skate straight into Portal 1 to warp onto the southern glacier!',
+  },
+  {
+    id: 111, world: 6, name: 'Honey vs Spark', maxTiles: 3,
+    grid: [
+      'XXXXXX',
+      'S.H+..',
+      'XXX..#',
+      '......',
+      '....#.',
+      '.E....',
+      '......',
+    ],
+    hint: 'The sticky honey steals 1 tile, but the +1 Spark restores your 3-tile reach for the final chasm!',
+  },
+  {
+    id: 112, world: 6, name: 'Ice Gatekeeper', maxTiles: 1,
+    grid: [
+      'S.#.+a',
+      '......',
+      'XXXAXX',
+      '...I..',
+      '...I..',
+      '#..I..',
+      '...#E.',
+    ],
+    stars: [{ x: 0, y: 5 }],
+    hint: 'Grab the +1 tile and flip Switch a before sliding south through Gate A!',
+  },
+  {
+    id: 113, world: 6, name: 'Slippery Arrows', maxTiles: 2,
+    grid: [
+      'S.II>I',
+      '.....I',
+      'XXXX.I',
+      '#..<.I',
+      '......',
+      '..I...',
+      '..I..E',
+    ],
+    stars: [{ x: 0, y: 3 }],
+    hint: 'One-way arrows steer your skate path cleanly across the ice.',
+  },
+  {
+    id: 114, world: 6, name: 'Arctic Vault', maxTiles: 1,
+    grid: [
+      'S.#.+1',
+      'XXXXXX',
+      '1..#..',
+      '....X.',
+      '....X.',
+      '#.#...',
+      '....#E',
+    ],
+    stars: [{ x: 0, y: 5 }],
+    hint: 'Grab the +1 tile before warping so you have 2 tiles to sweep the vault!',
+  },
+  {
+    id: 115, world: 6, name: 'Twin Glaciers', maxTiles: 2,
+    grid: [
+      'S.II#a',
+      '....X.',
+      'XXAXXX',
+      '..I..b',
+      'XXXBXX',
+      '#..I.#',
+      '.....E',
+    ],
+    stars: [{ x: 0, y: 5 }],
+    hint: 'Unlock both frosted laser gates while skating down the twin glaciers!',
+  },
+  {
+    id: 116, world: 6, name: 'Crumble & Boost', maxTiles: 1,
+    grid: [
+      'S.#C.+',
+      'XXXX..',
+      '....#.',
+      '......',
+      '...#..',
+      '......',
+      '....#E',
+    ],
+    stars: [{ x: 3, y: 4 }],
+    hint: 'Cross the fragile stone to claim the +1 tile, then leap south with 2 tiles!',
+  },
+  {
+    id: 117, world: 6, name: 'Frost Labyrinth', maxTiles: 2,
+    grid: [
+      'SII#1X',
+      'XXXXXX',
+      '1II#a.',
+      'XXXAXX',
+      '#..I..',
+      '...I..',
+      '...#E.',
+    ],
+    stars: [{ x: 0, y: 4 }],
+    hint: 'Skate into Portal 1, glide to Switch a, and drop through Gate A onto the lower ice.',
+  },
+  {
+    id: 118, world: 6, name: 'Spark Chasm', maxTiles: 1,
+    grid: [
+      'S.#+..',
+      'XX....',
+      '..#..+',
+      'XXXXX.',
+      '.....#',
+      '..E...',
+      '......',
+    ],
+    hint: 'Collect both +1 Bonus Tiles to grow your bridge reach from 1 to 3 and leap the final chasm!',
+  },
+  {
+    id: 119, world: 6, name: 'Cryo Trials', maxTiles: 1,
+    grid: [
+      'S.#+a.',
+      'XXXAXX',
+      '1..I..',
+      '...I.#',
+      'XXXXXX',
+      '1II#..',
+      '....#E',
+    ],
+    stars: [{ x: 5, y: 3 }],
+    hint: 'Boost your tiles, unlock Gate A, skate down to the gem, and warp onto the final ice strip!',
+  },
+  {
+    id: 120, world: 6, name: 'Grand Frost Master', maxTiles: 1,
+    grid: [
+      'S.#+Ca',
+      'XXXAXX',
+      '1..I..',
+      '...I.b',
+      'XXXXXX',
+      '1..#..',
+      'XXXB#E',
+    ],
+    stars: [{ x: 5, y: 0 }, { x: 3, y: 5 }],
+    hint: 'The grand finale of Frost & Spark! Combine +1 tiles, crumbling stone, ice slides, portals, and dual gates!',
+  },
+];
+
+drafts.push(...world6Drafts);
+
 console.log(`Validating all ${drafts.length} levels with Solid-Ground Reclamation & Quality Gates...\n`);
 
 const validatedLevels: LevelDefinition[] = [];
 const failures: string[] = [];
-const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
 
 for (const draft of drafts) {
   const level = parseGridLevel(draft);
@@ -2176,9 +2475,12 @@ for (const draft of drafts) {
   let hitSticky = false;
   let usedCrumble = false;
   let usedOneWay = false;
+  let usedIce = false;
+  let usedBonusTile = false;
 
   const oneWayKeys = new Set((level.oneWay || []).map((o) => `${o.x},${o.y}`));
   const crumblingKeys = new Set((level.crumbling || []).map((c) => `${c.x},${c.y}`));
+  const iceKeys = new Set((level.ice || []).map((c) => `${c.x},${c.y}`));
 
   for (let i = 1; i < solution.solutionPath.length; i++) {
     const step = solution.solutionPath[i];
@@ -2188,9 +2490,11 @@ for (const draft of drafts) {
     if (r.trappedTile) hitSticky = true;
     if (r.crumbledTile || crumblingKeys.has(`${step.x},${step.y}`)) usedCrumble = true;
     if (oneWayKeys.has(`${step.x},${step.y}`)) usedOneWay = true;
+    if ((r.slidePath && r.slidePath.length > 0) || iceKeys.has(`${step.x},${step.y}`)) usedIce = true;
+    if (r.bonusTileCollected) usedBonusTile = true;
   }
 
-  // Quality Gate 1: Closed switches must be mandatory (removing switches makes level unsolvable)
+  // Quality Gate 1: Closed switches must be mandatory
   if (level.switches?.length) {
     const hasClosedDoor = level.switches.some((s) => !s.doorInitiallyOpen);
     if (hasClosedDoor && !usedSwitch) {
@@ -2211,22 +2515,35 @@ for (const draft of drafts) {
     }
   }
 
-  // Quality Gate 2: Teleporters must be used in optimal solution
   if (level.teleporters?.length && !usedTeleport) {
     failures.push(`Level ${level.id} ("${level.name}"): Teleporter UNUSED in optimal solution!`);
   }
 
-  // Quality Gate 3: Crumbling tiles must be used in optimal solution
   if (level.crumbling?.length && !usedCrumble) {
     failures.push(`Level ${level.id} ("${level.name}"): Crumbling tile UNUSED in optimal solution!`);
   }
 
-  // Quality Gate 4: One-way tiles must be used in optimal solution
   if (level.oneWay?.length && !usedOneWay) {
     failures.push(`Level ${level.id} ("${level.name}"): One-way tile UNUSED in optimal solution!`);
   }
 
-  // Quality Gate 5: Sticky tiles must either be stepped on (sacrifice) OR force a longer detour vs plain void
+  if (level.ice?.length && !usedIce) {
+    failures.push(`Level ${level.id} ("${level.name}"): Ice tile UNUSED in optimal solution!`);
+  }
+
+  if (level.bonusTiles?.length) {
+    if (!usedBonusTile) {
+      failures.push(`Level ${level.id} ("${level.name}"): Bonus tile UNUSED in optimal solution!`);
+    } else {
+      const noBonusSol = solveLevel({ ...level, bonusTiles: undefined }, 45);
+      if (noBonusSol.solvable && noBonusSol.minMoves <= solution.minMoves) {
+        failures.push(
+          `Level ${level.id} ("${level.name}"): Bonus tile NOT needed (par=${solution.minMoves}, withoutBonus=${noBonusSol.minMoves})!`
+        );
+      }
+    }
+  }
+
   if (level.sticky?.length && !hitSticky) {
     const noSticky: LevelDefinition = { ...level, sticky: undefined };
     const noStickySol = solveLevel(noSticky, 45);
@@ -2248,7 +2565,7 @@ for (const draft of drafts) {
 }
 
 console.log('\n--- World Par Curve ---');
-for (const w of [1, 2, 3, 4, 5]) {
+for (const w of [1, 2, 3, 4, 5, 6]) {
   const arr = worldPars[w];
   if (arr.length) {
     const avg = (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
@@ -2262,26 +2579,27 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-if (validatedLevels.length !== 100) {
-  console.error(`Expected 100 levels, got ${validatedLevels.length}`);
+if (validatedLevels.length !== 120) {
+  console.error(`Expected 120 levels, got ${validatedLevels.length}`);
   process.exit(1);
 }
 
 const fileContent = `// AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 100 Handcrafted levels across 5 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 120 Handcrafted levels across 6 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = ${JSON.stringify(validatedLevels, null, 2)};
 
 export const WORLDS = [
-  { id: 1, name: 'First Steps', levels: [1, 20], theme: 'floating-sky', description: 'Master bridge reach, island reclamation, and star detours.' },
+  { id: 1, name: 'First Steps', levels: [1, 20], theme: 'floating-sky', description: 'Master bridge reach, island reclamation, and gem detours.' },
   { id: 2, name: 'Think Ahead', levels: [21, 40], theme: 'candy-world', description: 'Navigate rock walls, tight corridors, and limited tile budgets.' },
   { id: 3, name: 'Tricky Tiles', levels: [41, 60], theme: 'ocean-islands', description: 'Master sticky honey sacrifices, crumbling checkpoints, and one-way arrows.' },
   { id: 4, name: 'Open the Way', levels: [61, 80], theme: 'neon-space', description: 'Unlock enclosed laser gates and warp across impassable divides.' },
   { id: 5, name: 'Master Builder', levels: [81, 100], theme: 'forest-adventure', description: 'Combine every mechanic in intricate multi-stage master puzzles.' },
+  { id: 6, name: 'Frost & Spark', levels: [101, 120], theme: 'arctic-frost', description: 'Glide across frozen ice rinks and collect +1 Bonus Tiles to expand your reach.' },
 ];
 `;
 
 const outputPath = path.resolve(process.cwd(), 'src/levels/levelsData.ts');
 fs.writeFileSync(outputPath, fileContent, 'utf-8');
-console.log(`\n✅ ALL 100 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);
+console.log(`\n✅ ALL 120 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);

@@ -1,5 +1,5 @@
 // AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 100 Handcrafted levels across 5 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 120 Handcrafted levels across 6 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = [
@@ -8767,13 +8767,1923 @@ export const ALL_LEVELS: LevelDefinition[] = [
       }
     ],
     "star2Moves": 27
+  },
+  {
+    "id": 101,
+    "world": 6,
+    "name": "First Freeze",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 1
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 8,
+    "hint": "Step onto glistening ice to glide across solid tiles in a single move!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 1
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "ice": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "star2Moves": 10
+  },
+  {
+    "id": 102,
+    "world": 6,
+    "name": "Power Up +1",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "With only 1 tile you cannot cross the final 2-tile chasm—grab the +1 Bonus Tile first!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 103,
+    "world": 6,
+    "name": "Glacier Rink",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 7,
+    "hint": "Glide around the perimeter ice rinks to reach the western gem and exit.",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "ice": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 9
+  },
+  {
+    "id": 104,
+    "world": 6,
+    "name": "Spark Collector",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Claim the +1 tile on the northeast island to unlock 2-tile bridges!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 105,
+    "world": 6,
+    "name": "Ice Express",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 9,
+    "hint": "Use the central ice spine to zip quickly between northern and southern islands.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "ice": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "star2Moves": 12
+  },
+  {
+    "id": 106,
+    "world": 6,
+    "name": "Double Boost",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 1,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Pick up BOTH +1 Bonus Tiles to expand your reach from 1 tile to 3 tiles!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 107,
+    "world": 6,
+    "name": "Frozen Switch",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Glide east to hit the switch, then skate south through the unlocked laser gate!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "ice": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 108,
+    "world": 6,
+    "name": "Frost & Crumble",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "Skate east across the crumbling ice anchor, glide south, then sweep the western gem!",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "ice": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 109,
+    "world": 6,
+    "name": "Bonus Bridge",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "Start with 1 tile, grab the gem and +1 boost, then bridge the 2-tile southern chasm!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      }
+    ],
+    "star2Moves": 22
+  },
+  {
+    "id": 110,
+    "world": 6,
+    "name": "Polar Warp",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Skate straight into Portal 1 to warp onto the southern glacier!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      }
+    ],
+    "ice": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 5,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 111,
+    "world": 6,
+    "name": "Honey vs Spark",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 3,
+    "start": {
+      "x": 0,
+      "y": 1
+    },
+    "exit": {
+      "x": 1,
+      "y": 5
+    },
+    "parMoves": 11,
+    "hint": "The sticky honey steals 1 tile, but the +1 Spark restores your 3-tile reach for the final chasm!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "sticky": [
+      {
+        "x": 2,
+        "y": 1
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 112,
+    "world": 6,
+    "name": "Ice Gatekeeper",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "Grab the +1 tile and flip Switch a before sliding south through Gate A!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 27
+  },
+  {
+    "id": 113,
+    "world": 6,
+    "name": "Slippery Arrows",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 18,
+    "hint": "One-way arrows steer your skate path cleanly across the ice.",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 3
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "ice": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 4,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "direction": "left"
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 3
+      }
+    ],
+    "star2Moves": 23
+  },
+  {
+    "id": 114,
+    "world": 6,
+    "name": "Arctic Vault",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 14,
+    "hint": "Grab the +1 tile before warping so you have 2 tiles to sweep the vault!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 5,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 18
+  },
+  {
+    "id": 115,
+    "world": 6,
+    "name": "Twin Glaciers",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 24,
+    "hint": "Unlock both frosted laser gates while skating down the twin glaciers!",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "ice": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 2
+        }
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 5,
+          "y": 3
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 4
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "star2Moves": 30
+  },
+  {
+    "id": 116,
+    "world": 6,
+    "name": "Crumble & Boost",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Cross the fragile stone to claim the +1 tile, then leap south with 2 tiles!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 5,
+        "y": 0
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 117,
+    "world": 6,
+    "name": "Frost Labyrinth",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Skate into Portal 1, glide to Switch a, and drop through Gate A onto the lower ice.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "ice": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 3
+        }
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 118,
+    "world": 6,
+    "name": "Spark Chasm",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 2,
+      "y": 5
+    },
+    "parMoves": 15,
+    "hint": "Collect both +1 Bonus Tiles to grow your bridge reach from 1 to 3 and leap the final chasm!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 119,
+    "world": 6,
+    "name": "Cryo Trials",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 19,
+    "hint": "Boost your tiles, unlock Gate A, skate down to the gem, and warp onto the final ice strip!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 1
+        }
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 0,
+          "y": 2
+        },
+        "posB": {
+          "x": 0,
+          "y": 5
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "star2Moves": 24
+  },
+  {
+    "id": 120,
+    "world": 6,
+    "name": "Grand Frost Master",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 21,
+    "hint": "The grand finale of Frost & Spark! Combine +1 tiles, crumbling stone, ice slides, portals, and dual gates!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 1,
+        "y": 6
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 1
+        }
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 5,
+          "y": 3
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 6
+        }
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 0,
+          "y": 2
+        },
+        "posB": {
+          "x": 0,
+          "y": 5
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "star2Moves": 27
   }
 ];
 
 export const WORLDS = [
-  { id: 1, name: 'First Steps', levels: [1, 20], theme: 'floating-sky', description: 'Master bridge reach, island reclamation, and star detours.' },
+  { id: 1, name: 'First Steps', levels: [1, 20], theme: 'floating-sky', description: 'Master bridge reach, island reclamation, and gem detours.' },
   { id: 2, name: 'Think Ahead', levels: [21, 40], theme: 'candy-world', description: 'Navigate rock walls, tight corridors, and limited tile budgets.' },
   { id: 3, name: 'Tricky Tiles', levels: [41, 60], theme: 'ocean-islands', description: 'Master sticky honey sacrifices, crumbling checkpoints, and one-way arrows.' },
   { id: 4, name: 'Open the Way', levels: [61, 80], theme: 'neon-space', description: 'Unlock enclosed laser gates and warp across impassable divides.' },
   { id: 5, name: 'Master Builder', levels: [81, 100], theme: 'forest-adventure', description: 'Combine every mechanic in intricate multi-stage master puzzles.' },
+  { id: 6, name: 'Frost & Spark', levels: [101, 120], theme: 'arctic-frost', description: 'Glide across frozen ice rinks and collect +1 Bonus Tiles to expand your reach.' },
 ];

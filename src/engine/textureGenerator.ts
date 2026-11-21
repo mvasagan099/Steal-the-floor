@@ -81,6 +81,19 @@ export const THEME_PALETTES: Record<string, ThemeColors> = {
     bgGradBottom: '#052e16',
     accent: '#4ade80',
   },
+  'arctic-frost': {
+    name: 'Arctic Frost',
+    tileFixed: '#67e8f9',
+    tileFixedSide: '#0891b2',
+    tileBridge: '#bae6fd',
+    tileBridgeSide: '#0284c7',
+    tileSticky: '#a78bfa',
+    tileCrumbling: '#cbd5e1',
+    tileRock: '#334155',
+    bgGradTop: '#0c4a6e',
+    bgGradBottom: '#082f49',
+    accent: '#67e8f9',
+  },
 };
 
 const PAIR_COLORS = [
@@ -453,6 +466,63 @@ export function generateAllTextures(scene: Phaser.Scene, themeId = 'floating-sky
     ctx.moveTo(10, 24);
     ctx.lineTo(54, 24);
     ctx.stroke();
+  });
+
+  // 12b. Ice Sliding Platform
+  createTile('tile_ice', (ctx) => {
+    const grad = ctx.createLinearGradient(0, 0, S, S);
+    grad.addColorStop(0, '#e0f2fe');
+    grad.addColorStop(0.5, '#7dd3fc');
+    grad.addColorStop(1, '#38bdf8');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, S, S);
+
+    // Glossy diagonal frost streaks
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.72)';
+    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(26, 40);
+    ctx.lineTo(54, 16);
+    ctx.moveTo(32, 74);
+    ctx.lineTo(94, 22);
+    ctx.moveTo(68, 84);
+    ctx.lineTo(104, 52);
+    ctx.stroke();
+
+    // Subtle crystal border
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(12, 12, S - 24, S - 34);
+  }, '#0369a1');
+
+  // 12c. Bonus Tile (+1 maxTiles pickup)
+  createCanvas('item_bonus_tile', 64, 64, (ctx) => {
+    ctx.shadowColor = 'rgba(250, 204, 21, 0.85)';
+    ctx.shadowBlur = 10;
+
+    const grad = ctx.createLinearGradient(8, 8, 56, 56);
+    grad.addColorStop(0, '#fef08a');
+    grad.addColorStop(0.5, '#38bdf8');
+    grad.addColorStop(1, '#2563eb');
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect(10, 10, 44, 44, 11);
+    ctx.fill();
+
+    ctx.shadowColor = 'transparent';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(10, 10, 44, 44, 11);
+    ctx.stroke();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = '900 22px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('+1', 32, 33);
   });
 
   // Also keep item_star for ambient sparkles

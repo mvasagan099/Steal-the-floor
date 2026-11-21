@@ -15,6 +15,7 @@ interface GameCanvasProps {
   level: LevelDefinition;
   themeId: string;
   skinColor: string;
+  trailId?: string;
   onStateChange: (game: PuzzleGame) => void;
   onWin: (moves: number, stars: number, par: number) => void;
   onError: (message: string) => void;
@@ -29,6 +30,7 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       level,
       themeId,
       skinColor,
+      trailId = 'trail-none',
       onStateChange,
       onWin,
       onError,
@@ -64,11 +66,13 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
     const buildSceneData = (
       lvl: LevelDefinition,
       theme: string,
-      skin: string
+      skin: string,
+      trail: string
     ): GameSceneConfig => ({
       level: lvl,
       themeId: theme,
       skinColor: skin,
+      trailId: trail,
       onStateChange: (game) => callbacksRef.current.onStateChange(game),
       onWin: (moves, stars, par) => callbacksRef.current.onWin(moves, stars, par),
       onError: (message) => callbacksRef.current.onError(message),
@@ -117,7 +121,7 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       const game = new Phaser.Game(config);
       gameInstanceRef.current = game;
 
-      game.scene.start('GameScene', buildSceneData(level, themeId, skinColor));
+      game.scene.start('GameScene', buildSceneData(level, themeId, skinColor, trailId));
       isBootedRef.current = true;
 
       return () => {
@@ -126,15 +130,15 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
         gameInstanceRef.current = null;
         sceneRef.current = null;
       };
-      // Intentionally mount Phaser once; level/theme/skin changes restart the scene below.
+      // Intentionally mount Phaser once; level/theme/skin/trail changes restart the scene below.
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Restart GameScene cleanly when level, theme, or skin changes (no WebGL context churn)
+    // Restart GameScene cleanly when level, theme, skin, or trail changes
     useEffect(() => {
       if (!isBootedRef.current || !sceneRef.current) return;
-      sceneRef.current.scene.restart(buildSceneData(level, themeId, skinColor));
-    }, [level, themeId, skinColor]);
+      sceneRef.current.scene.restart(buildSceneData(level, themeId, skinColor, trailId));
+    }, [level, themeId, skinColor, trailId]);
 
     return (
       <div

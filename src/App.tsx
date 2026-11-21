@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ALL_LEVELS, WORLDS } from './levels/levelsData';
 import { getDailyChallenge, formatDailyShareText } from './levels/dailyChallenge';
+import { generateEndlessStage } from './levels/endlessMode';
 import {
   storage,
   SKINS,
   Achievement,
   getLocalDateString,
   ACHIEVEMENT_REWARD_COINS,
+  TOTAL_CAMPAIGN_LEVELS,
 } from './storage/gameStorage';
 import { sound } from './audio/soundManager';
 import { LevelDefinition } from './engine/types';
@@ -23,8 +25,10 @@ import { ThemesModal } from './components/ThemesModal';
 import { DailyChallengeModal } from './components/DailyChallengeModal';
 import { AchievementsModal } from './components/AchievementsModal';
 import { SettingsModal } from './components/SettingsModal';
+import { LevelEditorModal } from './components/LevelEditorModal';
 
 type AppScreen = 'splash' | 'home' | 'game';
+type PlayMode = 'campaign' | 'daily' | 'endless' | 'custom';
 
 const MECHANIC_INTROS: Record<number, { icon: string; title: string; tip: string }> = {
   1: {
@@ -48,7 +52,7 @@ const MECHANIC_INTROS: Record<number, { icon: string; title: string; tip: string
     tip: 'Leaving a bridge tile on sticky honey traps it forever, shrinking your tile reach by 1!',
   },
   43: {
-    icon: '🪨',
+    icon: '🧱',
     title: 'Crumbling Stone',
     tip: 'Crumbling islands recharge your tiles once, then shatter into void behind you!',
   },
@@ -67,12 +71,26 @@ const MECHANIC_INTROS: Record<number, { icon: string; title: string; tip: string
     title: 'Warp Portals',
     tip: 'Step onto a swirling rune portal (I/II) to warp instantly to its matching twin pad!',
   },
+  101: {
+    icon: '❄️',
+    title: 'Frozen Ice Rinks',
+    tip: 'Stepping onto glistening ice slides Puff continuously across connected walkable tiles in one move!',
+  },
+  102: {
+    icon: '➕',
+    title: '+1 Bonus Tiles',
+    tip: 'Pick up glowing +1 Spark tiles to permanently expand your tile inventory for the level!',
+  },
 };
 
 export const App: React.FC = () => {
   const [screen, setScreen] = useState<AppScreen>('splash');
+  const [playMode, setPlayMode] = useState<PlayMode>('campaign');
   const [currentLevel, setCurrentLevel] = useState<LevelDefinition>(ALL_LEVELS[0]);
-  const [isDaily, setIsDaily] = useState(false);
+
+  // Endless Void Rush state
+  const [endlessStage, setEndlessStage] = useState(1);
+  const [endlessSeed, setEndlessSeed] = useState(() => Date.now() % 100000);
 
   // Modals
   const [showPause, setShowPause] = useState(false);
@@ -80,6 +98,7 @@ export const App: React.FC = () => {
   const [showLevels, setShowLevels] = useState(false);
   const [showThemes, setShowThemes] = useState(false);
   const [showDaily, setShowDaily] = useState(false);
+  const [showEditor, setShowEditor] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
@@ -96,6 +115,7 @@ export const App: React.FC = () => {
   // Live game logic state
   const [moves, setMoves] = useState(0);
   const [availableTiles, setAvailableTiles] = useState(2);
+  const [currentMaxTiles, setCurrentMaxTiles] = useState(2);
   const [trappedTiles, setTrappedTiles] = useState(0);
   const [starsCollected, setStarsCollected] = useState(0);
   const [isDeadlocked, setIsDeadlocked] = useState(false);
@@ -107,6 +127,7 @@ export const App: React.FC = () => {
     const s = SKINS.find((sk) => sk.id === storage.getData().selectedSkin);
     return s ? s.color : '#f59e0b';
   });
+  const [trailId, setTrailId] = useState(() => storage.getData().selectedTrail);
   const [musicEnabled, setMusicEnabled] = useState(() => storage.getData().settings.musicEnabled);
   const [sfxEnabled, setSfxEnabled] = useState(() => storage.getData().settings.sfxEnabled);
 
@@ -129,12 +150,12 @@ export const App: React.FC = () => {
 
     const timer = setTimeout(() => {
       setScreen('home');
-    }, 1300);
+    }, 1200);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Keyboard controls (WASD / Arrow keys, Z Undo, R Restart, H Hint, Esc Pause/Close)
+  // Keyboard controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
@@ -143,6 +164,7 @@ export const App: React.FC = () => {
         if (showPause) setShowPause(false);
         else if (showLevels) setShowLevels(false);
         else if (showDaily) setShowDaily(false);
+        else if (showEditor) setShowEditor(false);
         else if (showThemes) setShowThemes(false);
         else if (showAchievements) setShowAchievements(false);
         else if (showSettings) setShowSettings(false);
@@ -205,6 +227,7 @@ export const App: React.FC = () => {
     showWin,
     showLevels,
     showDaily,
+    showEditor,
     showThemes,
     showAchievements,
     showSettings,
@@ -218,16 +241,19 @@ export const App: React.FC = () => {
     }, 3600);
   };
 
-  const handleStartLevel = (levelId: number) => {
-    const target = ALL_LEVELS.find((l) => l.id === levelId) || ALL_LEVELS[0];
+  const launchLevel = (target: LevelDefinition, mode: PlayMode) => {
     prevTrappedRef.current = 0;
     usedUndoThisRunRef.current = false;
     gemsCollectedRef.current = 0;
     setIsDeadlocked(false);
     setIntroDismissedFor(null);
+    setCurrentMaxTiles(target.maxTiles);
+    setAvailableTiles(target.maxTiles);
     setCurrentLevel(target);
-    setIsDaily(false);
+    setPlayMode(mode);
     setShowLevels(false);
+    setShowDaily(false);
+    setShowEditor(false);
     setShowWin(false);
     setShowPause(false);
     setDailyShareText(undefined);
@@ -235,26 +261,30 @@ export const App: React.FC = () => {
     setScreen('game');
   };
 
+  const handleStartLevel = (levelId: number) => {
+    const target = ALL_LEVELS.find((l) => l.id === levelId) || ALL_LEVELS[0];
+    launchLevel(target, 'campaign');
+  };
+
   const handleStartDaily = () => {
-    const dailyLvl = getDailyChallenge();
-    prevTrappedRef.current = 0;
-    usedUndoThisRunRef.current = false;
-    gemsCollectedRef.current = 0;
-    setIsDeadlocked(false);
-    setIntroDismissedFor(null);
-    setCurrentLevel(dailyLvl);
-    setIsDaily(true);
-    setShowDaily(false);
-    setShowWin(false);
-    setShowPause(false);
-    setDailyShareText(undefined);
-    setNotice(dailyLvl.hint || 'A fresh procedural daily challenge! Plan your route carefully.');
-    setScreen('game');
+    launchLevel(getDailyChallenge(), 'daily');
+  };
+
+  const handleStartEndless = () => {
+    const seed = Math.floor(Date.now() % 1000000);
+    setEndlessSeed(seed);
+    setEndlessStage(1);
+    launchLevel(generateEndlessStage(1, seed), 'endless');
+  };
+
+  const handlePlayCustomLevel = (level: LevelDefinition) => {
+    launchLevel(level, 'custom');
   };
 
   const handleStateChange = (game: PuzzleGame) => {
     setMoves(game.moves);
     setAvailableTiles(game.inventory);
+    setCurrentMaxTiles(game.currentMaxTiles);
     setTrappedTiles(game.trapped.size);
     setStarsCollected(game.collectedStars.size);
     gemsCollectedRef.current = game.collectedStars.size;
@@ -279,7 +309,7 @@ export const App: React.FC = () => {
     setWinMoves(movesUsed);
     setWinStars(starsEarned);
 
-    if (isDaily) {
+    if (playMode === 'daily') {
       const todayStr = getLocalDateString();
       const dailyResult = storage.recordDailyCompletion(todayStr);
       setWinCoins(dailyResult.coinsAwarded);
@@ -293,6 +323,14 @@ export const App: React.FC = () => {
         )
       );
       showAchievementNotification(dailyResult.newlyUnlockedAchievements);
+    } else if (playMode === 'endless') {
+      const endlessRes = storage.recordEndlessClear(endlessStage);
+      setWinCoins(endlessRes.coinsAwarded);
+      setDailyShareText(undefined);
+      showAchievementNotification(endlessRes.newlyUnlockedAchievements);
+    } else if (playMode === 'custom') {
+      setWinCoins(0);
+      setDailyShareText(undefined);
     } else {
       const victory = storage.recordLevelVictory(currentLevel.id, movesUsed, starsEarned, {
         usedUndo: usedUndoThisRunRef.current,
@@ -308,13 +346,26 @@ export const App: React.FC = () => {
 
   const handleNextLevel = () => {
     setShowWin(false);
-    if (isDaily) {
+    if (playMode === 'endless') {
+      const nextStage = endlessStage + 1;
+      setEndlessStage(nextStage);
+      launchLevel(generateEndlessStage(nextStage, endlessSeed), 'endless');
+      return;
+    }
+
+    if (playMode === 'custom') {
+      setScreen('home');
+      setShowEditor(true);
+      return;
+    }
+
+    if (playMode === 'daily') {
       setScreen('home');
       return;
     }
 
     const nextId = currentLevel.id + 1;
-    if (nextId <= 100) {
+    if (nextId <= TOTAL_CAMPAIGN_LEVELS) {
       handleStartLevel(nextId);
     } else {
       setScreen('home');
@@ -341,14 +392,31 @@ export const App: React.FC = () => {
 
   const currentWorld = WORLDS.find((w) => w.id === currentLevel.world);
   const activeIntro =
-    !isDaily &&
+    playMode === 'campaign' &&
     moves === 0 &&
     introDismissedFor !== currentLevel.id &&
     MECHANIC_INTROS[currentLevel.id]
       ? MECHANIC_INTROS[currentLevel.id]
       : null;
 
-  // Splash Screen Render
+  const headerTitle =
+    playMode === 'daily'
+      ? 'Daily Challenge'
+      : playMode === 'endless'
+      ? `Void Rush · Stage ${endlessStage}`
+      : playMode === 'custom'
+      ? currentLevel.name
+      : `Level ${currentLevel.id}: ${currentLevel.name}`;
+
+  const headerSubtitle =
+    playMode === 'daily'
+      ? 'Procedural Daily'
+      : playMode === 'endless'
+      ? `Best Streak: ${storage.getData().bestEndlessStreak}`
+      : playMode === 'custom'
+      ? 'Builder Studio'
+      : `World ${currentLevel.world}: ${currentWorld?.name}`;
+
   if (screen === 'splash') {
     return (
       <div className="fixed inset-0 bg-slate-950 flex flex-col items-center justify-center p-6 text-white text-center select-none">
@@ -367,7 +435,6 @@ export const App: React.FC = () => {
     );
   }
 
-  // Home Screen Render
   if (screen === 'home') {
     return (
       <>
@@ -375,6 +442,8 @@ export const App: React.FC = () => {
           onPlay={handleStartLevel}
           onOpenLevels={() => setShowLevels(true)}
           onOpenDaily={() => setShowDaily(true)}
+          onStartEndless={handleStartEndless}
+          onOpenEditor={() => setShowEditor(true)}
           onOpenThemes={() => setShowThemes(true)}
           onOpenAchievements={() => setShowAchievements(true)}
           onOpenSettings={() => setShowSettings(true)}
@@ -395,12 +464,20 @@ export const App: React.FC = () => {
           />
         )}
 
+        {showEditor && (
+          <LevelEditorModal
+            onBack={() => setShowEditor(false)}
+            onPlayCustomLevel={handlePlayCustomLevel}
+          />
+        )}
+
         {showThemes && (
           <ThemesModal
             onBack={() => setShowThemes(false)}
-            onThemeChanged={(newTheme, newSkin) => {
+            onThemeChanged={(newTheme, newSkin, newTrail) => {
               setThemeId(newTheme);
               setSkinColor(newSkin);
+              setTrailId(newTrail);
             }}
           />
         )}
@@ -417,6 +494,7 @@ export const App: React.FC = () => {
               setCurrentLevel(ALL_LEVELS[0]);
               setThemeId(resetData.selectedTheme);
               setSkinColor(SKINS[0].color);
+              setTrailId(resetData.selectedTrail);
               setMusicEnabled(resetData.settings.musicEnabled);
               setSfxEnabled(resetData.settings.sfxEnabled);
               sound.hapticsEnabled = resetData.settings.hapticsEnabled;
@@ -428,10 +506,8 @@ export const App: React.FC = () => {
     );
   }
 
-  // Active Game Screen Render
   return (
     <div className="fixed inset-0 flex flex-col bg-slate-950 text-white overflow-hidden select-none safe-top safe-bottom">
-      {/* Live Achievement Unlock Toast */}
       {achievementToast && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 bg-slate-900/95 border border-amber-400/60 rounded-2xl shadow-2xl shadow-amber-500/20 flex items-center gap-3 animate-in fade-in slide-in-from-top-3 duration-300 max-w-xs w-[90%]">
           <span className="text-2xl">{achievementToast.icon}</span>
@@ -446,14 +522,9 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      {/* Top Header */}
       <HeaderBar
-        levelTitle={
-          isDaily ? 'Daily Challenge' : `Level ${currentLevel.id}: ${currentLevel.name}`
-        }
-        worldName={
-          isDaily ? 'Procedural Daily' : `World ${currentLevel.world}: ${currentWorld?.name}`
-        }
+        levelTitle={headerTitle}
+        worldName={headerSubtitle}
         moves={moves}
         parMoves={currentLevel.parMoves}
         starsCollected={starsCollected}
@@ -465,7 +536,6 @@ export const App: React.FC = () => {
         }}
       />
 
-      {/* Contextual Mechanic Intro Banner on Milestone Levels */}
       {activeIntro && (
         <div className="px-3 py-2 bg-sky-950/90 border-b border-sky-500/30 flex items-center justify-between gap-2 z-20">
           <div className="flex items-center gap-2 min-w-0">
@@ -486,12 +556,12 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      {/* Phaser Canvas Container */}
       <GameCanvas
         ref={canvasRef}
         level={currentLevel}
         themeId={themeId}
         skinColor={skinColor}
+        trailId={trailId}
         onStateChange={handleStateChange}
         onWin={handleWin}
         onError={(msg) => setNotice(msg)}
@@ -503,10 +573,9 @@ export const App: React.FC = () => {
         }}
       />
 
-      {/* Bottom Inventory Bar */}
       <InventoryBar
         available={availableTiles}
-        maxTiles={currentLevel.maxTiles}
+        maxTiles={currentMaxTiles}
         trappedCount={trappedTiles}
         canUndo={moves > 0}
         isDeadlocked={isDeadlocked}
@@ -515,7 +584,6 @@ export const App: React.FC = () => {
         onHint={() => canvasRef.current?.hint()}
       />
 
-      {/* Pause Modal */}
       {showPause && (
         <PauseModal
           levelId={currentLevel.id}
@@ -537,18 +605,35 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Level Complete Victory Modal */}
       {showWin && (
         <LevelCompleteModal
           levelId={currentLevel.id}
           levelName={currentLevel.name}
-          isDaily={isDaily}
+          titleOverride={
+            playMode === 'endless'
+              ? `Stage ${endlessStage} Cleared!`
+              : playMode === 'custom'
+              ? 'Custom Puzzle Solved!'
+              : undefined
+          }
+          nextLabel={
+            playMode === 'endless'
+              ? `Next Stage (${endlessStage + 1}) →`
+              : playMode === 'custom'
+              ? 'Back to Builder Studio'
+              : 'Next Level'
+          }
+          isDaily={playMode === 'daily'}
           shareText={dailyShareText}
           moves={winMoves}
           parMoves={currentLevel.parMoves}
           starsEarned={winStars}
           coinsEarned={winCoins}
-          hasNextLevel={!isDaily && currentLevel.id < 100}
+          hasNextLevel={
+            playMode === 'endless' ||
+            playMode === 'custom' ||
+            (playMode === 'campaign' && currentLevel.id < TOTAL_CAMPAIGN_LEVELS)
+          }
           onNext={handleNextLevel}
           onReplay={() => {
             setShowWin(false);

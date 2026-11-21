@@ -6,6 +6,8 @@ import { sound } from '../audio/soundManager';
 interface LevelCompleteModalProps {
   levelId: number;
   levelName: string;
+  titleOverride?: string;
+  nextLabel?: string;
   isDaily?: boolean;
   shareText?: string;
   moves: number;
@@ -21,6 +23,8 @@ interface LevelCompleteModalProps {
 export const LevelCompleteModal: React.FC<LevelCompleteModalProps> = ({
   levelId,
   levelName,
+  titleOverride,
+  nextLabel = 'Next Level',
   isDaily = false,
   shareText,
   moves,
@@ -74,7 +78,8 @@ export const LevelCompleteModal: React.FC<LevelCompleteModalProps> = ({
 
         <div>
           <h2 className="text-xl font-black text-white tracking-tight">
-            {isDaily ? 'Daily Challenge Complete!' : `Level ${levelId} Complete!`}
+            {titleOverride ||
+              (isDaily ? 'Daily Challenge Complete!' : `Level ${levelId} Complete!`)}
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">{levelName}</p>
         </div>
@@ -138,7 +143,7 @@ export const LevelCompleteModal: React.FC<LevelCompleteModalProps> = ({
               className="w-full py-3.5 bg-gradient-to-r from-sky-500 to-blue-600 active:scale-95 transition-all text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-sky-500/25 flex items-center justify-center gap-2"
             >
               <Play size={18} className="fill-white" />
-              <span>Next Level</span>
+              <span>{nextLabel}</span>
             </button>
           )}
 

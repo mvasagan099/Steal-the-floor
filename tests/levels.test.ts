@@ -4,21 +4,21 @@ import { PuzzleGame } from '../src/engine/logic';
 import { solveLevel } from '../src/engine/solver';
 import { LevelDefinition } from '../src/engine/types';
 
-describe('100 Levels Solvability & Mechanic Quality Gate Suite', () => {
-  it('contains exactly 100 levels across 5 worlds', () => {
-    expect(ALL_LEVELS.length).toBe(100);
-    expect(WORLDS.length).toBe(5);
+describe('120 Levels Solvability & Mechanic Quality Gate Suite', () => {
+  it('contains exactly 120 levels across 6 worlds', () => {
+    expect(ALL_LEVELS.length).toBe(120);
+    expect(WORLDS.length).toBe(6);
 
-    for (let w = 1; w <= 5; w++) {
+    for (let w = 1; w <= 6; w++) {
       const worldLevels = ALL_LEVELS.filter((l) => l.world === w);
       expect(worldLevels.length).toBe(20);
     }
   });
 
-  it('validates all 100 levels are solvable with accurate par and active mechanics', () => {
+  it('validates all 120 levels are solvable with accurate par and active mechanics', () => {
     for (const level of ALL_LEVELS) {
       expect(level.id).toBeGreaterThanOrEqual(1);
-      expect(level.id).toBeLessThanOrEqual(100);
+      expect(level.id).toBeLessThanOrEqual(120);
       expect(level.parMoves).toBeGreaterThan(0);
       expect(level.star2Moves).toBeGreaterThan(level.parMoves);
 
@@ -33,9 +33,12 @@ describe('100 Levels Solvability & Mechanic Quality Gate Suite', () => {
       let hitSticky = false;
       let usedCrumble = false;
       let usedOneWay = false;
+      let usedIce = false;
+      let usedBonusTile = false;
 
       const oneWayKeys = new Set((level.oneWay || []).map((o) => `${o.x},${o.y}`));
       const crumblingKeys = new Set((level.crumbling || []).map((c) => `${c.x},${c.y}`));
+      const iceKeys = new Set((level.ice || []).map((c) => `${c.x},${c.y}`));
 
       for (let i = 1; i < result.solutionPath.length; i++) {
         const step = result.solutionPath[i];
@@ -45,9 +48,10 @@ describe('100 Levels Solvability & Mechanic Quality Gate Suite', () => {
         if (r.trappedTile) hitSticky = true;
         if (r.crumbledTile || crumblingKeys.has(`${step.x},${step.y}`)) usedCrumble = true;
         if (oneWayKeys.has(`${step.x},${step.y}`)) usedOneWay = true;
+        if ((r.slidePath && r.slidePath.length > 0) || iceKeys.has(`${step.x},${step.y}`)) usedIce = true;
+        if (r.bonusTileCollected) usedBonusTile = true;
       }
 
-      // Closed doors must be mandatory (cannot be bypassed without switch)
       if (level.switches?.some((s) => !s.doorInitiallyOpen)) {
         expect(usedSwitch, `Level ${level.id}: switch must be used`).toBe(true);
         const lockedOnly: LevelDefinition = {
@@ -74,6 +78,19 @@ describe('100 Levels Solvability & Mechanic Quality Gate Suite', () => {
 
       if (level.oneWay?.length) {
         expect(usedOneWay, `Level ${level.id}: one-way arrow must be used`).toBe(true);
+      }
+
+      if (level.ice?.length) {
+        expect(usedIce, `Level ${level.id}: ice tile must be used`).toBe(true);
+      }
+
+      if (level.bonusTiles?.length) {
+        expect(usedBonusTile, `Level ${level.id}: +1 bonus tile must be collected`).toBe(true);
+        const noBonusSol = solveLevel({ ...level, bonusTiles: undefined }, 45);
+        expect(
+          !noBonusSol.solvable || noBonusSol.minMoves > result.minMoves,
+          `Level ${level.id}: +1 bonus tile must be necessary or improve par`
+        ).toBe(true);
       }
 
       if (level.sticky?.length && !hitSticky) {
