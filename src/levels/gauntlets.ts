@@ -66,6 +66,15 @@ export const MASTER_GAUNTLETS: GauntletDefinition[] = [
     description: 'Chain even & odd phase islands, sanctum crates, and Level 220 back-to-back!',
     levelIds: [203, 209, 215, 220],
   },
+  {
+    id: 'aether-currents-trial',
+    name: 'Aether Currents Trial',
+    icon: '🌊',
+    accent: 'from-emerald-500/25 to-teal-500/20 border-emerald-400/50 text-emerald-200',
+    subtitle: 'World 12 · Conveyor Belt Mastery',
+    description: 'Ride elbow tracks, corner crate freight, parity surges, and Level 240 back-to-back!',
+    levelIds: [223, 232, 237, 240],
+  },
 ];
 
 export function getGauntletById(id: string): GauntletDefinition | undefined {

@@ -144,10 +144,10 @@ export function formatElapsedTime(ms: number): string {
 
 export type MonthlyMedal = 'none' | 'bronze' | 'silver' | 'gold';
 
-export const TOTAL_CAMPAIGN_LEVELS = 220;
+export const TOTAL_CAMPAIGN_LEVELS = 240;
 export const MAX_CAMPAIGN_STARS = TOTAL_CAMPAIGN_LEVELS * 3;
 const STORAGE_KEY = 'steal_the_floor_save_v1';
-const CURRENT_VERSION = 11;
+const CURRENT_VERSION = 12;
 export const ACHIEVEMENT_REWARD_COINS = 15;
 
 export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
@@ -162,7 +162,8 @@ export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   { id: 'world9_cleared', title: 'Spire Acrobat', description: 'Complete all 20 levels in World 9', unlocked: false, progress: 0, maxProgress: 20, icon: '🦘' },
   { id: 'world10_cleared', title: 'Crown Sovereign', description: 'Complete all 20 levels in World 10', unlocked: false, progress: 0, maxProgress: 20, icon: '🔑' },
   { id: 'world11_cleared', title: 'Chrono Master', description: 'Complete all 20 levels in World 11', unlocked: false, progress: 0, maxProgress: 20, icon: '⏳' },
-  { id: 'grand_master', title: 'Master Builder', description: 'Complete all 220 campaign levels!', unlocked: false, progress: 0, maxProgress: 220, icon: '👑' },
+  { id: 'world12_cleared', title: 'Current Navigator', description: 'Complete all 20 levels in World 12', unlocked: false, progress: 0, maxProgress: 20, icon: '🌊' },
+  { id: 'grand_master', title: 'Master Builder', description: 'Complete all 240 campaign levels!', unlocked: false, progress: 0, maxProgress: 240, icon: '👑' },
   { id: 'star_collector_50', title: 'Stargazer', description: 'Earn 50 par stars total', unlocked: false, progress: 0, maxProgress: 50, icon: '⭐' },
   { id: 'star_collector_150', title: 'Constellation', description: 'Earn 150 par stars total', unlocked: false, progress: 0, maxProgress: 150, icon: '🌟' },
   { id: 'star_collector_300', title: 'Galactic Brilliance', description: 'Earn 300 par stars across all levels!', unlocked: false, progress: 0, maxProgress: 300, icon: '✨' },
@@ -185,6 +186,7 @@ export const THEMES = [
   { id: 'skyward-spire', name: 'Skyward Spire', price: 160, bg: 'linear-gradient(to bottom, #0284c7, #0f172a)', tileColor: '#38bdf8', previewColor: '#fcd34d', unlockedByDefault: false },
   { id: 'celestial-crown', name: 'Celestial Crown', price: 180, bg: 'linear-gradient(to bottom, #312e81, #030712)', tileColor: '#818cf8', previewColor: '#fde047', unlockedByDefault: false },
   { id: 'chrono-prism', name: 'Chrono Prism', price: 200, bg: 'linear-gradient(to bottom, #164e63, #3b0764)', tileColor: '#22d3ee', previewColor: '#e879f9', unlockedByDefault: false },
+  { id: 'aether-currents', name: 'Aether Currents', price: 220, bg: 'linear-gradient(to bottom, #064e3b, #041f2c)', tileColor: '#2dd4bf', previewColor: '#34d399', unlockedByDefault: false },
 ];
 
 export const SKINS = [
@@ -198,6 +200,7 @@ export const SKINS = [
   { id: 'puff-cloud', name: 'Cloud Puff', color: '#e2e8f0', price: 125, unlockedByDefault: false },
   { id: 'puff-celestial', name: 'Starlight Puff', color: '#a5b4fc', price: 140, unlockedByDefault: false },
   { id: 'puff-prism', name: 'Prism Puff', color: '#22d3ee', price: 155, unlockedByDefault: false },
+  { id: 'puff-aether', name: 'Aether Puff', color: '#5eead4', price: 170, unlockedByDefault: false },
   { id: 'puff-gold', name: 'Royal Gold', color: '#fbbf24', price: 100, unlockedByDefault: false },
 ];
 
@@ -210,6 +213,7 @@ export const TRAILS = [
   { id: 'trail-gold', name: 'Golden Comet', preview: 'linear-gradient(135deg, #fef08a, #f59e0b, #ffffff)', price: 110, unlockedByDefault: false },
   { id: 'trail-celestial', name: 'Celestial Nova', preview: 'linear-gradient(135deg, #fde047, #818cf8, #f472b6)', price: 135, unlockedByDefault: false },
   { id: 'trail-chrono', name: 'Chrono Pulse', preview: 'linear-gradient(135deg, #22d3ee, #e879f9, #ffffff)', price: 150, unlockedByDefault: false },
+  { id: 'trail-aether', name: 'Aether Draft', preview: 'linear-gradient(135deg, #34d399, #5eead4, #ffffff)', price: 165, unlockedByDefault: false },
   { id: 'trail-rainbow', name: 'Prism Glow', preview: 'linear-gradient(135deg, #f43f5e, #fbbf24, #4ade80, #38bdf8)', price: 120, unlockedByDefault: false },
 ];
 
@@ -221,6 +225,7 @@ export const TILE_SKINS = [
   { id: 'tile-obsidian', name: 'Molten Rune', desc: 'Volcanic stone pulsing with gilded forge runes', preview: 'linear-gradient(135deg, #27272a, #f97316)', badge: '🔥', price: 110, unlockedByDefault: false },
   { id: 'tile-celestial', name: 'Starlight Tile', desc: 'Deep cosmic indigo inlaid with gold constellations', preview: 'linear-gradient(135deg, #312e81, #fde047)', badge: '✨', price: 145, unlockedByDefault: false },
   { id: 'tile-prism', name: 'Phase Glass', desc: 'Holographic cyan & magenta chrono lattice', preview: 'linear-gradient(135deg, #22d3ee, #d946ef)', badge: '⏳', price: 160, unlockedByDefault: false },
+  { id: 'tile-aether', name: 'Aether Conduit', desc: 'Slate-teal turbine plate with luminous mint chevrons', preview: 'linear-gradient(135deg, #0f766e, #34d399)', badge: '🌊', price: 175, unlockedByDefault: false },
 ];
 
 export class GameStorage {
@@ -748,6 +753,7 @@ export class GameStorage {
     updateProgress('world9_cleared', countRange(161, 180));
     updateProgress('world10_cleared', countRange(181, 200));
     updateProgress('world11_cleared', countRange(201, 220));
+    updateProgress('world12_cleared', countRange(221, 240));
     updateProgress('grand_master', wonCount);
 
     let totalStarsEarned = 0;

@@ -1,4 +1,11 @@
-import { LevelDefinition, Coordinate, OneWayTile, SwitchDoorPair, TeleporterPair } from '../engine/types';
+import {
+  LevelDefinition,
+  Coordinate,
+  OneWayTile,
+  ConveyorTile,
+  SwitchDoorPair,
+  TeleporterPair,
+} from '../engine/types';
 import { solveLevel } from '../engine/solver';
 
 const PREFIX = 'STF1:';
@@ -19,6 +26,7 @@ interface CompactLevelPayload {
   ky?: [number, number][]; // keys
   lk?: [number, number][]; // locks
   ph?: [number, number, 0 | 1][]; // phaseTiles (0=even, 1=odd)
+  cv?: [number, number, ConveyorTile['direction']][]; // conveyors
   b?: [number, number][]; // bonusTiles
   k?: [number, number][]; // crates
   g?: [number, number][]; // stars/gems
@@ -73,6 +81,9 @@ export function encodeLevelCode(level: LevelDefinition): string {
   if (level.locks?.length) payload.lk = level.locks.map(toPair);
   if (level.phaseTiles?.length) {
     payload.ph = level.phaseTiles.map((pt) => [pt.x, pt.y, pt.polarity === 'odd' ? 1 : 0]);
+  }
+  if (level.conveyors?.length) {
+    payload.cv = level.conveyors.map((cv) => [cv.x, cv.y, cv.direction]);
   }
   if (level.bonusTiles?.length) payload.b = level.bonusTiles.map(toPair);
   if (level.crates?.length) payload.k = level.crates.map(toPair);
@@ -155,6 +166,7 @@ export function decodeLevelCode(
       keys: p.ky?.map(fromPair),
       locks: p.lk?.map(fromPair),
       phaseTiles: p.ph?.map(([x, y, pol]) => ({ x, y, polarity: pol === 1 ? 'odd' : 'even' })),
+      conveyors: p.cv?.map(([x, y, direction]) => ({ x, y, direction })),
       bonusTiles: p.b?.map(fromPair),
       crates: p.k?.map(fromPair),
       stars: p.g?.map(fromPair),

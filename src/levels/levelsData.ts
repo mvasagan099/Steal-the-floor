@@ -1,5 +1,5 @@
 // AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 220 Handcrafted levels across 11 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 240 Handcrafted levels across 12 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = [
@@ -21428,6 +21428,2759 @@ export const ALL_LEVELS: LevelDefinition[] = [
       }
     ],
     "star2Moves": 30
+  },
+  {
+    "id": 221,
+    "world": 12,
+    "name": "First Current",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 7,
+    "hint": "Step onto the glowing emerald Conveyor Belts to zip across lanes in a single move!",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "direction": "left"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "direction": "left"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "direction": "down"
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "star2Moves": 9
+  },
+  {
+    "id": 222,
+    "world": 12,
+    "name": "Void Launch",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 12,
+    "hint": "A conveyor belt can push you right off onto void—automatically dropping a bridge tile mid-ride!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 5
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "direction": "down"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "direction": "down"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "direction": "left"
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "direction": "left"
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 223,
+    "world": 12,
+    "name": "Elbow Track",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "Conveyor chains turn 90-degree corners automatically—ride the eastern elbow to sweep the first gem!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "direction": "down"
+      },
+      {
+        "x": 4,
+        "y": 1,
+        "direction": "down"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "direction": "down"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "direction": "down"
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 224,
+    "world": 12,
+    "name": "Counter Current",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Ride the top current east, drop south to catch the westbound return lane, then ride east to the exit!",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "direction": "right"
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 225,
+    "world": 12,
+    "name": "Spiral Drift",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 9,
+    "hint": "Follow the clockwise spiral current around the central granite core, sweep the western gem, and ride south to the exit!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "direction": "down"
+      },
+      {
+        "x": 4,
+        "y": 1,
+        "direction": "down"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "direction": "down"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "direction": "down"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "direction": "down"
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 5
+      },
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "star2Moves": 12
+  },
+  {
+    "id": 226,
+    "world": 12,
+    "name": "Honey Slipstream",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 8,
+    "hint": "Sticky Honey steals 1 bridge tile when you leave it—use the western conveyor loop to bridge the rest with only 1 tile!",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "sticky": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "direction": "down"
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "direction": "down"
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "direction": "right"
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "star2Moves": 10
+  },
+  {
+    "id": 227,
+    "world": 12,
+    "name": "Crumbling Jetty",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 1,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Recharge your bridges on Crumbling Stones before riding each conveyor across the chasms.",
+    "fixed": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 3,
+        "y": 1,
+        "direction": "down"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "direction": "right"
+      }
+    ],
+    "stars": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 228,
+    "world": 12,
+    "name": "Gate Relay",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Ride east to hit Switch A, ride west back across the return current, then pass through Gate A onto the final conveyor!",
+    "fixed": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "direction": "down"
+      },
+      {
+        "x": 2,
+        "y": 6,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "direction": "right"
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 1,
+          "y": 4
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 229,
+    "world": 12,
+    "name": "Portal Express",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 8,
+    "hint": "Ride the top belt straight into Portal 1 to emerge on the upper expressway, then follow the current south!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 1,
+        "y": 2,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "direction": "down"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "direction": "left"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "direction": "down"
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "star2Moves": 10
+  },
+  {
+    "id": 230,
+    "world": 12,
+    "name": "Chrono Current",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Hit timed Switch a, then ride the full conveyor chain in 1 move to slip through Gate A right before it snaps shut!",
+    "fixed": [
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 2,
+        "y": 1,
+        "direction": "down"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "direction": "down"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "direction": "down"
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 2,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 4
+        },
+        "timedDuration": 2
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 231,
+    "world": 12,
+    "name": "Cargo Line",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 12,
+    "hint": "Shove Crate M onto the eastbound conveyor belt—it rides onto Weighted Plate a to open Gate A for your conveyor dash!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 6
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "direction": "right"
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 232,
+    "world": 12,
+    "name": "Corner Freight",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Push Crate M onto the corner conveyor track—it turns the bend automatically and parks on Plate a!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "direction": "down"
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "direction": "down"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "direction": "down"
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 4
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 233,
+    "world": 12,
+    "name": "Twin Freight",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 9,
+    "hint": "Send both crates along conveyor tracks onto Weighted Hold-Plates a and b to unlock the twin sanctum gates!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "direction": "down"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "direction": "down"
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 1,
+          "y": 4
+        },
+        "holdSwitch": true
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 5,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 4
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "star2Moves": 12
+  },
+  {
+    "id": 234,
+    "world": 12,
+    "name": "Frost Slipstream",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Conveyor momentum flows straight onto Ice Rinks—ride the belts to rocket across frozen stretches in 1 move!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "ice": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "direction": "down"
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 235,
+    "world": 12,
+    "name": "Sky Launchpad",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 0
+    },
+    "parMoves": 15,
+    "hint": "Conveyors feed directly into Golden Springboards—vault over granite walls and grab every gem before exiting!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "springs": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 3
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "direction": "right"
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 236,
+    "world": 12,
+    "name": "Vault Courier",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Ride the northern belt to sweep the Golden Key, loop back west, and ride the southern current straight through Locked Vault L!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 1,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "keys": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "locks": [
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "direction": "down"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "direction": "right"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "direction": "right"
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 237,
+    "world": 12,
+    "name": "Parity Surge",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 14,
+    "hint": "Let the top conveyor push you 1 tile onto void—placing 1 bridge tile materializes Magenta Q (1·3) right ahead!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 4,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "polarity": "even"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "polarity": "odd"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "polarity": "even"
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "direction": "left"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "direction": "left"
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "star2Moves": 18
+  },
+  {
+    "id": 238,
+    "world": 12,
+    "name": "Spark Turbine",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "You start with only 1 bridge tile! Ride the top belt to grab the +1 Spark so you can bridge the final chasm.",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "direction": "left"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "direction": "down"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "direction": "down"
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 5
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 239,
+    "world": 12,
+    "name": "Sanctum Foundry",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 12,
+    "hint": "Ferry Crate M around the corner onto Plate a, claim Key K, springboard over the granite wall, and ride through Vault L and Gate A!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 5
+      }
+    ],
+    "rocks": [
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 0,
+        "y": 6
+      },
+      {
+        "x": 1,
+        "y": 6
+      },
+      {
+        "x": 2,
+        "y": 6
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "springs": [
+      {
+        "x": 1,
+        "y": 3
+      }
+    ],
+    "keys": [
+      {
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "locks": [
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 3,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "direction": "down"
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "direction": "down"
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "direction": "right"
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 5
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 6
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 240,
+    "world": 12,
+    "name": "Grand Aether Finale",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 17,
+    "hint": "The 240th Finale! Ride the current for +1 Spark & Key K, ferry Crate M west onto Plate a, cross Magenta Q to unlock Vault L, bridge 2 tiles onto Cyan P, and ride the final belt to E!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 4,
+        "y": 5
+      }
+    ],
+    "keys": [
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "locks": [
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 4,
+        "polarity": "odd"
+      },
+      {
+        "x": 5,
+        "y": 4,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 6,
+        "polarity": "even"
+      }
+    ],
+    "conveyors": [
+      {
+        "x": 1,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "direction": "down"
+      },
+      {
+        "x": 1,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "direction": "left"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "direction": "down"
+      },
+      {
+        "x": 2,
+        "y": 6,
+        "direction": "left"
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "direction": "left"
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "crates": [
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 1,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "star2Moves": 22
   }
 ];
 
@@ -21443,4 +24196,5 @@ export const WORLDS = [
   { id: 9, name: 'Skyward Spire', levels: [161, 180], theme: 'skyward-spire', description: 'Vault 2 tiles over walls and chasms with golden springboard launch pads.' },
   { id: 10, name: 'Celestial Crown', levels: [181, 200], theme: 'celestial-crown', description: 'Collect golden keys to unlock sealed vaults permanently into solid ground.' },
   { id: 11, name: 'Chrono Prism', levels: [201, 220], theme: 'chrono-prism', description: 'Master Bridge-Parity Phase Tiles that materialize on even or odd bridge counts.' },
+  { id: 12, name: 'Aether Currents', levels: [221, 240], theme: 'aether-currents', description: 'Ride directional conveyor belts that propel Puff and pushable crates across chasms.' },
 ];

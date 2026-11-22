@@ -31,6 +31,7 @@ export const BoardThumbnail: React.FC<BoardThumbnailProps> = ({ level, className
   level.phaseTiles?.forEach((pt) =>
     setColor(pt.x, pt.y, pt.polarity === 'even' ? '#22d3ee' : '#e879f9')
   );
+  level.conveyors?.forEach((cv) => setColor(cv.x, cv.y, '#10b981'));
   level.oneWay?.forEach((ow) => setColor(ow.x, ow.y, '#818cf8'));
   level.switches?.forEach((sw) => {
     setColor(sw.switchPos.x, sw.switchPos.y, '#3b82f6');

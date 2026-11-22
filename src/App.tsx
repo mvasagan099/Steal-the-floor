@@ -117,6 +117,11 @@ const MECHANIC_INTROS: Record<number, { icon: string; title: string; tip: string
     title: 'Bridge-Parity Phase Tiles',
     tip: 'Cyan (0·2) islands are solid when 0 or 2 bridge tiles are out; Magenta (1·3) islands materialize when 1 or 3 bridge tiles are placed!',
   },
+  221: {
+    icon: '🌊',
+    title: 'Aether Conveyor Belts',
+    tip: 'Conveyor Belts are solid ground that automatically carry Puff—and pushed Crates—along their glowing chevrons, even bridging onto void!',
+  },
 };
 
 export const App: React.FC = () => {

@@ -159,6 +159,19 @@ export const THEME_PALETTES: Record<string, ThemeColors> = {
     bgGradBottom: '#2e1065',
     accent: '#22d3ee',
   },
+  'aether-currents': {
+    name: 'Aether Currents',
+    tileFixed: '#2dd4bf',
+    tileFixedSide: '#0f766e',
+    tileBridge: '#34d399',
+    tileBridgeSide: '#047857',
+    tileSticky: '#c084fc',
+    tileCrumbling: '#cbd5e1',
+    tileRock: '#1e293b',
+    bgGradTop: '#064e3b',
+    bgGradBottom: '#041f2c',
+    accent: '#5eead4',
+  },
 };
 
 const PAIR_COLORS = [
@@ -289,7 +302,7 @@ export function generateAllTextures(
     ctx.fillText('S', 64, 54);
   }, palette.tileFixedSide);
 
-  // 2. Bridge / Reusable Tile (supports 7 custom procedural Bridge Tile Skins!)
+  // 2. Bridge / Reusable Tile (supports 8 custom procedural Bridge Tile Skins!)
   const bridgeSideMap: Record<string, string> = {
     'tile-classic': palette.tileBridgeSide,
     'tile-bamboo': '#78350f',
@@ -298,11 +311,37 @@ export function generateAllTextures(
     'tile-obsidian': '#9a3412',
     'tile-celestial': '#1e1b4b',
     'tile-prism': '#86198f',
+    'tile-aether': '#065f46',
   };
   const activeBridgeSide = bridgeSideMap[tileSkinId] || palette.tileBridgeSide;
 
   createTile('tile_bridge', (ctx) => {
-    if (tileSkinId === 'tile-prism') {
+    if (tileSkinId === 'tile-aether') {
+      const grad = ctx.createLinearGradient(0, 0, S, S);
+      grad.addColorStop(0, '#0f766e');
+      grad.addColorStop(0.5, '#065f46');
+      grad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
+
+      // Luminous mint-emerald energy chevrons
+      ctx.strokeStyle = '#5eead4';
+      ctx.lineWidth = 4.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      [34, 62].forEach((cy) => {
+        ctx.beginPath();
+        ctx.moveTo(34, cy + 12);
+        ctx.lineTo(64, cy - 8);
+        ctx.lineTo(94, cy + 12);
+        ctx.stroke();
+      });
+
+      // Side conduit rails
+      ctx.fillStyle = 'rgba(94, 234, 212, 0.35)';
+      ctx.fillRect(14, 14, 6, S - 36);
+      ctx.fillRect(S - 20, 14, 6, S - 36);
+    } else if (tileSkinId === 'tile-prism') {
       const grad = ctx.createLinearGradient(0, 0, S, S);
       grad.addColorStop(0, '#22d3ee');
       grad.addColorStop(0.5, '#818cf8');
@@ -1293,5 +1332,68 @@ export function generateAllTextures(
     ctx.textAlign = 'center';
     ctx.fillText('⚡', 48, 28);
     ctx.restore();
+  });
+
+  // 23. Directional Aether Conveyor Belts (4-way metallic track + glowing emerald double chevrons)
+  (['up', 'down', 'left', 'right'] as const).forEach((dir) => {
+    createTile(
+      `tile_conveyor_${dir}`,
+      (ctx) => {
+        // Dark metallic track bed
+        const bedGrad = ctx.createLinearGradient(0, 0, S, S);
+        bedGrad.addColorStop(0, '#0f172a');
+        bedGrad.addColorStop(1, '#134e4a');
+        ctx.fillStyle = bedGrad;
+        ctx.fillRect(0, 0, S, S);
+
+        ctx.save();
+        ctx.translate(64, 52);
+        if (dir === 'down') ctx.rotate(Math.PI);
+        if (dir === 'left') ctx.rotate(-Math.PI / 2);
+        if (dir === 'right') ctx.rotate(Math.PI / 2);
+
+        // Outer metallic guide rails along left & right of travel axis
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(-44, -42, 10, 84);
+        ctx.fillRect(34, -42, 10, 84);
+        ctx.fillStyle = '#5eead4';
+        ctx.fillRect(-35, -42, 3, 84);
+        ctx.fillRect(32, -42, 3, 84);
+
+        // Subtle dark tread slats
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
+        for (let ty = -30; ty <= 30; ty += 15) {
+          ctx.fillRect(-30, ty, 60, 5);
+        }
+
+        // Twin glowing emerald/mint directional chevrons pointing UP (rotated per direction)
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.shadowColor = '#34d399';
+        ctx.shadowBlur = highContrast ? 0 : 8;
+
+        // Rear chevron (mint-emerald)
+        ctx.strokeStyle = highContrast ? '#ffffff' : '#34d399';
+        ctx.lineWidth = highContrast ? 9 : 7.5;
+        ctx.beginPath();
+        ctx.moveTo(-22, 24);
+        ctx.lineTo(0, 4);
+        ctx.lineTo(22, 24);
+        ctx.stroke();
+
+        // Leading chevron (bright aqua-white)
+        ctx.strokeStyle = highContrast ? '#fde047' : '#a7f3d0';
+        ctx.lineWidth = highContrast ? 9 : 8;
+        ctx.beginPath();
+        ctx.moveTo(-22, -4);
+        ctx.lineTo(0, -24);
+        ctx.lineTo(22, -4);
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+        ctx.restore();
+      },
+      '#065f46'
+    );
   });
 }

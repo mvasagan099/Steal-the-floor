@@ -62,6 +62,7 @@ export class PuzzleGame {
   private keySet: Set<string>;
   private lockSet: Set<string>;
   private phaseTileMap: Map<string, PhasePolarity>;
+  private conveyorMap: Map<string, Direction>;
   private bonusTileSet: Set<string>;
   private oneWayMap: Map<string, Direction>;
   private switchMap: Map<string, string>; // coordKey -> switchDoorId
@@ -130,6 +131,14 @@ export class PuzzleGame {
     this.phaseTileMap = new Map<string, PhasePolarity>();
     level.phaseTiles?.forEach((pt) => {
       this.phaseTileMap.set(coordToKey(pt), pt.polarity);
+    });
+
+    this.conveyorMap = new Map<string, Direction>();
+    level.conveyors?.forEach((cv) => {
+      const key = coordToKey(cv);
+      this.conveyorMap.set(key, cv.direction);
+      // Conveyor belts are solid platforms that propel Puff and pushed crates
+      this.fixedSet.add(key);
     });
 
     this.bonusTileSet = new Set<string>();
@@ -461,6 +470,22 @@ export class PuzzleGame {
     return this.hasWalkableFloor(key);
   }
 
+  private canConveyInto(coord: Coordinate): boolean {
+    if (coord.x < 0 || coord.x >= this.level.cols || coord.y < 0 || coord.y >= this.level.rows) {
+      return false;
+    }
+    const key = coordToKey(coord);
+    if (this.rockSet.has(key)) return false;
+    if (this.crates.has(key)) return false;
+    if (this.lockSet.has(key) && !this.unlockedLocks.has(key)) {
+      return this.keysHeld > 0;
+    }
+    const doorId = this.doorMap.get(key);
+    if (doorId && !this.openDoors.has(doorId)) return false;
+    if (this.hasWalkableFloor(key)) return true;
+    return this.inventory > 0;
+  }
+
   public move(target: Coordinate): MoveResult {
     const check = this.canMoveTo(target);
     if (!check.allowed) {
@@ -494,22 +519,58 @@ export class PuzzleGame {
       message: 'Moved successfully',
     };
 
-    // 0. Push crate forward if target contains a crate (slides further if pushed onto ice!)
+    const recordPlacedTile = (coord: Coordinate) => {
+      result.placedTile = { ...coord };
+      if (!result.placedTiles) result.placedTiles = [];
+      result.placedTiles.push({ ...coord });
+    };
+
+    // 0. Push crate forward if target contains a crate (rides ice AND conveyor belts!)
     if (this.crates.has(targetKey)) {
       this.crates.delete(targetKey);
-      const delta = DIR_DELTA[moveDir];
-      let cratePos: Coordinate = { x: target.x + delta.x, y: target.y + delta.y };
+      let crateDir: Direction = moveDir;
+      let cratePos: Coordinate = {
+        x: target.x + DIR_DELTA[crateDir].x,
+        y: target.y + DIR_DELTA[crateDir].y,
+      };
+      const cratePath: Coordinate[] = [{ ...cratePos }];
+      const visitedCrateStates = new Set<string>([`${coordToKey(cratePos)},${crateDir}`]);
 
       let safety = 0;
-      while (this.iceSet.has(coordToKey(cratePos)) && safety < 20) {
+      while (safety < 20) {
         safety++;
-        const nextCrate: Coordinate = { x: cratePos.x + delta.x, y: cratePos.y + delta.y };
-        if (!this.canCrateEnter(nextCrate)) break;
+        const cKey = coordToKey(cratePos);
+        const beltDir = this.conveyorMap.get(cKey);
+        if (beltDir) {
+          crateDir = beltDir;
+        } else if (!this.iceSet.has(cKey)) {
+          break;
+        }
+
+        const nextCrate: Coordinate = {
+          x: cratePos.x + DIR_DELTA[crateDir].x,
+          y: cratePos.y + DIR_DELTA[crateDir].y,
+        };
+        const nextKey = coordToKey(nextCrate);
+        const stateSig = `${nextKey},${crateDir}`;
+        if (
+          nextKey === targetKey ||
+          visitedCrateStates.has(stateSig) ||
+          !this.canCrateEnter(nextCrate)
+        ) {
+          break;
+        }
+        visitedCrateStates.add(stateSig);
         cratePos = nextCrate;
+        cratePath.push({ ...cratePos });
       }
 
       this.crates.add(coordToKey(cratePos));
       result.pushedCrate = { from: { ...target }, to: { ...cratePos } };
+      if (cratePath.length > 1) {
+        result.cratePath = cratePath;
+      }
+      this.syncHoldSwitches(result);
     }
 
     // 0b. Unlock locked vault if stepping onto one while holding a Golden Key
@@ -524,7 +585,7 @@ export class PuzzleGame {
     const targetHadFloor = this.hasWalkableFloor(targetKey);
     if (!targetHadFloor) {
       this.tiles.add(targetKey);
-      result.placedTile = { ...target };
+      recordPlacedTile(target);
     }
 
     // 2. Step player onto target (move counter increments at end of move)
@@ -620,81 +681,120 @@ export class PuzzleGame {
     // 5. Initial landing cell effects
     triggerCellEffects();
 
-    // 5b. Springboard Launch (vaults 2 cells in moveDir, leaping over obstacles/void; chains if landing on another spring)
-    if (this.springSet.has(coordToKey(this.player))) {
-      const springPath: Coordinate[] = [];
-      const delta = DIR_DELTA[moveDir];
-      let safety = 0;
+    // 5b-6. Unified Motion Resolution: Springboard Vaults, Conveyor Belts & Ice Sliding
+    const springPath: Coordinate[] = [];
+    const conveyorPath: Coordinate[] = [];
+    const slidePath: Coordinate[] = [];
+    const motionSteps: Array<{ kind: 'spring' | 'conveyor' | 'ice'; to: Coordinate }> = [];
+    const visitedMotionStates = new Set<string>();
+    let motionDir: Direction = moveDir;
+    let motionSafety = 0;
 
-      while (this.springSet.has(coordToKey(this.player)) && safety < 10) {
-        safety++;
+    const shouldStopMotion = () =>
+      (areCoordsEqual(this.player, this.level.exit) &&
+        this.collectedStars.size === this.totalStars) ||
+      this.teleporterMap.has(coordToKey(this.player));
+
+    while (motionSafety < 30 && !shouldStopMotion()) {
+      const currKey = coordToKey(this.player);
+
+      if (this.springSet.has(currKey)) {
+        const stateSig = `spring:${currKey}:${motionDir}`;
+        if (visitedMotionStates.has(stateSig)) break;
+        visitedMotionStates.add(stateSig);
+
+        const delta = DIR_DELTA[motionDir];
         const landCell: Coordinate = {
           x: this.player.x + delta.x * 2,
           y: this.player.y + delta.y * 2,
         };
         if (!this.canSpringLand(landCell, this.inventory, this.keysHeld)) break;
 
+        motionSafety++;
         const landKey = coordToKey(landCell);
         if (this.lockSet.has(landKey) && !this.unlockedLocks.has(landKey)) {
           this.unlockedLocks.add(landKey);
           result.lockOpened = { ...landCell };
         }
-        if (!this.hasWalkableFloor(landKey)) {
+        const landWasSolid = this.isSolidGround(landKey);
+        const landHadFloor = this.hasWalkableFloor(landKey);
+        if (!landHadFloor) {
           this.tiles.add(landKey);
-          result.placedTile = { ...landCell };
+          recordPlacedTile(landCell);
         }
 
         this.player = landCell;
         springPath.push({ ...landCell });
-        reclaimOnSolid(landKey);
+        motionSteps.push({ kind: 'spring', to: { ...landCell } });
+        reclaimOnSolid(landKey, landWasSolid);
         triggerCellEffects();
+        continue;
+      }
 
-        if (
-          (areCoordsEqual(this.player, this.level.exit) &&
-            this.collectedStars.size === this.totalStars) ||
-          this.teleporterMap.has(coordToKey(this.player))
-        ) {
-          break;
+      const beltDir = this.conveyorMap.get(currKey);
+      if (beltDir) {
+        const stateSig = `conveyor:${currKey}:${beltDir}`;
+        if (visitedMotionStates.has(stateSig)) break;
+        visitedMotionStates.add(stateSig);
+
+        motionDir = beltDir;
+        const delta = DIR_DELTA[beltDir];
+        const nextCell: Coordinate = {
+          x: this.player.x + delta.x,
+          y: this.player.y + delta.y,
+        };
+        if (!this.canConveyInto(nextCell)) break;
+
+        motionSafety++;
+        const nextKey = coordToKey(nextCell);
+        if (this.lockSet.has(nextKey) && !this.unlockedLocks.has(nextKey)) {
+          this.unlockedLocks.add(nextKey);
+          result.lockOpened = { ...nextCell };
         }
+        const nextWasSolid = this.isSolidGround(nextKey);
+        const nextHadFloor = this.hasWalkableFloor(nextKey);
+        if (!nextHadFloor) {
+          this.tiles.add(nextKey);
+          recordPlacedTile(nextCell);
+        }
+
+        this.player = nextCell;
+        conveyorPath.push({ ...nextCell });
+        motionSteps.push({ kind: 'conveyor', to: { ...nextCell } });
+        reclaimOnSolid(nextKey, nextWasSolid);
+        triggerCellEffects();
+        continue;
       }
 
-      if (springPath.length > 0) {
-        result.springPath = springPath;
-      }
-    }
+      if (this.iceSet.has(currKey)) {
+        const stateSig = `ice:${currKey}:${motionDir}`;
+        if (visitedMotionStates.has(stateSig)) break;
+        visitedMotionStates.add(stateSig);
 
-    // 6. Ice Sliding
-    if (this.iceSet.has(coordToKey(this.player))) {
-      const slidePath: Coordinate[] = [];
-      const delta = DIR_DELTA[moveDir];
-      let safety = 0;
-
-      while (this.iceSet.has(coordToKey(this.player)) && safety < 20) {
-        safety++;
+        const delta = DIR_DELTA[motionDir];
         const nextCell: Coordinate = {
           x: this.player.x + delta.x,
           y: this.player.y + delta.y,
         };
         if (!this.canSlideInto(nextCell)) break;
 
+        motionSafety++;
+        const nextKey = coordToKey(nextCell);
         this.player = nextCell;
         slidePath.push({ ...nextCell });
-        reclaimOnSolid(coordToKey(nextCell));
+        motionSteps.push({ kind: 'ice', to: { ...nextCell } });
+        reclaimOnSolid(nextKey);
         triggerCellEffects();
-
-        if (
-          (areCoordsEqual(this.player, this.level.exit) &&
-            this.collectedStars.size === this.totalStars) ||
-          this.teleporterMap.has(coordToKey(this.player))
-        ) {
-          break;
-        }
+        continue;
       }
 
-      if (slidePath.length > 0) {
-        result.slidePath = slidePath;
-      }
+      break;
     }
+
+    if (springPath.length > 0) result.springPath = springPath;
+    if (conveyorPath.length > 0) result.conveyorPath = conveyorPath;
+    if (slidePath.length > 0) result.slidePath = slidePath;
+    if (motionSteps.length > 0) result.motionSteps = motionSteps;
 
     // 7. Teleporter
     const dest = this.teleporterMap.get(coordToKey(this.player));

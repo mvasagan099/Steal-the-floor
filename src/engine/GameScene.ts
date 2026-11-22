@@ -47,6 +47,7 @@ const TRAIL_TINTS: Record<string, number[]> = {
   'trail-gold': [0xfef08a, 0xf59e0b, 0xfffbeb],
   'trail-celestial': [0xfef08a, 0xa5b4fc, 0xf472b6, 0xffffff],
   'trail-chrono': [0x22d3ee, 0xe879f9, 0xffffff],
+  'trail-aether': [0x34d399, 0x5eead4, 0xa7f3d0, 0xffffff],
   'trail-rainbow': [0xf43f5e, 0xfbbf24, 0x4ade80, 0x38bdf8, 0xc084fc],
 };
 
@@ -239,6 +240,14 @@ export class GameScene extends Phaser.Scene {
           speedY: { min: -24, max: -8 },
           scale: { min: 0.1, max: 0.24 },
           frequency: 210,
+        },
+        'aether-currents': {
+          texture: 'fx_particle',
+          tint: [0x34d399, 0x5eead4, 0xa7f3d0, 0xffffff],
+          speedX: { min: 14, max: 32 },
+          speedY: { min: -8, max: 8 },
+          scale: { min: 0.08, max: 0.22 },
+          frequency: 195,
         },
       };
       const amb = ambientMap[this.config.themeId] || ambientMap['floating-sky'];
@@ -504,6 +513,27 @@ export class GameScene extends Phaser.Scene {
     // One-way arrow pads
     level.oneWay?.forEach((ow) => this.addStaticTile(ow, `tile_oneway_${ow.direction}`, 1));
 
+    // Directional Aether Conveyor Belts
+    const conveyorKeys = new Set<string>();
+    level.conveyors?.forEach((cv, idx) => {
+      conveyorKeys.add(coordToKey(cv));
+      const cvSprite = this.addStaticTile(cv, `tile_conveyor_${cv.direction}`, 1);
+      if (!this.config.reducedMotion) {
+        const dx = cv.direction === 'right' ? 2 : cv.direction === 'left' ? -2 : 0;
+        const dy = cv.direction === 'down' ? 2 : cv.direction === 'up' ? -2 : 0;
+        this.tweens.add({
+          targets: cvSprite,
+          x: cvSprite.x + dx,
+          y: cvSprite.y + dy,
+          duration: 520,
+          delay: (idx % 4) * 90,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      }
+    });
+
     // Springboard launch pads
     level.springs?.forEach((sp) => this.addStaticTile(sp, 'tile_spring', 1));
 
@@ -571,7 +601,12 @@ export class GameScene extends Phaser.Scene {
     // Pushable Crates (also ensure solid tile visually underneath if not already rendered)
     level.crates?.forEach((crate) => {
       const key = coordToKey(crate);
-      if (!fixedKeys.has(key) && !iceKeys.has(key) && !switchKeys.has(key)) {
+      if (
+        !fixedKeys.has(key) &&
+        !iceKeys.has(key) &&
+        !switchKeys.has(key) &&
+        !conveyorKeys.has(key)
+      ) {
         this.addStaticTile(crate, 'tile_fixed', 1);
       }
       this.spawnCrateSprite(crate);
@@ -881,7 +916,7 @@ export class GameScene extends Phaser.Scene {
     sound.playTap();
     sound.triggerHaptic('light');
 
-    // 0. Animate pushed crate gliding to its new solid-ground destination
+    // 0. Animate pushed crate gliding (including turning corners on conveyor belts!)
     if (res.pushedCrate) {
       sound.playPushCrate();
       sound.triggerHaptic('medium');
@@ -894,25 +929,46 @@ export class GameScene extends Phaser.Scene {
         this.tweens.killTweensOf(crateSprite);
         const destPos = this.gridToScreen(res.pushedCrate.to);
         const isLit = this.holdSwitchKeys.has(toKey);
-        this.tweens.add({
-          targets: crateSprite,
-          x: destPos.x,
-          y: destPos.y - 2,
-          duration: 155,
-          ease: 'Quad.easeOut',
-          onComplete: () => {
-            crateSprite.setTexture(isLit ? 'item_crate_lit' : 'item_crate');
-            this.spawnBurst(destPos.x, destPos.y, isLit ? 0x34d399 : 0xfbbf24, isLit ? 12 : 6);
-          },
-        });
+        const onCrateFinish = () => {
+          crateSprite.setTexture(isLit ? 'item_crate_lit' : 'item_crate');
+          this.spawnBurst(destPos.x, destPos.y, isLit ? 0x34d399 : 0xfbbf24, isLit ? 12 : 6);
+        };
+
+        if (res.cratePath && res.cratePath.length > 1) {
+          const crateTweens: Phaser.Types.Tweens.TweenBuilderConfig[] = res.cratePath.map(
+            (pt, idx) => {
+              const p = this.gridToScreen(pt);
+              return {
+                targets: crateSprite,
+                x: p.x,
+                y: p.y - 2,
+                duration: idx === 0 ? 115 : 85,
+                ease: idx === res.cratePath!.length - 1 ? 'Quad.easeOut' : 'Linear',
+                onStart: idx > 0 ? () => sound.playConveyor() : undefined,
+                onComplete: idx === res.cratePath!.length - 1 ? onCrateFinish : undefined,
+              };
+            }
+          );
+          this.tweens.chain({ tweens: crateTweens });
+        } else {
+          this.tweens.add({
+            targets: crateSprite,
+            x: destPos.x,
+            y: destPos.y - 2,
+            duration: 155,
+            ease: 'Quad.easeOut',
+            onComplete: onCrateFinish,
+          });
+        }
       }
     }
 
-    // 1. Bridge tile drop + dust burst
-    if (res.placedTile) {
+    const spawnPlacedTileSprite = (coord: Coordinate) => {
+      const key = coordToKey(coord);
+      if (this.tileSprites.has(key)) return;
       sound.playPlaceTile();
       this.config.onTilePlaced?.();
-      const pos = this.gridToScreen(res.placedTile);
+      const pos = this.gridToScreen(coord);
       const tileSprite = this.add.sprite(pos.x, pos.y - 14, 'tile_bridge');
       tileSprite.setScale(this.baseTileScale * 0.72);
       tileSprite.setDepth(2);
@@ -927,7 +983,17 @@ export class GameScene extends Phaser.Scene {
       });
 
       this.spawnBurst(pos.x, pos.y, 0x38bdf8, 7);
-      this.tileSprites.set(coordToKey(res.placedTile), tileSprite);
+      this.tileSprites.set(key, tileSprite);
+    };
+
+    const placedKeysSet = new Set(
+      (res.placedTiles || (res.placedTile ? [res.placedTile] : [])).map(coordToKey)
+    );
+    const targetKeyStr = coordToKey(target);
+
+    // 1. Bridge tile drop for initial target step (mid-spring/conveyor drops happen on landing)
+    if (placedKeysSet.has(targetKeyStr) && this.gameLogic.tiles.has(targetKeyStr)) {
+      spawnPlacedTileSprite(target);
     }
 
     // 2. Player arc jump to initial target
@@ -935,7 +1001,15 @@ export class GameScene extends Phaser.Scene {
     const midX = (this.playerSprite.x + targetPos.x) / 2;
     const peakY = Math.min(this.playerSprite.y, targetPos.y) - 22;
 
-    const afterSlideOrLanding = () => {
+    const afterMotionOrLanding = () => {
+      // Defensive sync: ensure every active bridge tile in logic has a visible sprite
+      for (const tKey of Array.from(this.gameLogic.tiles)) {
+        if (!this.tileSprites.has(tKey)) {
+          const [tx, ty] = tKey.split(',').map(Number);
+          spawnPlacedTileSprite({ x: tx, y: ty });
+        }
+      }
+
       this.animateCollectedStars();
       this.animateCollectedBonusTiles();
       this.animateCollectedKeys();
@@ -965,13 +1039,11 @@ export class GameScene extends Phaser.Scene {
       if (res.teleportedTo) {
         sound.playTeleport();
         sound.triggerHaptic('medium');
-        const fromCoord =
-          res.slidePath && res.slidePath.length > 0
-            ? res.slidePath[res.slidePath.length - 1]
-            : res.springPath && res.springPath.length > 0
-            ? res.springPath[res.springPath.length - 1]
+        const lastMotionCoord =
+          res.motionSteps && res.motionSteps.length > 0
+            ? res.motionSteps[res.motionSteps.length - 1].to
             : target;
-        const fromPos = this.gridToScreen(fromCoord);
+        const fromPos = this.gridToScreen(lastMotionCoord);
         const warpPos = this.gridToScreen(res.teleportedTo);
         this.spawnBurst(fromPos.x, fromPos.y, 0xc084fc, 12);
 
@@ -999,32 +1071,6 @@ export class GameScene extends Phaser.Scene {
         });
       } else {
         this.finishMoveStep(res);
-      }
-    };
-
-    const runSlideOrFinish = () => {
-      // Smooth ice glide chain if Puff stepped/landed onto ice
-      if (res.slidePath && res.slidePath.length > 0) {
-        const glideTweens: Phaser.Types.Tweens.TweenBuilderConfig[] = res.slidePath.map(
-          (stepCoord, i) => {
-            const pos = this.gridToScreen(stepCoord);
-            return {
-              targets: this.playerSprite,
-              x: pos.x,
-              y: pos.y - 4,
-              duration: 85,
-              ease: 'Linear',
-              onStart: () => {
-                this.spawnBurst(this.playerSprite.x, this.playerSprite.y + 8, 0xbae6fd, 4);
-              },
-              onComplete:
-                i === res.slidePath!.length - 1 ? () => afterSlideOrLanding() : undefined,
-            };
-          }
-        );
-        this.tweens.chain({ tweens: glideTweens });
-      } else {
-        afterSlideOrLanding();
       }
     };
 
@@ -1059,53 +1105,91 @@ export class GameScene extends Phaser.Scene {
 
             this.handleTileDeparture(res);
 
-            // High parabolic Springboard vault chain if Puff stepped onto a spring pad
-            if (res.springPath && res.springPath.length > 0) {
-              const springTweens: Phaser.Types.Tweens.TweenBuilderConfig[] = [];
+            // Unified chronological animation for Springboard vaults, Conveyor Belt carries & Ice glides
+            const steps = res.motionSteps || [];
+            if (steps.length > 0) {
+              const chainTweens: Phaser.Types.Tweens.TweenBuilderConfig[] = [];
               let prevPt = targetPos;
-              res.springPath.forEach((landCoord, i) => {
-                const landPos = this.gridToScreen(landCoord);
-                const arcMidX = (prevPt.x + landPos.x) / 2;
-                const arcPeakY = Math.min(prevPt.y, landPos.y) - 46;
-                const launchFrom = prevPt;
-                springTweens.push(
-                  {
+              steps.forEach((step, idx) => {
+                const isLast = idx === steps.length - 1;
+                const destPos = this.gridToScreen(step.to);
+                const destKey = coordToKey(step.to);
+
+                if (step.kind === 'spring') {
+                  const arcMidX = (prevPt.x + destPos.x) / 2;
+                  const arcPeakY = Math.min(prevPt.y, destPos.y) - 46;
+                  const launchFrom = prevPt;
+                  chainTweens.push(
+                    {
+                      targets: this.playerSprite,
+                      x: arcMidX,
+                      y: arcPeakY,
+                      scaleX: this.basePlayerScale * 1.25,
+                      scaleY: this.basePlayerScale * 1.25,
+                      duration: 135,
+                      ease: 'Quad.easeOut',
+                      onStart: () => {
+                        sound.playSpring();
+                        sound.triggerHaptic('medium');
+                        this.spawnBurst(launchFrom.x, launchFrom.y, 0xfbbf24, 10);
+                      },
+                    },
+                    {
+                      targets: this.playerSprite,
+                      x: destPos.x,
+                      y: destPos.y - 4,
+                      scaleX: this.basePlayerScale * 1.12,
+                      scaleY: this.basePlayerScale * 0.86,
+                      duration: 135,
+                      ease: 'Quad.easeIn',
+                      onComplete: () => {
+                        if (placedKeysSet.has(destKey) && this.gameLogic.tiles.has(destKey)) {
+                          spawnPlacedTileSprite(step.to);
+                        }
+                        sound.playStep();
+                        this.spawnBurst(destPos.x, destPos.y, 0x2dd4bf, 8);
+                        this.playerSprite.setScale(this.basePlayerScale);
+                        if (isLast) afterMotionOrLanding();
+                      },
+                    }
+                  );
+                } else if (step.kind === 'conveyor') {
+                  chainTweens.push({
                     targets: this.playerSprite,
-                    x: arcMidX,
-                    y: arcPeakY,
-                    scaleX: this.basePlayerScale * 1.25,
-                    scaleY: this.basePlayerScale * 1.25,
-                    duration: 135,
-                    ease: 'Quad.easeOut',
+                    x: destPos.x,
+                    y: destPos.y - 4,
+                    duration: 95,
+                    ease: 'Linear',
                     onStart: () => {
-                      sound.playSpring();
-                      sound.triggerHaptic('medium');
-                      this.spawnBurst(launchFrom.x, launchFrom.y, 0xfbbf24, 10);
+                      sound.playConveyor();
+                      this.spawnBurst(this.playerSprite.x, this.playerSprite.y + 8, 0x34d399, 5);
                     },
-                  },
-                  {
-                    targets: this.playerSprite,
-                    x: landPos.x,
-                    y: landPos.y - 4,
-                    scaleX: this.basePlayerScale * 1.12,
-                    scaleY: this.basePlayerScale * 0.86,
-                    duration: 135,
-                    ease: 'Quad.easeIn',
                     onComplete: () => {
-                      sound.playStep();
-                      this.spawnBurst(landPos.x, landPos.y, 0x2dd4bf, 8);
-                      this.playerSprite.setScale(this.basePlayerScale);
-                      if (i === res.springPath!.length - 1) {
-                        runSlideOrFinish();
+                      if (placedKeysSet.has(destKey) && this.gameLogic.tiles.has(destKey)) {
+                        spawnPlacedTileSprite(step.to);
                       }
+                      if (isLast) afterMotionOrLanding();
                     },
-                  }
-                );
-                prevPt = landPos;
+                  });
+                } else {
+                  // Ice glide
+                  chainTweens.push({
+                    targets: this.playerSprite,
+                    x: destPos.x,
+                    y: destPos.y - 4,
+                    duration: 85,
+                    ease: 'Linear',
+                    onStart: () => {
+                      this.spawnBurst(this.playerSprite.x, this.playerSprite.y + 8, 0xbae6fd, 4);
+                    },
+                    onComplete: isLast ? () => afterMotionOrLanding() : undefined,
+                  });
+                }
+                prevPt = destPos;
               });
-              this.tweens.chain({ tweens: springTweens });
+              this.tweens.chain({ tweens: chainTweens });
             } else {
-              runSlideOrFinish();
+              afterMotionOrLanding();
             }
           },
         },

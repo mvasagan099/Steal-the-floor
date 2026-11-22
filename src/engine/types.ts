@@ -11,6 +11,12 @@ export interface OneWayTile {
   direction: Direction;
 }
 
+export interface ConveyorTile {
+  x: number;
+  y: number;
+  direction: Direction;
+}
+
 export interface SwitchDoorPair {
   id: string;
   switchPos: Coordinate;
@@ -38,7 +44,7 @@ export interface TeleporterPair {
 
 export interface LevelDefinition {
   id: number;
-  world: number; // 1 to 11 (0 for daily/endless/custom)
+  world: number; // 1 to 12 (0 for daily/endless/custom)
   name: string;
   cols: number;
   rows: number;
@@ -54,6 +60,7 @@ export interface LevelDefinition {
   keys?: Coordinate[];
   locks?: Coordinate[];
   phaseTiles?: PhaseTile[];
+  conveyors?: ConveyorTile[];
   bonusTiles?: Coordinate[];
   crates?: Coordinate[];
   oneWay?: OneWayTile[];
@@ -83,6 +90,7 @@ export interface MoveResult {
   code: MoveResultCode;
   message: string;
   placedTile?: Coordinate;
+  placedTiles?: Coordinate[];
   recoveredTile?: Coordinate;
   recoveredTiles?: Coordinate[];
   trappedTile?: Coordinate;
@@ -93,8 +101,11 @@ export interface MoveResult {
   keyCollected?: Coordinate;
   lockOpened?: Coordinate;
   pushedCrate?: { from: Coordinate; to: Coordinate };
+  cratePath?: Coordinate[];
   springPath?: Coordinate[];
+  conveyorPath?: Coordinate[];
   slidePath?: Coordinate[];
+  motionSteps?: Array<{ kind: 'spring' | 'conveyor' | 'ice'; to: Coordinate }>;
   doorToggled?: { id: string; open: boolean };
   phaseShifted?: boolean;
 }

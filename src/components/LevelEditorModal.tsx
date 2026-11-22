@@ -10,7 +10,7 @@ import {
   FolderOpen,
   Dices,
 } from 'lucide-react';
-import { LevelDefinition, Coordinate, PhaseTile } from '../engine/types';
+import { LevelDefinition, Coordinate, PhaseTile, ConveyorTile } from '../engine/types';
 import { solveLevel } from '../engine/solver';
 import { encodeLevelCode, decodeLevelCode } from '../utils/levelShare';
 import {
@@ -35,6 +35,7 @@ type BrushType =
   | 'lock'
   | 'phaseEven'
   | 'phaseOdd'
+  | 'conveyor'
   | 'crate'
   | 'bonus'
   | 'gem'
@@ -60,6 +61,10 @@ interface CellData {
     | 'lock'
     | 'phaseEven'
     | 'phaseOdd'
+    | 'conveyorRight'
+    | 'conveyorDown'
+    | 'conveyorLeft'
+    | 'conveyorUp'
     | 'crate'
     | 'switchA'
     | 'doorA'
@@ -80,6 +85,7 @@ const BRUSHES: Array<{ id: BrushType; label: string; badge: string; color: strin
   { id: 'lock', label: 'Vault', badge: '🔒', color: 'bg-amber-700/35 border-amber-400/60 text-amber-200' },
   { id: 'phaseEven', label: 'Phase 0·2', badge: '🔷', color: 'bg-cyan-500/25 border-cyan-300/60 text-cyan-200' },
   { id: 'phaseOdd', label: 'Phase 1·3', badge: '🟪', color: 'bg-fuchsia-500/25 border-fuchsia-300/60 text-fuchsia-200' },
+  { id: 'conveyor', label: 'Belt ↻', badge: '🌊', color: 'bg-emerald-500/25 border-emerald-400/60 text-emerald-200' },
   { id: 'crate', label: 'Crate', badge: '📦', color: 'bg-amber-600/25 border-amber-400/60 text-amber-200' },
   { id: 'bonus', label: '+1 Tile', badge: '➕', color: 'bg-amber-500/20 border-amber-400/50 text-amber-200' },
   { id: 'switchA', label: 'Switch', badge: '🔘', color: 'bg-blue-500/20 border-blue-400/50 text-blue-200' },
@@ -115,6 +121,17 @@ function levelToGrid(level: LevelDefinition): CellData[][] {
   level.locks?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'lock'; });
   level.phaseTiles?.forEach((pt) => {
     if (inBounds(pt)) grid[pt.y][pt.x].base = pt.polarity === 'odd' ? 'phaseOdd' : 'phaseEven';
+  });
+  level.conveyors?.forEach((cv) => {
+    if (!inBounds(cv)) return;
+    grid[cv.y][cv.x].base =
+      cv.direction === 'up'
+        ? 'conveyorUp'
+        : cv.direction === 'down'
+        ? 'conveyorDown'
+        : cv.direction === 'left'
+        ? 'conveyorLeft'
+        : 'conveyorRight';
   });
   level.crates?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'crate'; });
   level.switches?.slice(0, 1).forEach((sw) => {
@@ -208,6 +225,18 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
         }
       }
 
+      if (brush === 'conveyor') {
+        const order: CellData['base'][] = [
+          'conveyorRight',
+          'conveyorDown',
+          'conveyorLeft',
+          'conveyorUp',
+        ];
+        const idx = order.indexOf(cell.base);
+        cell.base = idx >= 0 ? order[(idx + 1) % 4] : 'conveyorRight';
+        return next;
+      }
+
       cell.base = brush;
       if (brush === 'rock') {
         cell.hasGem = false;
@@ -229,6 +258,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
     const keys: Coordinate[] = [];
     const locks: Coordinate[] = [];
     const phaseTiles: PhaseTile[] = [];
+    const conveyors: ConveyorTile[] = [];
     const crates: Coordinate[] = [];
     const stars: Coordinate[] = [];
     const bonusTiles: Coordinate[] = [];
@@ -254,6 +284,10 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
         } else if (cell.base === 'lock') locks.push(coord);
         else if (cell.base === 'phaseEven') phaseTiles.push({ x, y, polarity: 'even' });
         else if (cell.base === 'phaseOdd') phaseTiles.push({ x, y, polarity: 'odd' });
+        else if (cell.base === 'conveyorRight') conveyors.push({ x, y, direction: 'right' });
+        else if (cell.base === 'conveyorDown') conveyors.push({ x, y, direction: 'down' });
+        else if (cell.base === 'conveyorLeft') conveyors.push({ x, y, direction: 'left' });
+        else if (cell.base === 'conveyorUp') conveyors.push({ x, y, direction: 'up' });
         else if (cell.base === 'crate') {
           fixed.push(coord);
           crates.push(coord);
@@ -302,6 +336,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
       keys: keys.length ? keys : undefined,
       locks: locks.length ? locks : undefined,
       phaseTiles: phaseTiles.length ? phaseTiles : undefined,
+      conveyors: conveyors.length ? conveyors : undefined,
       bonusTiles: bonusTiles.length ? bonusTiles : undefined,
       crates: crates.length ? crates : undefined,
       stars: stars.length ? stars : undefined,
@@ -424,6 +459,10 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
       lock: { bg: 'bg-amber-800/90 border-amber-400', icon: '🔒' },
       phaseEven: { bg: 'bg-cyan-500/80 border-cyan-200 text-slate-950 font-black', icon: '0·2' },
       phaseOdd: { bg: 'bg-fuchsia-500/80 border-fuchsia-200 text-white font-black', icon: '1·3' },
+      conveyorRight: { bg: 'bg-emerald-700/90 border-emerald-300 text-emerald-100 font-black', icon: '»' },
+      conveyorDown: { bg: 'bg-emerald-700/90 border-emerald-300 text-emerald-100 font-black', icon: '︾' },
+      conveyorLeft: { bg: 'bg-emerald-700/90 border-emerald-300 text-emerald-100 font-black', icon: '«' },
+      conveyorUp: { bg: 'bg-emerald-700/90 border-emerald-300 text-emerald-100 font-black', icon: '︽' },
       crate: { bg: 'bg-amber-600/85 border-amber-300', icon: '📦' },
       switchA: { bg: 'bg-blue-500/80 border-sky-300', icon: '🔘' },
       doorA: { bg: 'bg-rose-600/80 border-rose-300', icon: '🚧' },

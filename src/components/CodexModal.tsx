@@ -166,6 +166,16 @@ const MECHANICS: MechanicEntry[] = [
     rule: 'Cyan (0·2) Phase Tiles are solid when 0 or 2 bridge tiles are placed on the board; Magenta (1·3) Phase Tiles materialize solid when 1 or 3 bridge tiles are placed! Out-of-phase tiles act as open void.',
     tip: 'Approach Magenta (1·3) pads across a 1-tile bridge, and reach Cyan (0·2) pads from an adjacent island (0 tiles) or across a 2-tile bridge!',
   },
+  {
+    id: 'conveyors',
+    icon: '🌊',
+    title: 'Aether Conveyor Belts',
+    worldTag: 'World 12',
+    category: 'contraptions',
+    accent: 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200',
+    rule: 'Conveyor Belts are solid ground that automatically carry Puff—and pushed Crates—1 tile in the chevron direction. Chained belts carry you around corners, auto-drop a bridge if pushed onto void, and feed momentum into Ice or Springs!',
+    tip: 'Push Crates onto Conveyor Belts to ferry them around walls onto distant Weighted Hold-Plates, or bounce onto a belt edge to reclaim bridges!',
+  },
 ];
 
 interface CodexModalProps {
@@ -205,7 +215,7 @@ export const CodexModal: React.FC<CodexModalProps> = ({ onBack }) => {
             <span>Mechanic Field Guide</span>
           </h2>
           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-            All 14 Puzzle Rules &amp; Tactics
+            All {MECHANICS.length} Puzzle Rules &amp; Tactics
           </p>
         </div>
         <div className="w-9" />

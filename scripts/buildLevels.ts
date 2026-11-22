@@ -4,6 +4,7 @@ import {
   LevelDefinition,
   Coordinate,
   OneWayTile,
+  ConveyorTile,
   SwitchDoorPair,
   TeleporterPair,
   PhaseTile,
@@ -31,6 +32,7 @@ interface GridLevelInput {
    *  L = locked vault (unlocks into solid ground with a Golden Key)
    *  P = Cyan Even Phase Tile (solid when 0/2/4 bridge tiles placed)
    *  Q = Magenta Odd Phase Tile (solid when 1/3/5 bridge tiles placed)
+   *  u d l r = Aether Conveyor Belt (up, down, left, right — carries Puff & Crates)
    *  + = fixed island containing a +1 Bonus Tile pickup
    *  M = fixed island with a pushable crate
    *  ^ v < > = one-way arrow platform
@@ -66,6 +68,7 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   const keys: Coordinate[] = [];
   const locks: Coordinate[] = [];
   const phaseTiles: PhaseTile[] = [];
+  const conveyors: ConveyorTile[] = [];
   const bonusTiles: Coordinate[] = [...(input.bonusTiles || [])];
   const crates: Coordinate[] = [];
   const oneWay: OneWayTile[] = [];
@@ -122,6 +125,18 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
           break;
         case 'Q':
           phaseTiles.push({ x, y, polarity: 'odd' });
+          break;
+        case 'u':
+          conveyors.push({ x, y, direction: 'up' });
+          break;
+        case 'd':
+          conveyors.push({ x, y, direction: 'down' });
+          break;
+        case 'l':
+          conveyors.push({ x, y, direction: 'left' });
+          break;
+        case 'r':
+          conveyors.push({ x, y, direction: 'right' });
           break;
         case '+':
           fixed.push(coord);
@@ -227,6 +242,7 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   if (keys.length) level.keys = keys;
   if (locks.length) level.locks = locks;
   if (phaseTiles.length) level.phaseTiles = phaseTiles;
+  if (conveyors.length) level.conveyors = conveyors;
   if (bonusTiles.length) level.bonusTiles = bonusTiles;
   if (crates.length) level.crates = crates;
   if (oneWay.length) level.oneWay = oneWay;
@@ -3967,11 +3983,298 @@ const world11Drafts: GridLevelInput[] = [
 
 drafts.push(...world11Drafts);
 
+// =========================================================================
+// WORLD 12: AETHER CURRENTS (Levels 221 - 240)
+// Conveyor Belts: directional solid tracks that carry Puff & pushed Crates
+// =========================================================================
+const world12Drafts: GridLevelInput[] = [
+  {
+    id: 221, world: 12, name: 'First Current', maxTiles: 2,
+    grid: [
+      'Srrr#.',
+      'XXXX..',
+      '....#.',
+      '....*.',
+      '.#ll#.',
+      '.d....',
+      '.#..E.',
+    ],
+    hint: 'Step onto the glowing emerald Conveyor Belts to zip across lanes in a single move!',
+  },
+  {
+    id: 222, world: 12, name: 'Void Launch', maxTiles: 2,
+    grid: [
+      'Srr..X',
+      'XXX.XX',
+      '...#..',
+      '...Xd.',
+      '....d.',
+      '.ll.#.',
+      '.#..E.',
+    ],
+    stars: [{ x: 3, y: 2 }, { x: 1, y: 6 }],
+    hint: 'A conveyor belt can push you right off onto void—automatically dropping a bridge tile mid-ride!',
+  },
+  {
+    id: 223, world: 12, name: 'Elbow Track', maxTiles: 2,
+    grid: [
+      'Srrrd.',
+      'XXXXd.',
+      '....d.',
+      '..#.#.',
+      '.dXXX.',
+      '.d*...',
+      '.#..E.',
+    ],
+    stars: [{ x: 4, y: 1 }],
+    hint: 'Conveyor chains turn 90-degree corners automatically—ride the eastern elbow to sweep the first gem!',
+  },
+  {
+    id: 224, world: 12, name: 'Counter Current', maxTiles: 2,
+    grid: [
+      'Srrr#.',
+      'XXXX..',
+      '.#ll#.',
+      '..XXX.',
+      '.#rr#.',
+      'XXXX..',
+      '...E..',
+    ],
+    stars: [{ x: 4, y: 0 }, { x: 1, y: 2 }],
+    hint: 'Ride the top current east, drop south to catch the westbound return lane, then ride east to the exit!',
+  },
+  {
+    id: 225, world: 12, name: 'Spiral Drift', maxTiles: 2,
+    grid: [
+      'Srrrd.',
+      'XXX.d.',
+      '.#lld.',
+      '.dXXX.',
+      '*..#d.',
+      '.#..d.',
+      '....E.',
+    ],
+    stars: [{ x: 4, y: 1 }, { x: 4, y: 5 }],
+    hint: 'Follow the clockwise spiral current around the central granite core, sweep the western gem, and ride south to the exit!',
+  },
+  {
+    id: 226, world: 12, name: 'Honey Slipstream', maxTiles: 2,
+    grid: [
+      'SrrH#.',
+      'XXXX..',
+      '.#ll#.',
+      '.dXX..',
+      '.dXX..',
+      '.#rr#.',
+      '....E.',
+    ],
+    stars: [{ x: 4, y: 2 }],
+    hint: 'Sticky Honey steals 1 bridge tile when you leave it—use the western conveyor loop to bridge the rest with only 1 tile!',
+  },
+  {
+    id: 227, world: 12, name: 'Crumbling Jetty', maxTiles: 2,
+    grid: [
+      'S..C..',
+      'XXXd..',
+      '#.ld..',
+      '.XXX..',
+      '.#rr#.',
+      '....C.',
+      '.E..#.',
+    ],
+    stars: [{ x: 0, y: 2 }, { x: 4, y: 4 }],
+    hint: 'Recharge your bridges on Crumbling Stones before riding each conveyor across the chasms.',
+  },
+  {
+    id: 228, world: 12, name: 'Gate Relay', maxTiles: 2,
+    grid: [
+      'Srrr#a',
+      'XXXXX.',
+      '.#ll#.',
+      'X.XXXX',
+      'XAXXXX',
+      'Xd....',
+      'X#rrE.',
+    ],
+    stars: [{ x: 3, y: 6 }],
+    hint: 'Ride east to hit Switch A, ride west back across the return current, then pass through Gate A onto the final conveyor!',
+  },
+  {
+    id: 229, world: 12, name: 'Portal Express', maxTiles: 2,
+    grid: [
+      'Srrr1X',
+      'XXXXXX',
+      '1rrrd.',
+      'XXXXd.',
+      '..#ld.',
+      '..*XX.',
+      '..#..E',
+    ],
+    hint: 'Ride the top belt straight into Portal 1 to emerge on the upper expressway, then follow the current south!',
+  },
+  {
+    id: 230, world: 12, name: 'Chrono Current', maxTiles: 2,
+    grid: [
+      'S.aXXX',
+      'X.d.XX',
+      'X.rrdX',
+      'XXXXdX',
+      'X.#AdX',
+      'X.*XXX',
+      'X.#..E',
+    ],
+    timedDurations: { g1: 2 },
+    hint: 'Hit timed Switch a, then ride the full conveyor chain in 1 move to slip through Gate A right before it snaps shut!',
+  },
+  {
+    id: 231, world: 12, name: 'Cargo Line', maxTiles: 2,
+    grid: [
+      'S#MraX',
+      '.XXXXX',
+      '#...XX',
+      'XXrrAX',
+      'XXXX.X',
+      '.#..*X',
+      '....EX',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Shove Crate M onto the eastbound conveyor belt—it rides onto Weighted Plate a to open Gate A for your conveyor dash!',
+  },
+  {
+    id: 232, world: 12, name: 'Corner Freight', maxTiles: 2,
+    grid: [
+      'S#Mrrd',
+      '.XXXXd',
+      '.#..Xa',
+      '.d..XX',
+      '.#..A.',
+      '....*.',
+      '...#E.',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Push Crate M onto the corner conveyor track—it turns the bend automatically and parks on Plate a!',
+  },
+  {
+    id: 233, world: 12, name: 'Twin Freight', maxTiles: 2,
+    grid: [
+      'S#Mrda',
+      '.XXX.X',
+      '.#Mrdb',
+      '.XXX.X',
+      '.A..B.',
+      '.d..*.',
+      '.#..E.',
+    ],
+    holdSwitches: ['g1', 'g2'],
+    hint: 'Send both crates along conveyor tracks onto Weighted Hold-Plates a and b to unlock the twin sanctum gates!',
+  },
+  {
+    id: 234, world: 12, name: 'Frost Slipstream', maxTiles: 2,
+    grid: [
+      'SrrII#',
+      'XXXXX.',
+      '.#IIl#',
+      '.dXXX.',
+      '.#..*.',
+      '.II...',
+      '.#..E.',
+    ],
+    stars: [{ x: 5, y: 0 }, { x: 1, y: 2 }],
+    hint: 'Conveyor momentum flows straight onto Ice Rinks—ride the belts to rocket across frozen stretches in 1 move!',
+  },
+  {
+    id: 235, world: 12, name: 'Sky Launchpad', maxTiles: 2,
+    grid: [
+      'SrrJXE',
+      'XXXX..',
+      '.#ll#.',
+      '.JXX..',
+      '.X....',
+      '.#rr#.',
+      '....*.',
+    ],
+    hint: 'Conveyors feed directly into Golden Springboards—vault over granite walls and grab every gem before exiting!',
+  },
+  {
+    id: 236, world: 12, name: 'Vault Courier', maxTiles: 2,
+    grid: [
+      'SrrK#.',
+      'XXXX..',
+      '.#ll#.',
+      '.dXXX.',
+      '.#rrL#',
+      'XXXX..',
+      '...E..',
+    ],
+    stars: [{ x: 1, y: 2 }],
+    hint: 'Ride the northern belt to sweep the Golden Key, loop back west, and ride the southern current straight through Locked Vault L!',
+  },
+  {
+    id: 237, world: 12, name: 'Parity Surge', maxTiles: 2,
+    grid: [
+      'Srr.Q.',
+      'XXXX..',
+      '...#P.',
+      '.Qll#.',
+      '..XXX.',
+      '.P..*.',
+      '...#E.',
+    ],
+    hint: 'Let the top conveyor push you 1 tile onto void—placing 1 bridge tile materializes Magenta Q (1·3) right ahead!',
+  },
+  {
+    id: 238, world: 12, name: 'Spark Turbine', maxTiles: 1,
+    grid: [
+      'Srr+#.',
+      'XXXX..',
+      '....d.',
+      '..#ld.',
+      '..dXXX',
+      '..*...',
+      '..#..E',
+    ],
+    hint: 'You start with only 1 bridge tile! Ride the top belt to grab the +1 Spark so you can bridge the final chasm.',
+  },
+  {
+    id: 239, world: 12, name: 'Sanctum Foundry', maxTiles: 2,
+    grid: [
+      'S#Mrrd',
+      '.XXXXd',
+      '.K..Xa',
+      'XJXXXX',
+      'XXXXXX',
+      'X#rLAX',
+      'XXXX*E',
+    ],
+    holdSwitches: ['g1'],
+    hint: 'Ferry Crate M around the corner onto Plate a, claim Key K, springboard over the granite wall, and ride through Vault L and Gate A!',
+  },
+  {
+    id: 240, world: 12, name: 'Grand Aether Finale', maxTiles: 1,
+    grid: [
+      'Srr+KX',
+      'XXXX.d',
+      'allM#d',
+      'XAXXXX',
+      'X.Q.LP',
+      'X.XXX.',
+      'E.llP.',
+    ],
+    holdSwitches: ['g1'],
+    stars: [{ x: 5, y: 4 }],
+    hint: 'The 240th Finale! Ride the current for +1 Spark & Key K, ferry Crate M west onto Plate a, cross Magenta Q to unlock Vault L, bridge 2 tiles onto Cyan P, and ride the final belt to E!',
+  },
+];
+
+drafts.push(...world12Drafts);
+
 console.log(`Validating all ${drafts.length} levels with Solid-Ground Reclamation & Quality Gates...\n`);
 
 const validatedLevels: LevelDefinition[] = [];
 const failures: string[] = [];
-const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [] };
+const worldPars: Record<number, number[]> = {
+  1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [],
+};
 
 for (const draft of drafts) {
   const level = parseGridLevel(draft);
@@ -3995,10 +4298,12 @@ for (const draft of drafts) {
   let usedLock = false;
   let usedBonusTile = false;
   let usedCrate = false;
+  let usedConveyor = false;
 
   const oneWayKeys = new Set((level.oneWay || []).map((o) => `${o.x},${o.y}`));
   const crumblingKeys = new Set((level.crumbling || []).map((c) => `${c.x},${c.y}`));
   const iceKeys = new Set((level.ice || []).map((c) => `${c.x},${c.y}`));
+  const conveyorKeys = new Set((level.conveyors || []).map((c) => `${c.x},${c.y}`));
 
   for (let i = 1; i < solution.solutionPath.length; i++) {
     const step = solution.solutionPath[i];
@@ -4010,12 +4315,19 @@ for (const draft of drafts) {
     if (oneWayKeys.has(`${step.x},${step.y}`)) usedOneWay = true;
     if (r.pushedCrate) {
       usedCrate = true;
+      if (r.cratePath?.some((c) => conveyorKeys.has(`${c.x},${c.y}`))) {
+        usedConveyor = true;
+      }
+      if (r.cratePath?.some((c) => iceKeys.has(`${c.x},${c.y}`))) {
+        usedIce = true;
+      }
       const dist =
         Math.abs(r.pushedCrate.to.x - r.pushedCrate.from.x) +
         Math.abs(r.pushedCrate.to.y - r.pushedCrate.from.y);
-      if (dist > 1) usedIce = true;
+      if (dist > 1 && level.ice?.length && !level.conveyors?.length) usedIce = true;
     }
     if (r.springPath && r.springPath.length > 0) usedSpring = true;
+    if (r.conveyorPath && r.conveyorPath.length > 0) usedConveyor = true;
     if (r.keyCollected) usedKey = true;
     if (r.lockOpened) usedLock = true;
     if ((r.slidePath && r.slidePath.length > 0) || iceKeys.has(`${step.x},${step.y}`)) usedIce = true;
@@ -4084,6 +4396,26 @@ for (const draft of drafts) {
     }
   }
 
+  if (level.conveyors?.length) {
+    if (!usedConveyor) {
+      failures.push(`Level ${level.id} ("${level.name}"): Conveyor belt UNUSED in optimal solution!`);
+    } else {
+      const asFixedSol = solveLevel(
+        {
+          ...level,
+          conveyors: undefined,
+          fixed: [...(level.fixed || []), ...level.conveyors.map((c) => ({ x: c.x, y: c.y }))],
+        },
+        45
+      );
+      if (asFixedSol.solvable && asFixedSol.minMoves === solution.minMoves) {
+        failures.push(
+          `Level ${level.id} ("${level.name}"): Conveyor propulsion had NO par impact vs plain islands (par=${solution.minMoves})!`
+        );
+      }
+    }
+  }
+
   if (level.crates?.length && !usedCrate) {
     failures.push(`Level ${level.id} ("${level.name}"): Pushable crate UNUSED in optimal solution!`);
   }
@@ -4142,7 +4474,7 @@ for (const draft of drafts) {
 }
 
 console.log('\n--- World Par Curve ---');
-for (const w of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
+for (const w of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {
   const arr = worldPars[w];
   if (arr.length) {
     const avg = (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
@@ -4156,13 +4488,13 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-if (validatedLevels.length !== 220) {
-  console.error(`Expected 220 levels, got ${validatedLevels.length}`);
+if (validatedLevels.length !== 240) {
+  console.error(`Expected 240 levels, got ${validatedLevels.length}`);
   process.exit(1);
 }
 
 const fileContent = `// AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 220 Handcrafted levels across 11 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 240 Handcrafted levels across 12 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = ${JSON.stringify(validatedLevels, null, 2)};
@@ -4179,9 +4511,10 @@ export const WORLDS = [
   { id: 9, name: 'Skyward Spire', levels: [161, 180], theme: 'skyward-spire', description: 'Vault 2 tiles over walls and chasms with golden springboard launch pads.' },
   { id: 10, name: 'Celestial Crown', levels: [181, 200], theme: 'celestial-crown', description: 'Collect golden keys to unlock sealed vaults permanently into solid ground.' },
   { id: 11, name: 'Chrono Prism', levels: [201, 220], theme: 'chrono-prism', description: 'Master Bridge-Parity Phase Tiles that materialize on even or odd bridge counts.' },
+  { id: 12, name: 'Aether Currents', levels: [221, 240], theme: 'aether-currents', description: 'Ride directional conveyor belts that propel Puff and pushable crates across chasms.' },
 ];
 `;
 
 const outputPath = path.resolve(process.cwd(), 'src/levels/levelsData.ts');
 fs.writeFileSync(outputPath, fileContent, 'utf-8');
-console.log(`\n✅ ALL 220 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);
+console.log(`\n✅ ALL 240 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);

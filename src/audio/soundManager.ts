@@ -313,6 +313,25 @@ export class SoundManager {
     osc.stop(t + 0.12);
   }
 
+  public playConveyor(): void {
+    if (!this.sfxEnabled) return;
+    const ctx = this.ensureCtx();
+    if (!ctx || !this.sfxGainNode) return;
+
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(310, t);
+    osc.frequency.exponentialRampToValueAtTime(520, t + 0.075);
+    gain.gain.setValueAtTime(0.11, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+    osc.connect(gain);
+    gain.connect(this.sfxGainNode);
+    osc.start(t);
+    osc.stop(t + 0.1);
+  }
+
   public playKeyPickup(): void {
     if (!this.sfxEnabled) return;
     const ctx = this.ensureCtx();
@@ -556,6 +575,12 @@ export class SoundManager {
         { pad: [196.0, 246.94, 293.66, 392.0], chime: [587.33, 739.99, 987.77], wave: 'triangle' },
         { pad: [174.61, 220.0, 261.63, 349.23], chime: [523.25, 659.25, 880.0], wave: 'triangle' },
         { pad: [164.81, 207.65, 246.94, 329.63], chime: [622.25, 783.99, 987.77], wave: 'triangle' },
+      ],
+      'aether-currents': [
+        { pad: [261.63, 329.63, 392.0, 493.88], chime: [739.99, 987.77, 1318.51], wave: 'sine' },
+        { pad: [293.66, 369.99, 440.0, 587.33], chime: [739.99, 880.0, 1174.66], wave: 'sine' },
+        { pad: [246.94, 329.63, 392.0, 493.88], chime: [659.25, 987.77, 1174.66], wave: 'sine' },
+        { pad: [220.0, 293.66, 369.99, 440.0], chime: [587.33, 880.0, 1174.66], wave: 'sine' },
       ],
     };
 

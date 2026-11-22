@@ -681,4 +681,134 @@ describe('PuzzleGame Engine Mechanics', () => {
     const withoutPhase = solveLevel({ ...level, phaseTiles: undefined }, 20);
     expect(withoutPhase.solvable).toBe(false);
   });
+
+  it('carries Puff along chained Conveyor Belts, auto-bridges onto void, feeds into Ice, and guards opposing belt loops', () => {
+    const level: LevelDefinition = {
+      id: 19,
+      world: 12,
+      name: 'Conveyor Carry & Auto-Bridge',
+      cols: 6,
+      rows: 3,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 5, y: 2 },
+      conveyors: [
+        { x: 1, y: 0, direction: 'right' },
+        { x: 2, y: 0, direction: 'down' },
+        { x: 2, y: 1, direction: 'down' }, // pushes Puff onto void (2,2)!
+      ],
+      parMoves: 4,
+    };
+
+    const game = new PuzzleGame(level);
+    // Single step onto (1,0) rides right -> down -> down -> auto-bridges onto void (2,2)!
+    const r1 = game.move({ x: 1, y: 0 });
+    expect(r1.success).toBe(true);
+    expect(r1.conveyorPath).toEqual([
+      { x: 2, y: 0 },
+      { x: 2, y: 1 },
+      { x: 2, y: 2 },
+    ]);
+    expect(game.player).toEqual({ x: 2, y: 2 });
+    expect(game.tiles.has('2,2')).toBe(true);
+    expect(game.inventory).toBe(1);
+
+    // Undo restores cleanly
+    game.undo();
+    expect(game.player).toEqual({ x: 0, y: 0 });
+    expect(game.tiles.size).toBe(0);
+
+    // Conveyor feeding directly into Ice continues momentum in the belt's direction
+    const iceLevel: LevelDefinition = {
+      id: 20,
+      world: 12,
+      name: 'Conveyor to Ice',
+      cols: 5,
+      rows: 1,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 0 },
+      conveyors: [{ x: 1, y: 0, direction: 'right' }],
+      ice: [
+        { x: 2, y: 0 },
+        { x: 3, y: 0 },
+      ],
+      parMoves: 1,
+    };
+    const iceGame = new PuzzleGame(iceLevel);
+    const ir = iceGame.move({ x: 1, y: 0 });
+    expect(ir.success).toBe(true);
+    expect(ir.code).toBe('SUCCESS_WIN');
+    expect(ir.conveyorPath).toEqual([{ x: 2, y: 0 }]);
+    expect(ir.slidePath).toEqual([
+      { x: 3, y: 0 },
+      { x: 4, y: 0 },
+    ]);
+
+    // Opposing conveyor loop terminates safely without hanging
+    const loopLevel: LevelDefinition = {
+      id: 21,
+      world: 12,
+      name: 'Loop Guard',
+      cols: 4,
+      rows: 1,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 3, y: 0 },
+      conveyors: [
+        { x: 1, y: 0, direction: 'right' },
+        { x: 2, y: 0, direction: 'left' },
+      ],
+      parMoves: 2,
+    };
+    const loopGame = new PuzzleGame(loopLevel);
+    const lr = loopGame.move({ x: 1, y: 0 });
+    expect(lr.success).toBe(true);
+    expect(loopGame.player).toEqual({ x: 1, y: 0 });
+  });
+
+  it('ferries pushable Crates around 90-degree Conveyor Belt corners onto Weighted Hold-Plates', () => {
+    const level: LevelDefinition = {
+      id: 22,
+      world: 12,
+      name: 'Crate Conveyor Freight',
+      cols: 5,
+      rows: 3,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 2 },
+      fixed: [
+        { x: 1, y: 0 },
+        { x: 1, y: 2 },
+      ],
+      crates: [{ x: 1, y: 0 }],
+      conveyors: [
+        { x: 2, y: 0, direction: 'right' },
+        { x: 3, y: 0, direction: 'down' },
+        { x: 3, y: 1, direction: 'down' },
+      ],
+      switches: [
+        {
+          id: 'g1',
+          switchPos: { x: 3, y: 2 },
+          doorPos: { x: 2, y: 2 },
+          holdSwitch: true,
+        },
+      ],
+      parMoves: 4,
+    };
+
+    const game = new PuzzleGame(level);
+    const pushRes = game.move({ x: 1, y: 0 });
+    expect(pushRes.success).toBe(true);
+    expect(pushRes.pushedCrate).toEqual({ from: { x: 1, y: 0 }, to: { x: 3, y: 2 } });
+    expect(pushRes.cratePath).toEqual([
+      { x: 2, y: 0 },
+      { x: 3, y: 0 },
+      { x: 3, y: 1 },
+      { x: 3, y: 2 },
+    ]);
+    expect(game.crates.has('3,2')).toBe(true);
+    expect(game.openDoors.has('g1')).toBe(true);
+  });
 });

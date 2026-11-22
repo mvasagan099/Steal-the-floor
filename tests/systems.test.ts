@@ -411,8 +411,8 @@ describe('Game Systems QA Test Suite', () => {
     }
   });
 
-  it('validates all 6 Master Gauntlets, medal thresholds, anti-farming coin deltas, Trial Champion badge, and backup persistence', () => {
-    expect(MASTER_GAUNTLETS).toHaveLength(6);
+  it('validates all 7 Master Gauntlets, medal thresholds, anti-farming coin deltas, Trial Champion badge, and backup persistence', () => {
+    expect(MASTER_GAUNTLETS).toHaveLength(7);
 
     for (const gauntlet of MASTER_GAUNTLETS) {
       const stages = getGauntletStages(gauntlet.id);
@@ -476,7 +476,7 @@ describe('Game Systems QA Test Suite', () => {
   });
 
   it('validates Bridge Tile Skins purchase/equip, Style Icon badge, backup persistence, and Player Mastery Ranks', () => {
-    expect(TILE_SKINS).toHaveLength(7);
+    expect(TILE_SKINS).toHaveLength(8);
     expect(getPlayerRank(storage.getData()).title).toBe('Novice Bridger');
 
     storage.getData().coins = 1000;
@@ -580,6 +580,42 @@ describe('Game Systems QA Test Suite', () => {
     if (dec.ok) {
       expect(dec.level.phaseTiles).toEqual(phaseLevel.phaseTiles);
       expect(dec.parMoves).toBe(5);
+    }
+  });
+
+  it('tracks World 12 Current Navigator achievement, Aether Currents cosmetics, and STF1 Conveyor share codes', () => {
+    for (let id = 221; id <= 240; id++) {
+      storage.recordLevelVictory(id, 10, 3, { usedUndo: false });
+    }
+    expect(storage.getData().achievements['world12_cleared'].unlocked).toBe(true);
+
+    expect(THEMES.some((t) => t.id === 'aether-currents')).toBe(true);
+    expect(SKINS.some((s) => s.id === 'puff-aether')).toBe(true);
+    expect(TRAILS.some((tr) => tr.id === 'trail-aether')).toBe(true);
+    expect(TILE_SKINS.some((ts) => ts.id === 'tile-aether')).toBe(true);
+
+    const conveyorLevel: LevelDefinition = {
+      id: 30006,
+      world: 0,
+      name: 'Conveyor Share Test',
+      cols: 6,
+      rows: 3,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 4, y: 0 },
+      conveyors: [
+        { x: 1, y: 0, direction: 'right' },
+        { x: 2, y: 0, direction: 'right' },
+        { x: 3, y: 0, direction: 'right' },
+      ],
+      parMoves: 1,
+    };
+    const code = encodeLevelCode(conveyorLevel);
+    const dec = decodeLevelCode(code);
+    expect(dec.ok).toBe(true);
+    if (dec.ok) {
+      expect(dec.level.conveyors).toEqual(conveyorLevel.conveyors);
+      expect(dec.parMoves).toBe(1);
     }
   });
 });
