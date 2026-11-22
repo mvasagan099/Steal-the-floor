@@ -162,7 +162,8 @@ export function generateAllTextures(
   scene: Phaser.Scene,
   themeId = 'floating-sky',
   skinColor = '#f59e0b',
-  highContrast = false
+  highContrast = false,
+  tileSkinId = 'tile-classic'
 ): void {
   const palette = THEME_PALETTES[themeId] || THEME_PALETTES['floating-sky'];
   const S = 128;
@@ -275,25 +276,199 @@ export function generateAllTextures(
     ctx.fillText('S', 64, 54);
   }, palette.tileFixedSide);
 
-  // 2. Bridge / Reusable Tile
+  // 2. Bridge / Reusable Tile (supports 6 custom procedural Bridge Tile Skins!)
+  const bridgeSideMap: Record<string, string> = {
+    'tile-classic': palette.tileBridgeSide,
+    'tile-bamboo': '#78350f',
+    'tile-circuit': '#083344',
+    'tile-crystal': '#6366f1',
+    'tile-obsidian': '#9a3412',
+    'tile-celestial': '#1e1b4b',
+  };
+  const activeBridgeSide = bridgeSideMap[tileSkinId] || palette.tileBridgeSide;
+
   createTile('tile_bridge', (ctx) => {
-    const grad = ctx.createLinearGradient(0, 0, S, S);
-    grad.addColorStop(0, '#67e8f9');
-    grad.addColorStop(1, palette.tileBridge);
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, S, S);
+    if (tileSkinId === 'tile-bamboo') {
+      const grad = ctx.createLinearGradient(0, 0, 0, S);
+      grad.addColorStop(0, '#fcd34d');
+      grad.addColorStop(0.5, '#d97706');
+      grad.addColorStop(1, '#b45309');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
 
-    ctx.strokeStyle = highContrast ? 'rgba(15, 23, 42, 0.55)' : 'rgba(255, 255, 255, 0.32)';
-    ctx.lineWidth = highContrast ? 5 : 3;
-    ctx.beginPath();
-    ctx.moveTo(35, 12); ctx.lineTo(35, S - 20);
-    ctx.moveTo(S - 35, 12); ctx.lineTo(S - 35, S - 20);
-    ctx.stroke();
+      // Slatted bamboo planks
+      ctx.strokeStyle = 'rgba(120, 53, 15, 0.72)';
+      ctx.lineWidth = 4;
+      for (const y of [32, 58, 84]) {
+        ctx.beginPath();
+        ctx.moveTo(8, y);
+        ctx.lineTo(S - 8, y);
+        ctx.stroke();
+      }
+      // Brass corner rivets
+      ctx.fillStyle = '#fef3c7';
+      [
+        [24, 22],
+        [S - 24, 22],
+        [24, 94],
+        [S - 24, 94],
+      ].forEach(([rx, ry]) => {
+        ctx.beginPath();
+        ctx.arc(rx, ry, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    } else if (tileSkinId === 'tile-circuit') {
+      const grad = ctx.createLinearGradient(0, 0, S, S);
+      grad.addColorStop(0, '#0f172a');
+      grad.addColorStop(1, '#164e63');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
 
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = highContrast ? 5 : 2;
+      // Neon cyan PCB traces
+      ctx.strokeStyle = '#22d3ee';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(22, 30);
+      ctx.lineTo(48, 30);
+      ctx.lineTo(64, 46);
+      ctx.lineTo(104, 46);
+      ctx.moveTo(24, 82);
+      ctx.lineTo(58, 82);
+      ctx.lineTo(74, 66);
+      ctx.lineTo(104, 66);
+      ctx.stroke();
+
+      // Glowing magenta/cyan nodes
+      ctx.fillStyle = '#f472b6';
+      ctx.beginPath();
+      ctx.arc(64, 56, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#67e8f9';
+      [
+        [22, 30],
+        [104, 46],
+        [24, 82],
+        [104, 66],
+      ].forEach(([nx, ny]) => {
+        ctx.beginPath();
+        ctx.arc(nx, ny, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    } else if (tileSkinId === 'tile-crystal') {
+      const grad = ctx.createLinearGradient(0, 0, S, S);
+      grad.addColorStop(0, '#f5d0fe');
+      grad.addColorStop(0.5, '#67e8f9');
+      grad.addColorStop(1, '#818cf8');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
+
+      // Faceted diamond planes
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.38)';
+      ctx.beginPath();
+      ctx.moveTo(64, 14);
+      ctx.lineTo(108, 54);
+      ctx.lineTo(64, 54);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(99, 102, 241, 0.25)';
+      ctx.beginPath();
+      ctx.moveTo(64, 96);
+      ctx.lineTo(20, 54);
+      ctx.lineTo(64, 54);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(64, 14);
+      ctx.lineTo(108, 54);
+      ctx.lineTo(64, 96);
+      ctx.lineTo(20, 54);
+      ctx.closePath();
+      ctx.stroke();
+    } else if (tileSkinId === 'tile-obsidian') {
+      const grad = ctx.createLinearGradient(0, 0, S, S);
+      grad.addColorStop(0, '#27272a');
+      grad.addColorStop(1, '#18181b');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
+
+      // Molten forge cracks & rune diamond
+      ctx.strokeStyle = '#f97316';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(22, 24);
+      ctx.lineTo(48, 54);
+      ctx.lineTo(22, 86);
+      ctx.moveTo(S - 22, 24);
+      ctx.lineTo(S - 48, 54);
+      ctx.lineTo(S - 22, 86);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#fde047';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(64, 24);
+      ctx.lineTo(86, 54);
+      ctx.lineTo(64, 84);
+      ctx.lineTo(42, 54);
+      ctx.closePath();
+      ctx.stroke();
+    } else if (tileSkinId === 'tile-celestial') {
+      const grad = ctx.createLinearGradient(0, 0, S, S);
+      grad.addColorStop(0, '#312e81');
+      grad.addColorStop(0.55, '#1e1b4b');
+      grad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
+
+      // Constellation lines
+      ctx.strokeStyle = 'rgba(253, 224, 71, 0.55)';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(28, 34);
+      ctx.lineTo(64, 54);
+      ctx.lineTo(96, 30);
+      ctx.moveTo(64, 54);
+      ctx.lineTo(84, 84);
+      ctx.stroke();
+
+      // Golden stars
+      const stars: Array<[number, number, number]> = [
+        [28, 34, 4.5],
+        [64, 54, 7],
+        [96, 30, 4.5],
+        [84, 84, 4],
+        [34, 80, 3],
+      ];
+      ctx.fillStyle = '#fde047';
+      stars.forEach(([sx, sy, sr]) => {
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    } else {
+      // Default Classic Glass
+      const grad = ctx.createLinearGradient(0, 0, S, S);
+      grad.addColorStop(0, '#67e8f9');
+      grad.addColorStop(1, palette.tileBridge);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
+
+      ctx.strokeStyle = highContrast ? 'rgba(15, 23, 42, 0.55)' : 'rgba(255, 255, 255, 0.32)';
+      ctx.lineWidth = highContrast ? 5 : 3;
+      ctx.beginPath();
+      ctx.moveTo(35, 12); ctx.lineTo(35, S - 20);
+      ctx.moveTo(S - 35, 12); ctx.lineTo(S - 35, S - 20);
+      ctx.stroke();
+    }
+
+    ctx.strokeStyle = tileSkinId === 'tile-celestial' ? '#fde047' : '#ffffff';
+    ctx.lineWidth = highContrast ? 5 : 2.5;
     ctx.strokeRect(12, 12, S - 24, S - 34);
-  }, palette.tileBridgeSide);
+  }, activeBridgeSide);
 
   // 3. Sticky Ground
   createTile('tile_sticky', (ctx) => {

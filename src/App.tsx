@@ -174,6 +174,9 @@ export const App: React.FC = () => {
     return s ? s.color : '#f59e0b';
   });
   const [trailId, setTrailId] = useState(() => storage.getData().selectedTrail);
+  const [tileSkinId, setTileSkinId] = useState(
+    () => storage.getData().selectedTileSkin || 'tile-classic'
+  );
   const [musicEnabled, setMusicEnabled] = useState(() => storage.getData().settings.musicEnabled);
   const [sfxEnabled, setSfxEnabled] = useState(() => storage.getData().settings.sfxEnabled);
   const [speedrunTimer, setSpeedrunTimer] = useState(
@@ -751,10 +754,11 @@ export const App: React.FC = () => {
         {showThemes && (
           <ThemesModal
             onBack={() => setShowThemes(false)}
-            onThemeChanged={(newTheme, newSkin, newTrail) => {
+            onThemeChanged={(newTheme, newSkin, newTrail, newTileSkin) => {
               setThemeId(newTheme);
               setSkinColor(newSkin);
               setTrailId(newTrail);
+              setTileSkinId(newTileSkin);
             }}
           />
         )}
@@ -776,6 +780,7 @@ export const App: React.FC = () => {
               setThemeId(resetData.selectedTheme);
               setSkinColor(matchedSkin.color);
               setTrailId(resetData.selectedTrail);
+              setTileSkinId(resetData.selectedTileSkin || 'tile-classic');
               setMusicEnabled(resetData.settings.musicEnabled);
               setSfxEnabled(resetData.settings.sfxEnabled);
               setSpeedrunTimer(resetData.settings.speedrunTimer);
@@ -867,6 +872,7 @@ export const App: React.FC = () => {
         themeId={themeId}
         skinColor={skinColor}
         trailId={trailId}
+        tileSkinId={tileSkinId}
         reducedMotion={reducedMotion}
         highContrast={highContrast}
         onDemoStateChange={setIsDemoPlaying}

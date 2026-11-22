@@ -38,6 +38,8 @@ export interface PlayerData {
   unlockedSkins: string[];
   selectedTrail: string;
   unlockedTrails: string[];
+  selectedTileSkin: string;
+  unlockedTileSkins: string[];
   coins: number;
   totalStars: number;
   dailyStreak: number;
@@ -61,6 +63,59 @@ export interface PlayerData {
     totalLevelsWon: number;
     totalUndos: number;
     totalStarsCollected: number;
+  };
+}
+
+export interface PlayerRankInfo {
+  title: string;
+  icon: string;
+  accent: string;
+  points: number;
+  nextTitle: string | null;
+  nextThreshold: number | null;
+  progressPercent: number;
+}
+
+const RANK_TIERS = [
+  { threshold: 0, title: 'Novice Bridger', icon: '🧱', accent: 'text-slate-200 border-slate-600/60 bg-slate-800/70' },
+  { threshold: 50, title: 'Island Hopper', icon: '🏝️', accent: 'text-sky-200 border-sky-400/50 bg-sky-500/15' },
+  { threshold: 150, title: 'Hazard Tamer', icon: '⚡', accent: 'text-purple-200 border-purple-400/50 bg-purple-500/15' },
+  { threshold: 300, title: 'Void Architect', icon: '🌀', accent: 'text-cyan-200 border-cyan-400/50 bg-cyan-500/15' },
+  { threshold: 475, title: 'Grand Strategist', icon: '⚔️', accent: 'text-amber-200 border-amber-400/50 bg-amber-500/15' },
+  { threshold: 620, title: 'Celestial Sovereign', icon: '👑', accent: 'text-yellow-200 border-yellow-300/60 bg-yellow-500/20' },
+];
+
+export function getPlayerRank(data: PlayerData): PlayerRankInfo {
+  const gauntletPoints = Object.values(data.gauntletProgress || {}).reduce((sum, g) => {
+    if (!g.completed) return sum;
+    return sum + (g.medal === 'gold' ? 20 : g.medal === 'silver' ? 14 : 10);
+  }, 0);
+  const badgePoints = Object.values(data.achievements || {}).filter((a) => a.unlocked).length * 5;
+  const endlessPoints = Math.min(40, (data.bestEndlessStreak || 0) * 4);
+  const points = (data.totalStars || 0) + gauntletPoints + badgePoints + endlessPoints;
+
+  let tierIdx = 0;
+  for (let i = 0; i < RANK_TIERS.length; i++) {
+    if (points >= RANK_TIERS[i].threshold) tierIdx = i;
+  }
+
+  const current = RANK_TIERS[tierIdx];
+  const next = tierIdx + 1 < RANK_TIERS.length ? RANK_TIERS[tierIdx + 1] : null;
+  const progressPercent = next
+    ? Math.min(
+        100,
+        Math.round(((points - current.threshold) / (next.threshold - current.threshold)) * 100)
+      )
+    : 100;
+
+  return {
+    title: current.title,
+    icon: current.icon,
+    accent: current.accent,
+    points,
+    nextTitle: next ? next.title : null,
+    nextThreshold: next ? next.threshold : null,
+    progressPercent,
   };
 }
 
@@ -89,7 +144,7 @@ export type MonthlyMedal = 'none' | 'bronze' | 'silver' | 'gold';
 export const TOTAL_CAMPAIGN_LEVELS = 200;
 export const MAX_CAMPAIGN_STARS = TOTAL_CAMPAIGN_LEVELS * 3;
 const STORAGE_KEY = 'steal_the_floor_save_v1';
-const CURRENT_VERSION = 9;
+const CURRENT_VERSION = 10;
 export const ACHIEVEMENT_REWARD_COINS = 15;
 
 export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
@@ -111,6 +166,7 @@ export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   { id: 'no_undo', title: 'Decisive Mind', description: 'Complete 10 unique levels without Undo', unlocked: false, progress: 0, maxProgress: 10, icon: '🧠' },
   { id: 'endless_5', title: 'Void Runner', description: 'Reach a 5-stage streak in Endless Void Rush', unlocked: false, progress: 0, maxProgress: 5, icon: '♾️' },
   { id: 'gauntlet_champion', title: 'Trial Champion', description: 'Complete all 5 Master Gauntlets', unlocked: false, progress: 0, maxProgress: 5, icon: '⚔️' },
+  { id: 'cosmetic_collector', title: 'Style Icon', description: 'Unlock 6 cosmetics in the Shop', unlocked: false, progress: 0, maxProgress: 6, icon: '🎨' },
 ];
 
 export const THEMES = [
@@ -150,6 +206,15 @@ export const TRAILS = [
   { id: 'trail-rainbow', name: 'Prism Glow', preview: 'linear-gradient(135deg, #f43f5e, #fbbf24, #4ade80, #38bdf8)', price: 120, unlockedByDefault: false },
 ];
 
+export const TILE_SKINS = [
+  { id: 'tile-classic', name: 'Classic Glass', desc: 'Adapts cleanly to your active world theme', preview: 'linear-gradient(135deg, #67e8f9, #3b82f6)', badge: '💠', price: 0, unlockedByDefault: true },
+  { id: 'tile-bamboo', name: 'Bamboo Plank', desc: 'Warm timber bridge slats with brass rivets', preview: 'linear-gradient(135deg, #fbbf24, #b45309)', badge: '🪵', price: 30, unlockedByDefault: false },
+  { id: 'tile-circuit', name: 'Neon Circuit', desc: 'Obsidian wafer etched with glowing cyan traces', preview: 'linear-gradient(135deg, #0f172a, #06b6d4)', badge: '⚡', price: 55, unlockedByDefault: false },
+  { id: 'tile-crystal', name: 'Prism Crystal', desc: 'Faceted diamond glass with pastel refraction', preview: 'linear-gradient(135deg, #f0abfc, #67e8f9, #fef08a)', badge: '💎', price: 85, unlockedByDefault: false },
+  { id: 'tile-obsidian', name: 'Molten Rune', desc: 'Volcanic stone pulsing with gilded forge runes', preview: 'linear-gradient(135deg, #27272a, #f97316)', badge: '🔥', price: 110, unlockedByDefault: false },
+  { id: 'tile-celestial', name: 'Starlight Tile', desc: 'Deep cosmic indigo inlaid with gold constellations', preview: 'linear-gradient(135deg, #312e81, #fde047)', badge: '✨', price: 145, unlockedByDefault: false },
+];
+
 export class GameStorage {
   private static instance: GameStorage;
   private data: PlayerData;
@@ -184,6 +249,8 @@ export class GameStorage {
       unlockedSkins: ['puff-yellow'],
       selectedTrail: 'trail-none',
       unlockedTrails: ['trail-none'],
+      selectedTileSkin: 'tile-classic',
+      unlockedTileSkins: ['tile-classic'],
       coins: 0,
       totalStars: 0,
       dailyStreak: 0,
@@ -255,6 +322,11 @@ export class GameStorage {
           : {},
       noUndoLevelIds: Array.isArray(parsed.noUndoLevelIds) ? parsed.noUndoLevelIds : [],
       unlockedTrails: Array.isArray(parsed.unlockedTrails) ? parsed.unlockedTrails : ['trail-none'],
+      selectedTileSkin:
+        typeof parsed.selectedTileSkin === 'string' ? parsed.selectedTileSkin : 'tile-classic',
+      unlockedTileSkins: Array.isArray(parsed.unlockedTileSkins)
+        ? parsed.unlockedTileSkins
+        : ['tile-classic'],
       completedDailyDates: migratedDailyDates,
       customLevels: Array.isArray(parsed.customLevels) ? parsed.customLevels : [],
       settings: { ...base.settings, ...(parsed.settings || {}) },
@@ -411,11 +483,19 @@ export class GameStorage {
     }
   }
 
+  private applyCosmeticAchievementCheck(): void {
+    const unlocked = this.checkAchievements();
+    if (unlocked.length > 0) {
+      this.data.coins += unlocked.length * ACHIEVEMENT_REWARD_COINS;
+    }
+  }
+
   public unlockTheme(themeId: string, cost: number): boolean {
     if (this.data.coins >= cost && !this.data.unlockedThemes.includes(themeId)) {
       this.data.coins -= cost;
       this.data.unlockedThemes.push(themeId);
       this.data.selectedTheme = themeId;
+      this.applyCosmeticAchievementCheck();
       this.save();
       return true;
     }
@@ -434,6 +514,7 @@ export class GameStorage {
       this.data.coins -= cost;
       this.data.unlockedSkins.push(skinId);
       this.data.selectedSkin = skinId;
+      this.applyCosmeticAchievementCheck();
       this.save();
       return true;
     }
@@ -452,6 +533,7 @@ export class GameStorage {
       this.data.coins -= cost;
       this.data.unlockedTrails.push(trailId);
       this.data.selectedTrail = trailId;
+      this.applyCosmeticAchievementCheck();
       this.save();
       return true;
     }
@@ -461,6 +543,25 @@ export class GameStorage {
   public selectTrail(trailId: string): void {
     if (this.data.unlockedTrails.includes(trailId)) {
       this.data.selectedTrail = trailId;
+      this.save();
+    }
+  }
+
+  public unlockTileSkin(tileSkinId: string, cost: number): boolean {
+    if (this.data.coins >= cost && !this.data.unlockedTileSkins.includes(tileSkinId)) {
+      this.data.coins -= cost;
+      this.data.unlockedTileSkins.push(tileSkinId);
+      this.data.selectedTileSkin = tileSkinId;
+      this.applyCosmeticAchievementCheck();
+      this.save();
+      return true;
+    }
+    return false;
+  }
+
+  public selectTileSkin(tileSkinId: string): void {
+    if (this.data.unlockedTileSkins.includes(tileSkinId)) {
+      this.data.selectedTileSkin = tileSkinId;
       this.save();
     }
   }
@@ -640,6 +741,13 @@ export class GameStorage {
       (g) => g.completed
     ).length;
     updateProgress('gauntlet_champion', clearedGauntlets);
+
+    const purchasedCosmetics =
+      Math.max(0, (this.data.unlockedThemes?.length || 1) - 1) +
+      Math.max(0, (this.data.unlockedSkins?.length || 1) - 1) +
+      Math.max(0, (this.data.unlockedTrails?.length || 1) - 1) +
+      Math.max(0, (this.data.unlockedTileSkins?.length || 1) - 1);
+    updateProgress('cosmetic_collector', purchasedCosmetics);
 
     return newlyUnlocked;
   }

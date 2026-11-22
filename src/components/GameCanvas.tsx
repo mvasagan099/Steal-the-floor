@@ -18,6 +18,7 @@ interface GameCanvasProps {
   themeId: string;
   skinColor: string;
   trailId?: string;
+  tileSkinId?: string;
   reducedMotion?: boolean;
   highContrast?: boolean;
   onStateChange: (game: PuzzleGame) => void;
@@ -36,6 +37,7 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       themeId,
       skinColor,
       trailId = 'trail-none',
+      tileSkinId = 'tile-classic',
       reducedMotion = false,
       highContrast = false,
       onStateChange,
@@ -78,6 +80,7 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       theme: string,
       skin: string,
       trail: string,
+      tileSkin: string,
       rm: boolean,
       hc: boolean
     ): GameSceneConfig => ({
@@ -85,6 +88,7 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       themeId: theme,
       skinColor: skin,
       trailId: trail,
+      tileSkinId: tileSkin,
       reducedMotion: rm,
       highContrast: hc,
       onStateChange: (game) => callbacksRef.current.onStateChange(game),
@@ -144,7 +148,7 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
 
       game.scene.start(
         'GameScene',
-        buildSceneData(level, themeId, skinColor, trailId, reducedMotion, highContrast)
+        buildSceneData(level, themeId, skinColor, trailId, tileSkinId, reducedMotion, highContrast)
       );
       isBootedRef.current = true;
 
@@ -158,13 +162,13 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Restart GameScene cleanly when level, theme, skin, trail, or accessibility flags change
+    // Restart GameScene cleanly when level, theme, skin, trail, tile skin, or accessibility flags change
     useEffect(() => {
       if (!isBootedRef.current || !sceneRef.current) return;
       sceneRef.current.scene.restart(
-        buildSceneData(level, themeId, skinColor, trailId, reducedMotion, highContrast)
+        buildSceneData(level, themeId, skinColor, trailId, tileSkinId, reducedMotion, highContrast)
       );
-    }, [level, themeId, skinColor, trailId, reducedMotion, highContrast]);
+    }, [level, themeId, skinColor, trailId, tileSkinId, reducedMotion, highContrast]);
 
     return (
       <div

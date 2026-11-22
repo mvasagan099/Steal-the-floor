@@ -18,6 +18,7 @@ import {
   SKINS,
   TOTAL_CAMPAIGN_LEVELS,
   MAX_CAMPAIGN_STARS,
+  getPlayerRank,
 } from '../storage/gameStorage';
 import { ALL_LEVELS, WORLDS } from '../levels/levelsData';
 import { MASTER_GAUNTLETS } from '../levels/gauntlets';
@@ -52,6 +53,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const nextLevelId = data.currentLevel || 1;
   const activeTheme = THEMES.find((t) => t.id === data.selectedTheme) || THEMES[0];
   const activeSkin = SKINS.find((s) => s.id === data.selectedSkin) || SKINS[0];
+  const rank = getPlayerRank(data);
 
   const masteredWorlds = WORLDS.filter((world) => {
     const worldLevels = ALL_LEVELS.filter((l) => l.world === world.id);
@@ -122,16 +124,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </p>
 
         {/* Campaign Mastery Progress Strip */}
-        <div className="w-full max-w-xs mt-3.5 px-3.5 py-2.5 bg-slate-950/55 backdrop-blur-sm border border-white/10 rounded-2xl shadow-lg">
-          <div className="flex items-center justify-between text-[11px] font-bold mb-1.5">
-            <span className="text-amber-300 flex items-center gap-1">
-              <Star size={12} className="fill-amber-400 text-amber-400" />
-              <span>
-                {data.totalStars} / {MAX_CAMPAIGN_STARS} ★
-              </span>
+        <button
+          onClick={() => {
+            sound.playTap();
+            onOpenAchievements();
+          }}
+          className="w-full max-w-xs mt-3.5 px-3.5 py-2.5 bg-slate-950/55 hover:bg-slate-950/70 active:scale-[0.98] transition-all backdrop-blur-sm border border-white/10 rounded-2xl shadow-lg text-left"
+        >
+          <div className="flex items-center justify-between text-[11px] font-bold mb-1.5 gap-2">
+            <span className="text-white flex items-center gap-1 truncate">
+              <span>{rank.icon}</span>
+              <span className="truncate">{rank.title}</span>
             </span>
-            <span className="text-sky-200">
-              {masteredWorlds}/{WORLDS.length} 👑 Worlds
+            <span className="text-amber-300 flex-none">
+              {data.totalStars}/{MAX_CAMPAIGN_STARS} ★ · {masteredWorlds}/{WORLDS.length} 👑
             </span>
           </div>
           <div className="w-full h-1.5 bg-slate-900/90 rounded-full overflow-hidden border border-white/5">
@@ -140,7 +146,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               style={{ width: `${Math.max(starPercent, data.totalStars > 0 ? 2 : 0)}%` }}
             />
           </div>
-        </div>
+        </button>
       </div>
 
       {/* Main Buttons */}

@@ -8,10 +8,15 @@ import {
   Trash2,
   Sparkles,
   FolderOpen,
+  Dices,
 } from 'lucide-react';
 import { LevelDefinition, Coordinate } from '../engine/types';
 import { solveLevel } from '../engine/solver';
 import { encodeLevelCode, decodeLevelCode } from '../utils/levelShare';
+import {
+  STUDIO_BLUEPRINTS,
+  generateStudioRandomLevel,
+} from '../levels/studioBlueprints';
 import { storage } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
 
@@ -371,6 +376,25 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
     onPlayCustomLevel(res.level);
   };
 
+  const loadLevelIntoEditor = (lvl: LevelDefinition, message: string) => {
+    setGrid(levelToGrid(lvl));
+    setName(lvl.name);
+    setMaxTiles(lvl.maxTiles);
+    const sw = lvl.switches?.[0];
+    setGateTimer(sw?.holdSwitch ? -1 : sw?.timedDuration || 0);
+    setShareCode('');
+    setStatusMsg({ kind: 'ok', text: message });
+  };
+
+  const handleRandomize = () => {
+    sound.playStar();
+    const randomLvl = generateStudioRandomLevel(Date.now() % 1000000);
+    loadLevelIntoEditor(
+      randomLvl,
+      `Generated "${randomLvl.name}" (Par ${randomLvl.parMoves}) — tweak or tap Play!`
+    );
+  };
+
   const renderCellBadge = (cell: CellData) => {
     const map: Record<CellData['base'], { bg: string; icon: string }> = {
       void: { bg: 'bg-slate-900/90 border-slate-800', icon: '' },
@@ -441,11 +465,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
                   <button
                     onClick={() => {
                       sound.playTap();
-                      setGrid(levelToGrid(lvl));
-                      setName(lvl.name);
-                      setMaxTiles(lvl.maxTiles);
-                      const sw = lvl.switches?.[0];
-                      setGateTimer(sw?.holdSwitch ? -1 : sw?.timedDuration || 0);
+                      loadLevelIntoEditor(lvl, `Loaded "${lvl.name}" into editor.`);
                       setShowSaved(false);
                     }}
                     className="text-left flex-1 min-w-0"
@@ -476,6 +496,40 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
             )}
           </div>
         )}
+
+        {/* Starter Blueprints & Random Generator */}
+        <div className="bg-slate-900/75 border border-slate-800 rounded-2xl p-2.5 flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+              Starter Blueprints
+            </span>
+            <button
+              onClick={handleRandomize}
+              className="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/40 text-emerald-300 text-[10px] font-extrabold flex items-center gap-1 active:scale-95 transition-all"
+            >
+              <Dices size={12} />
+              <span>Random Puzzle</span>
+            </button>
+          </div>
+          <div className="grid grid-cols-4 gap-1.5">
+            {STUDIO_BLUEPRINTS.map((bp) => (
+              <button
+                key={bp.id}
+                onClick={() => {
+                  sound.playTap();
+                  loadLevelIntoEditor(
+                    bp.level,
+                    `Loaded "${bp.level.name}" blueprint — remix or tap Play!`
+                  );
+                }}
+                className="py-1.5 px-1 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-sky-500/40 text-[10px] font-bold text-slate-200 flex flex-col items-center justify-center gap-0.5 active:scale-95 transition-all"
+              >
+                <span className="text-sm">{bp.icon}</span>
+                <span className="truncate w-full text-center">{bp.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Name & Tile Budget */}
         <div className="flex items-center gap-2">

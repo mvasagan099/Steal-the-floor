@@ -18,7 +18,7 @@ In **Steal the Floor**, you guide **Puff** across floating islands suspended ove
 
 ---
 
-## 🌟 Highlights (v3.1.0)
+## 🌟 Highlights (v3.2.0)
 
 - **200 Solver-Validated Campaign Levels across 10 Worlds (600 Stars):**
   - **World 1 — First Steps (1–20):** Bridge reach, island reclamation, and gem detours.
@@ -36,21 +36,21 @@ In **Steal the Floor**, you guide **Puff** across floating islands suspended ove
 - **Automated Mathematical Quality Gates (BFS Solver):**
   - Every campaign level is proven solvable, par-calibrated, and verified so no switch, portal, crumbling stone, one-way arrow, ice runway, `+1` bonus tile, sticky trap, timed gate, pushable crate, springboard, or vault lock can be trivially bypassed.
   - Powers real-time **State-Aware Hints** (`H`), **Live Deadlock Detection** (pulsing Undo warning when no winning path remains), and **Solution Theater ("Watch Optimal Par")** — an animated non-scoring replay of the optimal par route from Pause or after clearing over par.
-- **Campaign Mastery HUD, Speedrun Trials, Mechanic Field Guide & Accessibility Suite:**
-  - Live **Campaign Mastery Progress Strip** on the Home Screen tracking total stars (`X / 600 ★`) and mastered worlds (`X/10 👑`).
-  - Optional live **Speedrun Timer** in the HUD with per-level **Personal Best (`⚡ NEW BEST!`)** clear times, **World Speedrun Totals**, **All / Unsolved / Needs 3★** Level Select filters, and **Perfect 3★ / Fastest Clear** stats on the Achievements screen.
+- **Player Mastery Ranks, Speedrun Trials, Mechanic Field Guide & Accessibility Suite:**
+  - Dynamic **Player Mastery Rank** progression (*Novice Bridger* → *Island Hopper* → *Hazard Tamer* → *Void Architect* → *Grand Strategist* → *Celestial Sovereign*) displayed on the tappable Home Screen Mastery Strip and **Mastery & Badges** profile screen alongside Worlds, Trials, and Speedrun stats.
+  - Optional live **Speedrun Timer** in the HUD with per-level **Personal Best (`⚡ NEW BEST!`)** clear times, **World Speedrun Totals**, and **All / Unsolved / Needs 3★** Level Select filters.
   - Interactive **Mechanic Field Guide** (`Field Guide` on Home & Pause) documenting all 14 puzzle mechanics with rules and tactical tips.
   - **High-Contrast Patterns** (crisper tile outlines, corner rivets, and void grid clarity) and **Reduced Motion** (disables camera shake, confetti, ambient particles, and idle bobbing), all persisted in local storage and `STFSAVE:` backups.
 - **Endless Mode — Void Rush:**
   - Infinite stream of solver-verified procedural stages with escalating mechanics (including Crumbling, Ice, `+1` Bonus Tiles, Sticky Honey, and Springboards), personal-best streaks, and rewards.
 - **Daily Challenge Archive & Monthly Medals:**
   - Deterministic offline daily puzzles seeded by local calendar date (with Crumbling, Ice, and Springboards variety), interactive **Monthly Archive Calendar** for replaying past days, **Bronze (5) / Silver (12) / Gold (20)** monthly trophies, and spoiler-free emoji share cards.
-- **Builder Studio (In-Game Level Editor + Offline Share Codes):**
+- **Builder Studio (In-Game Level Editor + Starter Blueprints + Offline Share Codes):**
   - Tap-to-paint `6×7` puzzle creator supporting islands, rocks, gems, sticky honey, crumbling stone, ice, springboards, golden keys, locked vaults, pushable crates, `+1` bonus tiles, portals, and Toggle / Weighted Hold / Timed gates.
-  - Built-in BFS solver verification + zero-server `STF1:` Base64URL share & import codes.
-- **World-Themed Atmosphere, Cosmetics & Procedural Web Audio:**
-  - **10 Visual Themes** (*Floating Sky*, *Candy World*, *Ocean Islands*, *Neon Space*, *Forest Adventure*, *Arctic Frost*, *Clockwork Forge*, *Obsidian Sanctum*, *Skyward Spire*, *Celestial Crown*) each with distinct living background particles and custom 4-bar adaptive musical progressions.
-  - **10 Puff Skins**, **8 Jump Particle Trails**, and **18 Achievements** with live unlock toasts and Player Stats.
+  - Includes **4 Solver-Verified Starter Blueprints** (*Spring Vault*, *Crate Hold*, *Vault Heist*, *Frozen Spark*), a one-tap **🎲 Random Puzzle** generator, live BFS solver verification, and zero-server `STF1:` Base64URL share & import codes.
+- **World-Themed Atmosphere, Custom Bridge Tiles, Cosmetics & Procedural Web Audio:**
+  - **10 Visual Themes** (*Floating Sky* through *Celestial Crown*) each with distinct living background particles and custom 4-bar adaptive musical progressions.
+  - **6 Custom Procedural Bridge Tile Skins** (*Classic Glass*, *Bamboo Plank*, *Neon Circuit*, *Prism Crystal*, *Molten Rune*, *Starlight Tile*), **10 Puff Skins**, **8 Jump Particle Trails**, and **19 Achievements** (including **Style Icon** `🎨`) with live unlock toasts.
 - **100% Offline, Ad-Free & Private:**
   - Zero ads, zero analytics, zero remote servers, and no `INTERNET` permission in `AndroidManifest.xml`.
   - Offline-first PWA (`public/manifest.json` + `public/sw.js`) and portable `STFSAVE:` backup codes in Settings to transfer saves across devices.

@@ -1,6 +1,8 @@
 import React from 'react';
 import { ArrowLeft, Check, Trophy } from 'lucide-react';
-import { storage, formatElapsedTime } from '../storage/gameStorage';
+import { storage, formatElapsedTime, getPlayerRank } from '../storage/gameStorage';
+import { ALL_LEVELS, WORLDS } from '../levels/levelsData';
+import { MASTER_GAUNTLETS } from '../levels/gauntlets';
 import { sound } from '../audio/soundManager';
 
 interface AchievementsModalProps {
@@ -19,6 +21,18 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({ onBack }) 
     .filter((t): t is number => typeof t === 'number' && t > 0);
   const fastestMs = bestTimes.length > 0 ? Math.min(...bestTimes) : null;
 
+  const clearedTrials = MASTER_GAUNTLETS.filter(
+    (g) => data.gauntletProgress[g.id]?.completed
+  ).length;
+  const masteredWorlds = WORLDS.filter((world) => {
+    const worldLevels = ALL_LEVELS.filter((l) => l.world === world.id);
+    return (
+      worldLevels.length > 0 &&
+      worldLevels.every((l) => data.levelProgress[l.id]?.completed)
+    );
+  }).length;
+  const rank = getPlayerRank(data);
+
   return (
     <div className="fixed inset-0 z-40 bg-slate-950 text-white flex flex-col overflow-hidden animate-in fade-in duration-200">
       {/* Top Header */}
@@ -32,7 +46,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({ onBack }) 
         >
           <ArrowLeft size={18} />
         </button>
-        <h2 className="text-base font-extrabold tracking-tight">Achievements</h2>
+        <h2 className="text-base font-extrabold tracking-tight">Mastery &amp; Badges</h2>
         <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400 font-bold text-xs">
           <Trophy size={13} />
           <span>
@@ -43,39 +57,91 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({ onBack }) 
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 safe-bottom">
+        {/* Player Mastery Rank Banner */}
+        <div className={`rounded-2xl border p-3.5 shadow-lg ${rank.accent}`}>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-11 h-11 rounded-2xl bg-slate-950/60 border border-white/10 flex items-center justify-center text-2xl flex-none">
+                {rank.icon}
+              </div>
+              <div className="min-w-0">
+                <div className="text-[10px] font-black uppercase tracking-widest opacity-80">
+                  Player Mastery Rank
+                </div>
+                <div className="text-base font-black text-white leading-tight truncate">
+                  {rank.title}
+                </div>
+              </div>
+            </div>
+            <div className="text-right flex-none">
+              <div className="text-sm font-black font-mono text-white">{rank.points} pts</div>
+              <div className="text-[10px] opacity-80">
+                {rank.nextTitle ? `Next: ${rank.nextTitle}` : 'Max Rank!'}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-2.5">
+            <div className="w-full h-1.5 bg-slate-950/60 rounded-full overflow-hidden border border-white/10">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-sky-400 via-amber-400 to-yellow-300 transition-all duration-500"
+                style={{ width: `${Math.max(rank.progressPercent, rank.points > 0 ? 4 : 0)}%` }}
+              />
+            </div>
+            {rank.nextThreshold !== null && (
+              <div className="flex justify-between text-[10px] opacity-75 mt-1 font-mono">
+                <span>{rank.points} / {rank.nextThreshold} mastery pts</span>
+                <span>{rank.progressPercent}%</span>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Player Stats Summary */}
-        <div className="grid grid-cols-3 gap-2.5 bg-slate-900/90 border border-slate-800 rounded-2xl p-3 text-center">
+        <div className="grid grid-cols-4 gap-2 bg-slate-900/90 border border-slate-800 rounded-2xl p-3 text-center">
           <div>
             <div className="text-sm font-black text-sky-400 font-mono">{clearedCount}</div>
-            <div className="text-[10px] text-slate-400 font-bold uppercase">Cleared</div>
+            <div className="text-[9px] text-slate-400 font-bold uppercase">Cleared</div>
           </div>
           <div>
             <div className="text-sm font-black text-amber-400 font-mono">{perfectCount}</div>
-            <div className="text-[10px] text-slate-400 font-bold uppercase">Perfect 3★</div>
+            <div className="text-[9px] text-slate-400 font-bold uppercase">3★ Par</div>
+          </div>
+          <div>
+            <div className="text-sm font-black text-yellow-300 font-mono">
+              {masteredWorlds}/{WORLDS.length}
+            </div>
+            <div className="text-[9px] text-slate-400 font-bold uppercase">Worlds</div>
+          </div>
+          <div>
+            <div className="text-sm font-black text-rose-400 font-mono">
+              {clearedTrials}/{MASTER_GAUNTLETS.length}
+            </div>
+            <div className="text-[9px] text-slate-400 font-bold uppercase">Trials</div>
           </div>
           <div>
             <div className="text-sm font-black text-indigo-400 font-mono">
               {fastestMs !== null ? formatElapsedTime(fastestMs) : '—'}
             </div>
-            <div className="text-[10px] text-slate-400 font-bold uppercase">Fastest</div>
+            <div className="text-[9px] text-slate-400 font-bold uppercase">Fastest</div>
           </div>
           <div>
             <div className="text-sm font-black text-emerald-400 font-mono">
               {data.noUndoLevelIds.length}
             </div>
-            <div className="text-[10px] text-slate-400 font-bold uppercase">No-Undo</div>
+            <div className="text-[9px] text-slate-400 font-bold uppercase">No-Undo</div>
           </div>
           <div>
-            <div className="text-sm font-black text-yellow-300 font-mono">
+            <div className="text-sm font-black text-cyan-300 font-mono">
               {data.stats.totalTilesPlaced}
             </div>
-            <div className="text-[10px] text-slate-400 font-bold uppercase">Tiles</div>
+            <div className="text-[9px] text-slate-400 font-bold uppercase">Tiles</div>
           </div>
           <div>
             <div className="text-sm font-black text-orange-400 font-mono">
               {data.dailyStreak}d
             </div>
-            <div className="text-[10px] text-slate-400 font-bold uppercase">Streak</div>
+            <div className="text-[9px] text-slate-400 font-bold uppercase">Streak</div>
           </div>
         </div>
 

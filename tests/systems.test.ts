@@ -2,9 +2,12 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import {
   GameStorage,
   THEMES,
+  SKINS,
   TRAILS,
+  TILE_SKINS,
   ACHIEVEMENT_REWARD_COINS,
   formatElapsedTime,
+  getPlayerRank,
 } from '../src/storage/gameStorage';
 import { getDailyChallenge, formatDailyShareText } from '../src/levels/dailyChallenge';
 import { generateEndlessStage } from '../src/levels/endlessMode';
@@ -14,6 +17,10 @@ import {
   getGauntletParTotals,
   evaluateGauntletMedal,
 } from '../src/levels/gauntlets';
+import {
+  STUDIO_BLUEPRINTS,
+  generateStudioRandomLevel,
+} from '../src/levels/studioBlueprints';
 import { encodeLevelCode, decodeLevelCode } from '../src/utils/levelShare';
 import { solveLevel } from '../src/engine/solver';
 import { LevelDefinition } from '../src/engine/types';
@@ -466,5 +473,59 @@ describe('Game Systems QA Test Suite', () => {
     expect(storage.getData().gauntletProgress[firstId].medal).toBe('gold');
     expect(storage.getData().gauntletProgress[firstId].bestTimeMs).toBe(32000);
     expect(storage.getData().achievements['gauntlet_champion'].unlocked).toBe(true);
+  });
+
+  it('validates Bridge Tile Skins purchase/equip, Style Icon badge, backup persistence, and Player Mastery Ranks', () => {
+    expect(TILE_SKINS).toHaveLength(6);
+    expect(getPlayerRank(storage.getData()).title).toBe('Novice Bridger');
+
+    storage.getData().coins = 1000;
+    storage.save();
+
+    // Purchase 2 themes, 1 skin, 1 trail, and 2 tile skins = 6 total cosmetics -> unlocks Style Icon!
+    expect(storage.unlockTheme(THEMES[1].id, THEMES[1].price)).toBe(true);
+    expect(storage.unlockTheme(THEMES[2].id, THEMES[2].price)).toBe(true);
+    expect(storage.unlockSkin(SKINS[1].id, SKINS[1].price)).toBe(true);
+    expect(storage.unlockTrail(TRAILS[1].id, TRAILS[1].price)).toBe(true);
+    expect(storage.unlockTileSkin('tile-bamboo', 30)).toBe(true);
+    expect(storage.getData().achievements['cosmetic_collector'].unlocked).toBe(false);
+
+    expect(storage.unlockTileSkin('tile-celestial', 145)).toBe(true);
+    expect(storage.getData().selectedTileSkin).toBe('tile-celestial');
+    expect(storage.getData().achievements['cosmetic_collector'].unlocked).toBe(true);
+
+    // Backup/restore preserves selectedTileSkin and unlockedTileSkins
+    const backup = storage.exportSaveCode();
+    storage.resetProgress();
+    expect(storage.getData().selectedTileSkin).toBe('tile-classic');
+    expect(storage.importSaveCode(backup).ok).toBe(true);
+    expect(storage.getData().selectedTileSkin).toBe('tile-celestial');
+    expect(storage.getData().unlockedTileSkins).toContain('tile-bamboo');
+
+    // Mastery rank scales cleanly with stars & gauntlets
+    storage.getData().totalStars = 60;
+    expect(getPlayerRank(storage.getData()).title).toBe('Island Hopper');
+    storage.getData().totalStars = 600;
+    for (const g of MASTER_GAUNTLETS) {
+      storage.recordGauntletCompletion(g.id, 30, 20000, 'gold');
+    }
+    expect(getPlayerRank(storage.getData()).title).toBe('Celestial Sovereign');
+    expect(getPlayerRank(storage.getData()).nextTitle).toBeNull();
+  });
+
+  it('verifies all 4 Builder Studio Starter Blueprints and random generator produce solvable 6x7 puzzles', () => {
+    expect(STUDIO_BLUEPRINTS).toHaveLength(4);
+    for (const bp of STUDIO_BLUEPRINTS) {
+      expect(bp.level.cols).toBe(6);
+      expect(bp.level.rows).toBe(7);
+      const sol = solveLevel(bp.level, 35);
+      expect(sol.solvable, `Blueprint "${bp.level.name}" should be solvable`).toBe(true);
+      expect(sol.minMoves).toBeGreaterThan(2);
+    }
+
+    const randomPuzzle = generateStudioRandomLevel(123456);
+    expect(randomPuzzle.cols).toBe(6);
+    expect(randomPuzzle.rows).toBe(7);
+    expect(solveLevel(randomPuzzle, 35).solvable).toBe(true);
   });
 });

@@ -10,6 +10,7 @@ export interface GameSceneConfig {
   themeId: string;
   skinColor: string;
   trailId?: string;
+  tileSkinId?: string;
   reducedMotion?: boolean;
   highContrast?: boolean;
   onStateChange: (game: PuzzleGame) => void;
@@ -121,7 +122,8 @@ export class GameScene extends Phaser.Scene {
       this,
       this.config.themeId,
       this.config.skinColor,
-      !!this.config.highContrast
+      !!this.config.highContrast,
+      this.config.tileSkinId || 'tile-classic'
     );
 
     this.bgGraphics = this.add.graphics();
