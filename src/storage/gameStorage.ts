@@ -306,45 +306,290 @@ export class GameStorage {
 
   private migrate(parsed: Partial<PlayerData>): PlayerData {
     const base = this.getDefaultData();
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return base;
+    }
+
+    const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+    const validThemeIds = new Set(THEMES.map((t) => t.id));
+    const validSkinIds = new Set(SKINS.map((s) => s.id));
+    const validTrailIds = new Set(TRAILS.map((tr) => tr.id));
+    const validTileSkinIds = new Set(TILE_SKINS.map((ts) => ts.id));
+    const validMedals = new Set<MonthlyMedal>(['none', 'bronze', 'silver', 'gold']);
+    const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+    const clampInt = (val: unknown, fallback: number, min: number, max: number): number => {
+      if (typeof val !== 'number' || !Number.isFinite(val)) return fallback;
+      return Math.max(min, Math.min(max, Math.floor(val)));
+    };
+    const clampFloat = (val: unknown, fallback: number, min: number, max: number): number => {
+      if (typeof val !== 'number' || !Number.isFinite(val)) return fallback;
+      return Math.max(min, Math.min(max, val));
+    };
+
+    // Sanitize achievements strictly against known own achievement IDs
     const mergedAchievements: Record<string, Achievement> = { ...base.achievements };
-    if (parsed.achievements) {
+    if (parsed.achievements && typeof parsed.achievements === 'object' && !Array.isArray(parsed.achievements)) {
       for (const [key, val] of Object.entries(parsed.achievements)) {
-        if (mergedAchievements[key]) {
-          mergedAchievements[key] = {
-            ...mergedAchievements[key],
-            ...val,
-            maxProgress: mergedAchievements[key].maxProgress,
-          };
+        if (
+          FORBIDDEN_KEYS.has(key) ||
+          !Object.prototype.hasOwnProperty.call(mergedAchievements, key) ||
+          !val ||
+          typeof val !== 'object'
+        ) {
+          continue;
         }
+        const def = mergedAchievements[key];
+        const rawAch = val as Partial<Achievement>;
+        mergedAchievements[key] = {
+          ...def,
+          unlocked: Boolean(rawAch.unlocked),
+          progress: clampInt(rawAch.progress, def.progress, 0, def.maxProgress),
+          maxProgress: def.maxProgress,
+        };
       }
     }
 
-    const migratedDailyDates = Array.isArray(parsed.completedDailyDates)
-      ? Array.from(new Set(parsed.completedDailyDates))
-      : parsed.lastDailyCompletedDate
-      ? [parsed.lastDailyCompletedDate]
+    // Sanitize levelProgress (only numeric campaign level IDs 1..TOTAL_CAMPAIGN_LEVELS)
+    const sanitizedLevelProgress: Record<number, LevelProgress> = {};
+    if (parsed.levelProgress && typeof parsed.levelProgress === 'object' && !Array.isArray(parsed.levelProgress)) {
+      for (const [key, val] of Object.entries(parsed.levelProgress)) {
+        if (FORBIDDEN_KEYS.has(key)) continue;
+        const levelId = Number(key);
+        if (
+          !Number.isInteger(levelId) ||
+          levelId < 1 ||
+          levelId > TOTAL_CAMPAIGN_LEVELS ||
+          !val ||
+          typeof val !== 'object'
+        ) {
+          continue;
+        }
+        const rawLp = val as Partial<LevelProgress>;
+        const bestTimeMs =
+          typeof rawLp.bestTimeMs === 'number' && Number.isFinite(rawLp.bestTimeMs) && rawLp.bestTimeMs > 0
+            ? Math.min(3_600_000, Math.round(rawLp.bestTimeMs))
+            : undefined;
+        let bestRun: GhostFrame[] | undefined;
+        if (Array.isArray(rawLp.bestRun)) {
+          const validFrames: GhostFrame[] = [];
+          for (const frame of rawLp.bestRun.slice(0, 80)) {
+            if (
+              Array.isArray(frame) &&
+              frame.length === 3 &&
+              Number.isInteger(frame[0]) &&
+              Number.isInteger(frame[1]) &&
+              typeof frame[2] === 'number' &&
+              Number.isFinite(frame[2]) &&
+              frame[0] >= 0 &&
+              frame[0] <= 12 &&
+              frame[1] >= 0 &&
+              frame[1] <= 12 &&
+              frame[2] >= 0 &&
+              frame[2] <= 3_600_000
+            ) {
+              validFrames.push([frame[0], frame[1], Math.round(frame[2])]);
+            }
+          }
+          if (validFrames.length > 0) bestRun = validFrames;
+        }
+        sanitizedLevelProgress[levelId] = {
+          completed: Boolean(rawLp.completed),
+          stars: clampInt(rawLp.stars, 0, 0, 3),
+          bestMoves: clampInt(rawLp.bestMoves, 0, 0, 999),
+          ...(bestTimeMs !== undefined ? { bestTimeMs } : {}),
+          ...(bestRun ? { bestRun } : {}),
+        };
+      }
+    }
+
+    // Sanitize gauntletProgress (reject prototype-polluting keys)
+    const sanitizedGauntletProgress: Record<string, GauntletRecord> = {};
+    if (
+      parsed.gauntletProgress &&
+      typeof parsed.gauntletProgress === 'object' &&
+      !Array.isArray(parsed.gauntletProgress)
+    ) {
+      for (const [key, val] of Object.entries(parsed.gauntletProgress)) {
+        if (FORBIDDEN_KEYS.has(key) || !/^[a-z0-9-]{1,48}$/.test(key) || !val || typeof val !== 'object') {
+          continue;
+        }
+        const rawG = val as Partial<GauntletRecord>;
+        const medal = validMedals.has(rawG.medal as MonthlyMedal) ? (rawG.medal as MonthlyMedal) : 'none';
+        sanitizedGauntletProgress[key] = {
+          completed: Boolean(rawG.completed),
+          medal,
+          bestMoves: clampInt(rawG.bestMoves, 0, 0, 9999),
+          bestTimeMs: clampInt(rawG.bestTimeMs, 0, 0, 3_600_000),
+        };
+      }
+    }
+
+    // Sanitize cosmetic inventories & selections
+    const filterValidIds = (arr: unknown, validSet: Set<string>, defaultId: string): string[] => {
+      const result = new Set<string>([defaultId]);
+      if (Array.isArray(arr)) {
+        for (const item of arr) {
+          if (typeof item === 'string' && validSet.has(item)) result.add(item);
+        }
+      }
+      return Array.from(result);
+    };
+    const unlockedThemes = filterValidIds(parsed.unlockedThemes, validThemeIds, 'floating-sky');
+    const unlockedSkins = filterValidIds(parsed.unlockedSkins, validSkinIds, 'puff-yellow');
+    const unlockedTrails = filterValidIds(parsed.unlockedTrails, validTrailIds, 'trail-none');
+    const unlockedTileSkins = filterValidIds(parsed.unlockedTileSkins, validTileSkinIds, 'tile-classic');
+
+    const selectedTheme =
+      typeof parsed.selectedTheme === 'string' && unlockedThemes.includes(parsed.selectedTheme)
+        ? parsed.selectedTheme
+        : 'floating-sky';
+    const selectedSkin =
+      typeof parsed.selectedSkin === 'string' && unlockedSkins.includes(parsed.selectedSkin)
+        ? parsed.selectedSkin
+        : 'puff-yellow';
+    const selectedTrail =
+      typeof parsed.selectedTrail === 'string' && unlockedTrails.includes(parsed.selectedTrail)
+        ? parsed.selectedTrail
+        : 'trail-none';
+    const selectedTileSkin =
+      typeof parsed.selectedTileSkin === 'string' && unlockedTileSkins.includes(parsed.selectedTileSkin)
+        ? parsed.selectedTileSkin
+        : 'tile-classic';
+
+    const lastDailyCompletedDate =
+      typeof parsed.lastDailyCompletedDate === 'string' && DATE_RE.test(parsed.lastDailyCompletedDate)
+        ? parsed.lastDailyCompletedDate
+        : '';
+
+    const rawDailyDates = Array.isArray(parsed.completedDailyDates)
+      ? parsed.completedDailyDates
+      : lastDailyCompletedDate
+      ? [lastDailyCompletedDate]
+      : [];
+    const migratedDailyDates = Array.from(
+      new Set(rawDailyDates.filter((d): d is string => typeof d === 'string' && DATE_RE.test(d)))
+    ).slice(0, 2000);
+
+    const noUndoLevelIds = Array.isArray(parsed.noUndoLevelIds)
+      ? Array.from(
+          new Set(
+            parsed.noUndoLevelIds.filter(
+              (id): id is number => Number.isInteger(id) && id >= 1 && id <= TOTAL_CAMPAIGN_LEVELS
+            )
+          )
+        )
       : [];
 
+    // Sanitize customLevels (max 12 valid 3..9 grid custom puzzles)
+    const sanitizedCustomLevels: LevelDefinition[] = [];
+    if (Array.isArray(parsed.customLevels)) {
+      for (const rawLvl of parsed.customLevels.slice(0, 12)) {
+        if (!rawLvl || typeof rawLvl !== 'object') continue;
+        const lvl = rawLvl as Partial<LevelDefinition>;
+        if (
+          !Number.isInteger(lvl.cols) ||
+          !Number.isInteger(lvl.rows) ||
+          (lvl.cols as number) < 3 ||
+          (lvl.cols as number) > 9 ||
+          (lvl.rows as number) < 3 ||
+          (lvl.rows as number) > 9 ||
+          !lvl.start ||
+          !lvl.exit ||
+          !Number.isInteger(lvl.start.x) ||
+          !Number.isInteger(lvl.start.y) ||
+          !Number.isInteger(lvl.exit.x) ||
+          !Number.isInteger(lvl.exit.y)
+        ) {
+          continue;
+        }
+        sanitizedCustomLevels.push({
+          ...lvl,
+          id: clampInt(lvl.id, 30000 + sanitizedCustomLevels.length, 1, 999999),
+          world: 0,
+          name:
+            typeof lvl.name === 'string'
+              ? lvl.name.replace(/[\u0000-\u001F\u007F]/g, '').trim().slice(0, 32) || 'Custom Puzzle'
+              : 'Custom Puzzle',
+          cols: lvl.cols as number,
+          rows: lvl.rows as number,
+          maxTiles: clampInt(lvl.maxTiles, 2, 1, 5),
+          start: { x: lvl.start.x, y: lvl.start.y },
+          exit: { x: lvl.exit.x, y: lvl.exit.y },
+          parMoves: clampInt(lvl.parMoves, 1, 1, 200),
+        } as LevelDefinition);
+      }
+    }
+
+    const rawSettings =
+      parsed.settings && typeof parsed.settings === 'object'
+        ? (parsed.settings as Partial<PlayerData['settings']>)
+        : {};
+    const rawStats =
+      parsed.stats && typeof parsed.stats === 'object'
+        ? (parsed.stats as Partial<PlayerData['stats']>)
+        : {};
+
+    const highestUnlockedLevel = clampInt(parsed.highestUnlockedLevel, 1, 1, TOTAL_CAMPAIGN_LEVELS);
+    const currentLevel = clampInt(parsed.currentLevel, 1, 1, highestUnlockedLevel);
+
     return {
-      ...base,
-      ...parsed,
       version: CURRENT_VERSION,
-      gauntletProgress:
-        parsed.gauntletProgress && typeof parsed.gauntletProgress === 'object'
-          ? parsed.gauntletProgress
-          : {},
-      noUndoLevelIds: Array.isArray(parsed.noUndoLevelIds) ? parsed.noUndoLevelIds : [],
-      unlockedTrails: Array.isArray(parsed.unlockedTrails) ? parsed.unlockedTrails : ['trail-none'],
-      selectedTileSkin:
-        typeof parsed.selectedTileSkin === 'string' ? parsed.selectedTileSkin : 'tile-classic',
-      unlockedTileSkins: Array.isArray(parsed.unlockedTileSkins)
-        ? parsed.unlockedTileSkins
-        : ['tile-classic'],
+      currentLevel,
+      highestUnlockedLevel,
+      levelProgress: sanitizedLevelProgress,
+      gauntletProgress: sanitizedGauntletProgress,
+      noUndoLevelIds,
+      selectedTheme,
+      unlockedThemes,
+      selectedSkin,
+      unlockedSkins,
+      selectedTrail,
+      unlockedTrails,
+      selectedTileSkin,
+      unlockedTileSkins,
+      coins: clampInt(parsed.coins, 0, 0, 9_999_999),
+      totalStars: clampInt(parsed.totalStars, 0, 0, MAX_CAMPAIGN_STARS),
+      dailyStreak: clampInt(parsed.dailyStreak, 0, 0, 10_000),
+      lastDailyCompletedDate,
       completedDailyDates: migratedDailyDates,
-      customLevels: Array.isArray(parsed.customLevels) ? parsed.customLevels : [],
-      settings: { ...base.settings, ...(parsed.settings || {}) },
-      stats: { ...base.stats, ...(parsed.stats || {}) },
+      bestEndlessStreak: clampInt(parsed.bestEndlessStreak, 0, 0, 10_000),
+      customLevels: sanitizedCustomLevels,
+      settings: {
+        musicVolume: clampFloat(rawSettings.musicVolume, base.settings.musicVolume, 0, 1),
+        sfxVolume: clampFloat(rawSettings.sfxVolume, base.settings.sfxVolume, 0, 1),
+        musicEnabled:
+          typeof rawSettings.musicEnabled === 'boolean'
+            ? rawSettings.musicEnabled
+            : base.settings.musicEnabled,
+        sfxEnabled:
+          typeof rawSettings.sfxEnabled === 'boolean'
+            ? rawSettings.sfxEnabled
+            : base.settings.sfxEnabled,
+        hapticsEnabled:
+          typeof rawSettings.hapticsEnabled === 'boolean'
+            ? rawSettings.hapticsEnabled
+            : base.settings.hapticsEnabled,
+        speedrunTimer:
+          typeof rawSettings.speedrunTimer === 'boolean'
+            ? rawSettings.speedrunTimer
+            : base.settings.speedrunTimer,
+        reducedMotion:
+          typeof rawSettings.reducedMotion === 'boolean'
+            ? rawSettings.reducedMotion
+            : base.settings.reducedMotion,
+        highContrast:
+          typeof rawSettings.highContrast === 'boolean'
+            ? rawSettings.highContrast
+            : base.settings.highContrast,
+      },
       achievements: mergedAchievements,
+      stats: {
+        totalTilesPlaced: clampInt(rawStats.totalTilesPlaced, 0, 0, 99_999_999),
+        totalLevelsWon: clampInt(rawStats.totalLevelsWon, 0, 0, 99_999_999),
+        totalUndos: clampInt(rawStats.totalUndos, 0, 0, 99_999_999),
+        totalStarsCollected: clampInt(rawStats.totalStarsCollected, 0, 0, 99_999_999),
+      },
     };
   }
 
@@ -794,9 +1039,15 @@ export class GameStorage {
   }
 
   public importSaveCode(rawCode: string): { ok: true } | { ok: false; error: string } {
+    if (typeof rawCode !== 'string') {
+      return { ok: false, error: 'Backup code must be text.' };
+    }
     const trimmed = rawCode.trim();
     if (!trimmed.startsWith('STFSAVE:')) {
       return { ok: false, error: 'Backup code must start with "STFSAVE:"' };
+    }
+    if (trimmed.length > 262_144) {
+      return { ok: false, error: 'Backup code exceeds maximum safe size.' };
     }
     try {
       let padded = trimmed.slice('STFSAVE:'.length).replace(/-/g, '+').replace(/_/g, '/');
@@ -810,8 +1061,11 @@ export class GameStorage {
       if (
         !parsed ||
         typeof parsed !== 'object' ||
+        Array.isArray(parsed) ||
         typeof parsed.highestUnlockedLevel !== 'number' ||
-        typeof parsed.coins !== 'number'
+        !Number.isFinite(parsed.highestUnlockedLevel) ||
+        typeof parsed.coins !== 'number' ||
+        !Number.isFinite(parsed.coins)
       ) {
         return { ok: false, error: 'Backup data is invalid or incomplete.' };
       }

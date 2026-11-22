@@ -9,6 +9,8 @@ import {
 import { solveLevel } from '../engine/solver';
 
 const PREFIX = 'STF1:';
+const MAX_SHARE_CODE_LENGTH = 8192;
+const VALID_DIRECTIONS = new Set<OneWayTile['direction']>(['up', 'down', 'left', 'right']);
 
 interface CompactLevelPayload {
   n: string; // name
@@ -38,6 +40,42 @@ interface CompactLevelPayload {
 const toPair = (c: Coordinate): [number, number] => [c.x, c.y];
 const fromPair = (p: [number, number]): Coordinate => ({ x: p[0], y: p[1] });
 
+function isValidCoordPair(pair: unknown, cols: number, rows: number): pair is [number, number] {
+  return (
+    Array.isArray(pair) &&
+    pair.length === 2 &&
+    Number.isInteger(pair[0]) &&
+    Number.isInteger(pair[1]) &&
+    pair[0] >= 0 &&
+    pair[0] < cols &&
+    pair[1] >= 0 &&
+    pair[1] < rows
+  );
+}
+
+function parseCoordList(
+  raw: unknown,
+  cols: number,
+  rows: number,
+  maxItems: number
+): Coordinate[] | null {
+  if (raw === undefined) return [];
+  if (!Array.isArray(raw) || raw.length > maxItems) return null;
+  const out: Coordinate[] = [];
+  for (const item of raw) {
+    if (!isValidCoordPair(item, cols, rows)) return null;
+    out.push(fromPair(item));
+  }
+  return out;
+}
+
+function sanitizeLabel(raw: unknown, fallback: string, maxLen: number): string {
+  if (typeof raw !== 'string') return fallback;
+  // Strip ASCII control characters to prevent terminal/UI spoofing
+  const cleaned = raw.replace(/[\u0000-\u001F\u007F]/g, '').trim().slice(0, maxLen);
+  return cleaned || fallback;
+}
+
 function toBase64Url(str: string): string {
   const bytes = new TextEncoder().encode(str);
   let binary = '';
@@ -63,7 +101,7 @@ function fromBase64Url(b64: string): string {
  */
 export function encodeLevelCode(level: LevelDefinition): string {
   const payload: CompactLevelPayload = {
-    n: level.name.slice(0, 32) || 'Custom Puzzle',
+    n: sanitizeLabel(level.name, 'Custom Puzzle', 32),
     c: level.cols,
     r: level.rows,
     m: level.maxTiles,
@@ -106,73 +144,212 @@ export function encodeLevelCode(level: LevelDefinition): string {
 }
 
 /**
- * Decodes and validates an offline STF1:... share code into a playable LevelDefinition.
+ * Decodes and strictly validates an offline STF1:... share code into a playable LevelDefinition.
  */
 export function decodeLevelCode(
   rawCode: string
 ): { ok: true; level: LevelDefinition; parMoves: number } | { ok: false; error: string } {
+  if (typeof rawCode !== 'string') {
+    return { ok: false, error: 'Share code must be a text string.' };
+  }
   const trimmed = rawCode.trim();
   if (!trimmed.startsWith(PREFIX)) {
     return { ok: false, error: 'Code must start with "STF1:"' };
   }
+  if (trimmed.length > MAX_SHARE_CODE_LENGTH) {
+    return { ok: false, error: 'Share code exceeds maximum safe size.' };
+  }
 
   try {
     const jsonStr = fromBase64Url(trimmed.slice(PREFIX.length));
-    const p = JSON.parse(jsonStr) as CompactLevelPayload;
+    const parsed = JSON.parse(jsonStr);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return { ok: false, error: 'Invalid puzzle payload format.' };
+    }
+    const p = parsed as CompactLevelPayload;
 
     if (
-      typeof p.c !== 'number' ||
-      typeof p.r !== 'number' ||
+      !Number.isInteger(p.c) ||
+      !Number.isInteger(p.r) ||
       p.c < 3 ||
       p.c > 9 ||
       p.r < 3 ||
       p.r > 9 ||
-      !Array.isArray(p.s) ||
-      !Array.isArray(p.e)
+      !isValidCoordPair(p.s, p.c, p.r) ||
+      !isValidCoordPair(p.e, p.c, p.r)
     ) {
       return { ok: false, error: 'Invalid puzzle dimensions or start/exit data.' };
     }
 
-    const switches: SwitchDoorPair[] | undefined = p.sw?.map(([id, sp, dp, open, timed, hold]) => ({
-      id,
-      switchPos: fromPair(sp),
-      doorPos: fromPair(dp),
-      ...(open ? { doorInitiallyOpen: true } : {}),
-      ...(typeof timed === 'number' && timed > 0 ? { timedDuration: timed } : {}),
-      ...(hold ? { holdSwitch: true } : {}),
-    }));
+    if (p.s[0] === p.e[0] && p.s[1] === p.e[1]) {
+      return { ok: false, error: 'Start and exit cannot share the same tile.' };
+    }
 
-    const teleporters: TeleporterPair[] | undefined = p.tp?.map(([id, a, b]) => ({
-      id,
-      posA: fromPair(a),
-      posB: fromPair(b),
-    }));
+    const maxCells = p.c * p.r;
+    const fixed = parseCoordList(p.f, p.c, p.r, maxCells);
+    const rocks = parseCoordList(p.x, p.c, p.r, maxCells);
+    const sticky = parseCoordList(p.h, p.c, p.r, maxCells);
+    const crumbling = parseCoordList(p.cr, p.c, p.r, maxCells);
+    const ice = parseCoordList(p.i, p.c, p.r, maxCells);
+    const springs = parseCoordList(p.j, p.c, p.r, maxCells);
+    const keys = parseCoordList(p.ky, p.c, p.r, maxCells);
+    const locks = parseCoordList(p.lk, p.c, p.r, maxCells);
+    const bonusTiles = parseCoordList(p.b, p.c, p.r, maxCells);
+    const crates = parseCoordList(p.k, p.c, p.r, maxCells);
+    const stars = parseCoordList(p.g, p.c, p.r, maxCells);
+
+    if (
+      !fixed ||
+      !rocks ||
+      !sticky ||
+      !crumbling ||
+      !ice ||
+      !springs ||
+      !keys ||
+      !locks ||
+      !bonusTiles ||
+      !crates ||
+      !stars
+    ) {
+      return { ok: false, error: 'Puzzle contains out-of-bounds or malformed tile coordinates.' };
+    }
+
+    let phaseTiles: LevelDefinition['phaseTiles'];
+    if (p.ph !== undefined) {
+      if (!Array.isArray(p.ph) || p.ph.length > maxCells) {
+        return { ok: false, error: 'Invalid phase tile data.' };
+      }
+      phaseTiles = [];
+      for (const entry of p.ph) {
+        if (
+          !Array.isArray(entry) ||
+          entry.length !== 3 ||
+          !isValidCoordPair([entry[0], entry[1]], p.c, p.r) ||
+          (entry[2] !== 0 && entry[2] !== 1)
+        ) {
+          return { ok: false, error: 'Invalid phase tile entry.' };
+        }
+        phaseTiles.push({ x: entry[0], y: entry[1], polarity: entry[2] === 1 ? 'odd' : 'even' });
+      }
+    }
+
+    const parseDirectional = (
+      raw: unknown
+    ): Array<{ x: number; y: number; direction: OneWayTile['direction'] }> | null => {
+      if (raw === undefined) return [];
+      if (!Array.isArray(raw) || raw.length > maxCells) return null;
+      const list: Array<{ x: number; y: number; direction: OneWayTile['direction'] }> = [];
+      for (const entry of raw) {
+        if (
+          !Array.isArray(entry) ||
+          entry.length !== 3 ||
+          !isValidCoordPair([entry[0], entry[1]], p.c, p.r) ||
+          typeof entry[2] !== 'string' ||
+          !VALID_DIRECTIONS.has(entry[2] as OneWayTile['direction'])
+        ) {
+          return null;
+        }
+        list.push({
+          x: entry[0],
+          y: entry[1],
+          direction: entry[2] as OneWayTile['direction'],
+        });
+      }
+      return list;
+    };
+
+    const oneWay = parseDirectional(p.o);
+    const conveyors = parseDirectional(p.cv);
+    if (!oneWay || !conveyors) {
+      return { ok: false, error: 'Invalid directional tile data.' };
+    }
+
+    let switches: SwitchDoorPair[] | undefined;
+    if (p.sw !== undefined) {
+      if (!Array.isArray(p.sw) || p.sw.length > 12) {
+        return { ok: false, error: 'Invalid switch/gate data.' };
+      }
+      switches = [];
+      for (const entry of p.sw) {
+        if (
+          !Array.isArray(entry) ||
+          entry.length < 3 ||
+          !isValidCoordPair(entry[1], p.c, p.r) ||
+          !isValidCoordPair(entry[2], p.c, p.r)
+        ) {
+          return { ok: false, error: 'Invalid switch/gate coordinates.' };
+        }
+        const [rawId, sp, dp, open, timed, hold] = entry;
+        const safeId = sanitizeLabel(rawId, `g${switches.length + 1}`, 16);
+        const safeTimed =
+          typeof timed === 'number' && Number.isInteger(timed) && timed > 0
+            ? Math.min(99, timed)
+            : undefined;
+        switches.push({
+          id: safeId,
+          switchPos: fromPair(sp),
+          doorPos: fromPair(dp),
+          ...(open === 1 ? { doorInitiallyOpen: true } : {}),
+          ...(safeTimed ? { timedDuration: safeTimed } : {}),
+          ...(hold === 1 ? { holdSwitch: true } : {}),
+        });
+      }
+    }
+
+    let teleporters: TeleporterPair[] | undefined;
+    if (p.tp !== undefined) {
+      if (!Array.isArray(p.tp) || p.tp.length > 12) {
+        return { ok: false, error: 'Invalid teleporter data.' };
+      }
+      teleporters = [];
+      for (const entry of p.tp) {
+        if (
+          !Array.isArray(entry) ||
+          entry.length !== 3 ||
+          !isValidCoordPair(entry[1], p.c, p.r) ||
+          !isValidCoordPair(entry[2], p.c, p.r)
+        ) {
+          return { ok: false, error: 'Invalid teleporter coordinates.' };
+        }
+        const [rawId, a, b] = entry;
+        teleporters.push({
+          id: sanitizeLabel(rawId, `tp-${teleporters.length + 1}`, 16),
+          posA: fromPair(a),
+          posB: fromPair(b),
+        });
+      }
+    }
+
+    const rawMaxTiles = Number(p.m);
+    const safeMaxTiles = Number.isFinite(rawMaxTiles)
+      ? Math.max(1, Math.min(5, Math.floor(rawMaxTiles)))
+      : 2;
 
     const level: LevelDefinition = {
       id: 30000 + Math.floor(Math.random() * 9000),
       world: 0,
-      name: String(p.n || 'Shared Puzzle').slice(0, 32),
+      name: sanitizeLabel(p.n, 'Shared Puzzle', 32),
       cols: p.c,
       rows: p.r,
-      maxTiles: Math.max(1, Math.min(5, Number(p.m) || 2)),
+      maxTiles: safeMaxTiles,
       start: fromPair(p.s),
       exit: fromPair(p.e),
-      fixed: p.f?.map(fromPair),
-      rocks: p.x?.map(fromPair),
-      sticky: p.h?.map(fromPair),
-      crumbling: p.cr?.map(fromPair),
-      ice: p.i?.map(fromPair),
-      springs: p.j?.map(fromPair),
-      keys: p.ky?.map(fromPair),
-      locks: p.lk?.map(fromPair),
-      phaseTiles: p.ph?.map(([x, y, pol]) => ({ x, y, polarity: pol === 1 ? 'odd' : 'even' })),
-      conveyors: p.cv?.map(([x, y, direction]) => ({ x, y, direction })),
-      bonusTiles: p.b?.map(fromPair),
-      crates: p.k?.map(fromPair),
-      stars: p.g?.map(fromPair),
-      oneWay: p.o?.map(([x, y, direction]) => ({ x, y, direction })),
-      switches,
-      teleporters,
+      fixed: fixed.length ? fixed : undefined,
+      rocks: rocks.length ? rocks : undefined,
+      sticky: sticky.length ? sticky : undefined,
+      crumbling: crumbling.length ? crumbling : undefined,
+      ice: ice.length ? ice : undefined,
+      springs: springs.length ? springs : undefined,
+      keys: keys.length ? keys : undefined,
+      locks: locks.length ? locks : undefined,
+      phaseTiles: phaseTiles?.length ? phaseTiles : undefined,
+      conveyors: conveyors.length ? conveyors : undefined,
+      bonusTiles: bonusTiles.length ? bonusTiles : undefined,
+      crates: crates.length ? crates : undefined,
+      stars: stars.length ? stars : undefined,
+      oneWay: oneWay.length ? oneWay : undefined,
+      switches: switches?.length ? switches : undefined,
+      teleporters: teleporters?.length ? teleporters : undefined,
       parMoves: 0,
       hint: 'Custom community puzzle shared offline!',
     };
