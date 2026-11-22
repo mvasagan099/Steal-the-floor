@@ -4,21 +4,21 @@ import { PuzzleGame } from '../src/engine/logic';
 import { solveLevel } from '../src/engine/solver';
 import { LevelDefinition } from '../src/engine/types';
 
-describe('200 Levels Solvability & Mechanic Quality Gate Suite', () => {
-  it('contains exactly 200 levels across 10 worlds', () => {
-    expect(ALL_LEVELS.length).toBe(200);
-    expect(WORLDS.length).toBe(10);
+describe('220 Levels Solvability & Mechanic Quality Gate Suite', () => {
+  it('contains exactly 220 levels across 11 worlds', () => {
+    expect(ALL_LEVELS.length).toBe(220);
+    expect(WORLDS.length).toBe(11);
 
-    for (let w = 1; w <= 10; w++) {
+    for (let w = 1; w <= 11; w++) {
       const worldLevels = ALL_LEVELS.filter((l) => l.world === w);
       expect(worldLevels.length).toBe(20);
     }
   });
 
-  it('validates all 200 levels are solvable with accurate par and active mechanics', () => {
+  it('validates all 220 levels are solvable with accurate par and active mechanics', () => {
     for (const level of ALL_LEVELS) {
       expect(level.id).toBeGreaterThanOrEqual(1);
-      expect(level.id).toBeLessThanOrEqual(200);
+      expect(level.id).toBeLessThanOrEqual(220);
       expect(level.parMoves).toBeGreaterThan(0);
       expect(level.star2Moves).toBeGreaterThan(level.parMoves);
 
@@ -112,6 +112,14 @@ describe('200 Levels Solvability & Mechanic Quality Gate Suite', () => {
           solveLevel(sealedVaults, 45).solvable,
           `Level ${level.id}: locked vault must not be bypassable`
         ).toBe(false);
+      }
+
+      if (level.phaseTiles?.length) {
+        const noPhaseSol = solveLevel({ ...level, phaseTiles: undefined }, 45);
+        expect(
+          !noPhaseSol.solvable || noPhaseSol.minMoves > result.minMoves,
+          `Level ${level.id}: phase-shift tiles must be necessary or improve par`
+        ).toBe(true);
       }
 
       if (level.crates?.length) {

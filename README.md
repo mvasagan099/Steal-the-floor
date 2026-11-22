@@ -18,9 +18,9 @@ In **Steal the Floor**, you guide **Puff** across floating islands suspended ove
 
 ---
 
-## 🌟 Highlights (v3.2.0)
+## 🌟 Highlights (v4.0.0)
 
-- **200 Solver-Validated Campaign Levels across 10 Worlds (600 Stars):**
+- **220 Solver-Validated Campaign Levels across 11 Worlds (660 Stars):**
   - **World 1 — First Steps (1–20):** Bridge reach, island reclamation, and gem detours.
   - **World 2 — Think Ahead (21–40):** Granite rock formations, tight corridors, and strict tile budgets.
   - **World 3 — Tricky Tiles (41–60):** Sticky honey traps, crumbling stones, and one-way arrows.
@@ -30,27 +30,27 @@ In **Steal the Floor**, you guide **Puff** across floating islands suspended ove
   - **World 7 — Clockwork Forge (121–140):** **Timed Switches & Countdown Gates** where every move counts down before the gate seals shut.
   - **World 8 — Obsidian Sanctum (141–160):** **Pushable Crates (`M`) & Weighted Pressure Plates** — shove crates across solid ground or ice to hold sanctum gates open.
   - **World 9 — Skyward Spire (161–180):** **Golden Springboards (`J`)** — vault 2 tiles forward over rocks, honey, and void, chaining consecutive leaps or launching straight onto Ice and Portals.
-  - **World 10 — Celestial Crown (181–200):** **Golden Keys (`K`) & Vault Locks (`L`)** — collect keys to permanently unlock sealed vaults into solid ground (reclaiming tiles and letting crates pass!), culminating in **Level 200 — Celestial Crown**.
-- **Master Trials (5 Curated 4-Stage Boss Gauntlets):**
-  - Back-to-back 4-stage gauntlets spanning all 10 worlds (*Island Sprint*, *Hazard Crucible*, *Clockwork Frost*, *Sanctum Acrobat*, and *Celestial Grand Trial*) with cumulative move/time scoring, **Bronze (`+20 🪙`) / Silver (`+40 🪙`) / All-Par Gold (`+75 🪙`)** medals, personal-best records, and the **Trial Champion** (`⚔️`) badge.
+  - **World 10 — Celestial Crown (181–200):** **Golden Keys (`K`) & Vault Locks (`L`)** — collect keys to permanently unlock sealed vaults into solid ground (reclaiming tiles and letting crates pass!).
+  - **World 11 — Chrono Prism (201–220):** **Bridge-Parity Phase-Shift Tiles (`0·2` Cyan & `1·3` Magenta)** — islands that materialize solid on even (`0/2`) or odd (`1/3`) placed bridge tile counts, culminating in **Level 220 — Chrono Prism Finale**.
+- **Master Trials (6 Curated 4-Stage Boss Gauntlets with Live Board Thumbnails):**
+  - Back-to-back 4-stage gauntlets spanning all 11 worlds (*Island Sprint*, *Hazard Crucible*, *Clockwork Frost*, *Sanctum Acrobat*, *Celestial Grand Trial*, and *Chrono Prism Trial*) with miniature SVG stage previews, cumulative move/time scoring, **Bronze (`+20 🪙`) / Silver (`+40 🪙`) / All-Par Gold (`+75 🪙`)** medals, personal-best records, and the **Trial Champion** (`⚔️`) badge.
 - **Automated Mathematical Quality Gates (BFS Solver):**
-  - Every campaign level is proven solvable, par-calibrated, and verified so no switch, portal, crumbling stone, one-way arrow, ice runway, `+1` bonus tile, sticky trap, timed gate, pushable crate, springboard, or vault lock can be trivially bypassed.
+  - Every campaign level is proven solvable, par-calibrated, and verified so no switch, portal, crumbling stone, one-way arrow, ice runway, `+1` bonus tile, sticky trap, timed gate, pushable crate, springboard, vault lock, or phase-shift tile can be trivially bypassed.
   - Powers real-time **State-Aware Hints** (`H`), **Live Deadlock Detection** (pulsing Undo warning when no winning path remains), and **Solution Theater ("Watch Optimal Par")** — an animated non-scoring replay of the optimal par route from Pause or after clearing over par.
-- **Player Mastery Ranks, Speedrun Trials, Mechanic Field Guide & Accessibility Suite:**
-  - Dynamic **Player Mastery Rank** progression (*Novice Bridger* → *Island Hopper* → *Hazard Tamer* → *Void Architect* → *Grand Strategist* → *Celestial Sovereign*) displayed on the tappable Home Screen Mastery Strip and **Mastery & Badges** profile screen alongside Worlds, Trials, and Speedrun stats.
-  - Optional live **Speedrun Timer** in the HUD with per-level **Personal Best (`⚡ NEW BEST!`)** clear times, **World Speedrun Totals**, and **All / Unsolved / Needs 3★** Level Select filters.
-  - Interactive **Mechanic Field Guide** (`Field Guide` on Home & Pause) documenting all 14 puzzle mechanics with rules and tactical tips.
-  - **High-Contrast Patterns** (crisper tile outlines, corner rivets, and void grid clarity) and **Reduced Motion** (disables camera shake, confetti, ambient particles, and idle bobbing), all persisted in local storage and `STFSAVE:` backups.
+- **Speedrun Ghost Race, Player Mastery Ranks, Mechanic Field Guide & Accessibility Suite:**
+  - Optional live **Speedrun Timer** in the HUD with per-level **Personal Best (`⚡ NEW BEST!`)** clear times, **Live Ghost Puff Race** (race a translucent spectral Ghost Puff replaying your saved Personal-Best route in real time!), **World Speedrun Totals**, and **All / Unsolved / Needs 3★** Level Select filters.
+  - Dynamic **Player Mastery Rank** progression (*Novice Bridger* → *Celestial Sovereign*) displayed on the tappable Home Screen Mastery Strip and **Mastery & Badges** profile screen alongside Worlds, Trials, and Speedrun stats.
+  - Interactive **Mechanic Field Guide** (`Field Guide` on Home & Pause) documenting all 15 puzzle mechanics with rules and tactical tips.
+  - **High-Contrast Patterns** and **Reduced Motion**, all persisted in local storage and `STFSAVE:` backups.
 - **Endless Mode — Void Rush:**
   - Infinite stream of solver-verified procedural stages with escalating mechanics (including Crumbling, Ice, `+1` Bonus Tiles, Sticky Honey, and Springboards), personal-best streaks, and rewards.
 - **Daily Challenge Archive & Monthly Medals:**
   - Deterministic offline daily puzzles seeded by local calendar date (with Crumbling, Ice, and Springboards variety), interactive **Monthly Archive Calendar** for replaying past days, **Bronze (5) / Silver (12) / Gold (20)** monthly trophies, and spoiler-free emoji share cards.
-- **Builder Studio (In-Game Level Editor + Starter Blueprints + Offline Share Codes):**
-  - Tap-to-paint `6×7` puzzle creator supporting islands, rocks, gems, sticky honey, crumbling stone, ice, springboards, golden keys, locked vaults, pushable crates, `+1` bonus tiles, portals, and Toggle / Weighted Hold / Timed gates.
-  - Includes **4 Solver-Verified Starter Blueprints** (*Spring Vault*, *Crate Hold*, *Vault Heist*, *Frozen Spark*), a one-tap **🎲 Random Puzzle** generator, live BFS solver verification, and zero-server `STF1:` Base64URL share & import codes.
+- **Builder Studio (In-Game Level Editor + Starter Blueprints + Thumbnails + Share Codes):**
+  - Tap-to-paint `6×7` puzzle creator supporting all mechanics including Phase `0·2` / `1·3` tiles, **4 Solver-Verified Starter Blueprints**, a one-tap **🎲 Random Puzzle** generator, live SVG **Board Thumbnails** on saved custom puzzles, BFS solver verification, and zero-server `STF1:` Base64URL share & import codes.
 - **World-Themed Atmosphere, Custom Bridge Tiles, Cosmetics & Procedural Web Audio:**
-  - **10 Visual Themes** (*Floating Sky* through *Celestial Crown*) each with distinct living background particles and custom 4-bar adaptive musical progressions.
-  - **6 Custom Procedural Bridge Tile Skins** (*Classic Glass*, *Bamboo Plank*, *Neon Circuit*, *Prism Crystal*, *Molten Rune*, *Starlight Tile*), **10 Puff Skins**, **8 Jump Particle Trails**, and **19 Achievements** (including **Style Icon** `🎨`) with live unlock toasts.
+  - **11 Visual Themes** (*Floating Sky* through *Chrono Prism*) each with distinct living background particles and custom 4-bar adaptive musical progressions.
+  - **7 Custom Procedural Bridge Tile Skins** (including *Phase Glass*), **11 Puff Skins**, **9 Jump Particle Trails**, and **20 Achievements** (including **Chrono Master** `⏳` & **Style Icon** `🎨`) with live unlock toasts.
 - **100% Offline, Ad-Free & Private:**
   - Zero ads, zero analytics, zero remote servers, and no `INTERNET` permission in `AndroidManifest.xml`.
   - Offline-first PWA (`public/manifest.json` + `public/sw.js`) and portable `STFSAVE:` backup codes in Settings to transfer saves across devices.

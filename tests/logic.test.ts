@@ -625,4 +625,60 @@ describe('PuzzleGame Engine Mechanics', () => {
     game.move({ x: 3, y: 0 });
     expect(game.move({ x: 4, y: 0 }).code).toBe('SUCCESS_WIN');
   });
+
+  it('toggles Bridge-Parity Phase-Shift Tiles (even=0/2 bridges, odd=1/3 bridges), reclaims on solid landing, restores on undo, and solves via BFS', () => {
+    const level: LevelDefinition = {
+      id: 18,
+      world: 11,
+      name: 'Bridge Parity Test',
+      cols: 6,
+      rows: 2,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 5, y: 0 },
+      phaseTiles: [
+        { x: 2, y: 0, polarity: 'odd' },  // Solid with 1 bridge tile placed!
+        { x: 3, y: 0, polarity: 'even' }, // Solid with 0 or 2 bridge tiles placed!
+      ],
+      parMoves: 5,
+    };
+
+    const game = new PuzzleGame(level);
+    // At 0 bridge tiles (even): (3,0) Cyan E is SOLID, (2,0) Magenta O is phased out
+    expect(game.tiles.size).toBe(0);
+    expect(game.isPhaseTileSolid('3,0')).toBe(true);
+    expect(game.isPhaseTileSolid('2,0')).toBe(false);
+
+    // Step 1: drop 1st bridge tile on void (1,0) -> tiles.size = 1 (odd)!
+    // Phase shifts: Magenta O at (2,0) materializes SOLID, Cyan E at (3,0) phases out!
+    const r1 = game.move({ x: 1, y: 0 });
+    expect(r1.success).toBe(true);
+    expect(r1.phaseShifted).toBe(true);
+    expect(game.tiles.size).toBe(1);
+    expect(game.isPhaseTileSolid('2,0')).toBe(true);
+    expect(game.isPhaseTileSolid('3,0')).toBe(false);
+
+    // Step 2: step onto active Magenta O at (2,0) -> SOLID! Reclaims bridge tile -> tiles.size = 0 (even)!
+    // Phase flips back: Cyan E at (3,0) materializes SOLID right in front of Puff!
+    const r2 = game.move({ x: 2, y: 0 });
+    expect(r2.success).toBe(true);
+    expect(r2.phaseShifted).toBe(true);
+    expect(r2.recoveredTiles).toHaveLength(1);
+    expect(game.tiles.size).toBe(0);
+    expect(game.isPhaseTileSolid('3,0')).toBe(true);
+
+    // Undo restores 1 bridge tile and odd parity
+    game.undo();
+    expect(game.tiles.size).toBe(1);
+    expect(game.isPhaseTileSolid('2,0')).toBe(true);
+    expect(game.isPhaseTileSolid('3,0')).toBe(false);
+
+    // Re-step onto (2,0) -> (3,0) free solid -> bridge (4,0) -> exit (5,0) in 5 moves!
+    const sol = solveLevel(level, 20);
+    expect(sol.solvable).toBe(true);
+    expect(sol.minMoves).toBe(5);
+    // Without phaseTiles, maxTiles=2 cannot cross 4 void cells (1..4,0)
+    const withoutPhase = solveLevel({ ...level, phaseTiles: undefined }, 20);
+    expect(withoutPhase.solvable).toBe(false);
+  });
 });

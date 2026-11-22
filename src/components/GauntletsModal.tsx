@@ -7,6 +7,7 @@ import {
 } from '../levels/gauntlets';
 import { storage, formatElapsedTime, MonthlyMedal } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
+import { BoardThumbnail } from './BoardThumbnail';
 
 interface GauntletsModalProps {
   onBack: () => void;
@@ -90,7 +91,9 @@ export const GauntletsModal: React.FC<GauntletsModalProps> = ({
         {goldCount === MASTER_GAUNTLETS.length && (
           <div className="max-w-md mx-auto bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/20 border border-amber-400/50 rounded-2xl p-3 text-center text-xs font-extrabold text-amber-200 flex items-center justify-center gap-2 shadow-lg">
             <Award size={16} className="text-amber-300" />
-            <span>Grand Trial Master — All 5 Master Trials Cleared with Gold!</span>
+            <span>
+              Grand Trial Master — All {MASTER_GAUNTLETS.length} Master Trials Cleared with Gold!
+            </span>
           </div>
         )}
 
@@ -139,6 +142,21 @@ export const GauntletsModal: React.FC<GauntletsModalProps> = ({
                 <p className="text-xs text-slate-200/85 mt-3 leading-relaxed">
                   {gauntlet.description}
                 </p>
+
+                {/* 4-Stage Board Thumbnail Preview Strip */}
+                <div className="grid grid-cols-4 gap-2 mt-3">
+                  {stages.map((stage, idx) => (
+                    <div
+                      key={stage.id}
+                      className="flex flex-col items-center gap-1 bg-slate-950/45 rounded-xl p-1.5 border border-white/5"
+                    >
+                      <BoardThumbnail level={stage} className="w-full h-14" />
+                      <span className="text-[9px] font-bold text-slate-300 truncate w-full text-center">
+                        S{idx + 1} · L{stage.id}
+                      </span>
+                    </div>
+                  ))}
+                </div>
 
                 {/* Stage metadata pills */}
                 <div className="flex flex-wrap items-center gap-2 mt-3 text-[11px] font-bold">

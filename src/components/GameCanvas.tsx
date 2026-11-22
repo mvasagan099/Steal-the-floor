@@ -21,6 +21,8 @@ interface GameCanvasProps {
   tileSkinId?: string;
   reducedMotion?: boolean;
   highContrast?: boolean;
+  ghostRun?: [number, number, number][];
+  showGhost?: boolean;
   onStateChange: (game: PuzzleGame) => void;
   onWin: (moves: number, stars: number, par: number) => void;
   onError: (message: string) => void;
@@ -40,6 +42,8 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       tileSkinId = 'tile-classic',
       reducedMotion = false,
       highContrast = false,
+      ghostRun,
+      showGhost = false,
       onStateChange,
       onWin,
       onError,
@@ -82,7 +86,9 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       trail: string,
       tileSkin: string,
       rm: boolean,
-      hc: boolean
+      hc: boolean,
+      gRun?: [number, number, number][],
+      sGhost = false
     ): GameSceneConfig => ({
       level: lvl,
       themeId: theme,
@@ -91,6 +97,8 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       tileSkinId: tileSkin,
       reducedMotion: rm,
       highContrast: hc,
+      ghostRun: gRun,
+      showGhost: sGhost,
       onStateChange: (game) => callbacksRef.current.onStateChange(game),
       onWin: (moves, stars, par) => callbacksRef.current.onWin(moves, stars, par),
       onError: (message) => callbacksRef.current.onError(message),
@@ -148,7 +156,17 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
 
       game.scene.start(
         'GameScene',
-        buildSceneData(level, themeId, skinColor, trailId, tileSkinId, reducedMotion, highContrast)
+        buildSceneData(
+          level,
+          themeId,
+          skinColor,
+          trailId,
+          tileSkinId,
+          reducedMotion,
+          highContrast,
+          ghostRun,
+          showGhost
+        )
       );
       isBootedRef.current = true;
 
@@ -162,13 +180,33 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Restart GameScene cleanly when level, theme, skin, trail, tile skin, or accessibility flags change
+    // Restart GameScene cleanly when level, theme, skin, trail, tile skin, ghost, or accessibility flags change
     useEffect(() => {
       if (!isBootedRef.current || !sceneRef.current) return;
       sceneRef.current.scene.restart(
-        buildSceneData(level, themeId, skinColor, trailId, tileSkinId, reducedMotion, highContrast)
+        buildSceneData(
+          level,
+          themeId,
+          skinColor,
+          trailId,
+          tileSkinId,
+          reducedMotion,
+          highContrast,
+          ghostRun,
+          showGhost
+        )
       );
-    }, [level, themeId, skinColor, trailId, tileSkinId, reducedMotion, highContrast]);
+    }, [
+      level,
+      themeId,
+      skinColor,
+      trailId,
+      tileSkinId,
+      reducedMotion,
+      highContrast,
+      ghostRun,
+      showGhost,
+    ]);
 
     return (
       <div

@@ -13,6 +13,8 @@ export interface GameSceneConfig {
   tileSkinId?: string;
   reducedMotion?: boolean;
   highContrast?: boolean;
+  ghostRun?: [number, number, number][];
+  showGhost?: boolean;
   onStateChange: (game: PuzzleGame) => void;
   onWin: (moves: number, starsEarned: number, parMoves: number) => void;
   onError: (message: string) => void;
@@ -44,6 +46,7 @@ const TRAIL_TINTS: Record<string, number[]> = {
   'trail-ember': [0xfb923c, 0xfbbf24, 0xf43f5e],
   'trail-gold': [0xfef08a, 0xf59e0b, 0xfffbeb],
   'trail-celestial': [0xfef08a, 0xa5b4fc, 0xf472b6, 0xffffff],
+  'trail-chrono': [0x22d3ee, 0xe879f9, 0xffffff],
   'trail-rainbow': [0xf43f5e, 0xfbbf24, 0x4ade80, 0x38bdf8, 0xc084fc],
 };
 
@@ -62,6 +65,10 @@ export class GameScene extends Phaser.Scene {
   private bgGraphics: Phaser.GameObjects.Graphics | null = null;
   private staticSprites: PositionedSprite[] = [];
   private crumblingSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
+  private phaseSprites: Map<
+    string,
+    { sprite: Phaser.GameObjects.Sprite; polarity: 'even' | 'odd' }
+  > = new Map();
   private tileSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private starSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private bonusTileSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
@@ -76,6 +83,10 @@ export class GameScene extends Phaser.Scene {
 
   private playerSprite!: Phaser.GameObjects.Sprite;
   private playerIdleTween: Phaser.Tweens.Tween | null = null;
+  private ghostSprite: Phaser.GameObjects.Sprite | null = null;
+  private ghostCoord: Coordinate | null = null;
+  private ghostTimers: Phaser.Time.TimerEvent[] = [];
+  private ghostStarted = false;
   private isAnimating = false;
   private isDemoPlaying = false;
   private demoTimer: Phaser.Time.TimerEvent | null = null;
@@ -95,6 +106,7 @@ export class GameScene extends Phaser.Scene {
     this.bgGraphics = null;
     this.staticSprites = [];
     this.crumblingSprites.clear();
+    this.phaseSprites.clear();
     this.tileSprites.clear();
     this.starSprites.clear();
     this.bonusTileSprites.clear();
@@ -107,6 +119,10 @@ export class GameScene extends Phaser.Scene {
     this.hintHighlight = null;
     this.hintCoord = null;
     this.playerIdleTween = null;
+    this.ghostSprite = null;
+    this.ghostCoord = null;
+    this.ghostTimers = [];
+    this.ghostStarted = false;
     this.pointerDownPos = null;
     this.isAnimating = false;
     this.isDemoPlaying = false;
@@ -216,6 +232,14 @@ export class GameScene extends Phaser.Scene {
           scale: { min: 0.06, max: 0.16 },
           frequency: 230,
         },
+        'chrono-prism': {
+          texture: 'fx_particle',
+          tint: [0x22d3ee, 0xe879f9, 0xffffff],
+          speedX: { min: -12, max: 12 },
+          speedY: { min: -24, max: -8 },
+          scale: { min: 0.1, max: 0.24 },
+          frequency: 210,
+        },
       };
       const amb = ambientMap[this.config.themeId] || ambientMap['floating-sky'];
       const particles = this.add.particles(0, 0, amb.texture, {
@@ -236,6 +260,7 @@ export class GameScene extends Phaser.Scene {
 
     this.buildGrid();
     this.createPlayer();
+    this.createGhostSprite();
     this.updateLegalHighlights();
 
     // Tap + Swipe gesture input
@@ -269,6 +294,7 @@ export class GameScene extends Phaser.Scene {
     this.scale.on('resize', this.handleResize, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.stopDemo(false);
+      this.stopGhostPlayback();
       this.scale.off('resize', this.handleResize, this);
       this.stopPlayerIdleTween();
     });
@@ -330,6 +356,12 @@ export class GameScene extends Phaser.Scene {
       sprite.setScale(this.baseTileScale);
     }
 
+    for (const [key, entry] of this.phaseSprites.entries()) {
+      const pos = this.gridToScreen(keyToCoord(key));
+      entry.sprite.setPosition(pos.x, pos.y);
+      entry.sprite.setScale(this.baseTileScale);
+    }
+
     for (const [key, sprite] of this.tileSprites.entries()) {
       const pos = this.gridToScreen(keyToCoord(key));
       sprite.setPosition(pos.x, pos.y);
@@ -389,6 +421,13 @@ export class GameScene extends Phaser.Scene {
       this.playerSprite.setPosition(pPos.x, pPos.y - 4);
       this.playerSprite.setScale(this.basePlayerScale);
       this.startPlayerIdleTween();
+    }
+
+    if (this.ghostSprite && this.ghostCoord) {
+      this.tweens.killTweensOf(this.ghostSprite);
+      const gPos = this.gridToScreen(this.ghostCoord);
+      this.ghostSprite.setPosition(gPos.x, gPos.y - 6);
+      this.ghostSprite.setScale(this.basePlayerScale * 0.88);
     }
 
     if (this.hintHighlight && this.hintCoord) {
@@ -547,6 +586,25 @@ export class GameScene extends Phaser.Scene {
       sprite.setScale(this.baseTileScale);
       sprite.setDepth(2);
       this.lockSprites.set(key, sprite);
+    });
+
+    // Bridge-Parity Phase-Shift Tiles (depth 1.5 so placed bridge tiles sit cleanly above ghost outlines)
+    level.phaseTiles?.forEach((pt) => {
+      const key = coordToKey(pt);
+      const pos = this.gridToScreen(pt);
+      const solid = this.gameLogic.isPhaseTileSolid(key);
+      const tex =
+        pt.polarity === 'even'
+          ? solid
+            ? 'tile_phase_even_on'
+            : 'tile_phase_even_off'
+          : solid
+          ? 'tile_phase_odd_on'
+          : 'tile_phase_odd_off';
+      const sprite = this.add.sprite(pos.x, pos.y, tex);
+      sprite.setScale(this.baseTileScale);
+      sprite.setDepth(1.5);
+      this.phaseSprites.set(key, { sprite, polarity: pt.polarity });
     });
 
     // Collectible Gems
@@ -813,6 +871,10 @@ export class GameScene extends Phaser.Scene {
 
     const startScreen = { x: this.playerSprite.x, y: this.playerSprite.y };
     this.spawnTrailPuff(startScreen.x, startScreen.y);
+
+    if (!this.isDemoPlaying && !this.ghostStarted) {
+      this.startGhostPlayback();
+    }
 
     const res = this.gameLogic.move(target);
 
@@ -1128,9 +1190,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   private finishMoveStep(res: MoveResult): void {
+    this.syncPhaseVisuals(Boolean(res.phaseShifted));
     this.updatePlayerMood();
 
     if (this.gameLogic.status === 'won') {
+      this.stopGhostPlayback();
       this.config.onDeadlock?.(false);
       this.handleVictory();
       return;
@@ -1293,6 +1357,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.isAnimating = false;
+    this.stopGhostPlayback();
+    if (this.ghostSprite) this.ghostSprite.setVisible(false);
     this.gameLogic.restart();
     this.isDemoPlaying = true;
     this.config.onDemoStateChange?.(true);
@@ -1335,6 +1401,7 @@ export class GameScene extends Phaser.Scene {
       if (resetBoard && this.gameLogic) {
         this.isAnimating = false;
         this.gameLogic.restart();
+        this.resetGhost();
         this.syncVisualsWithState();
       }
     }
@@ -1359,6 +1426,7 @@ export class GameScene extends Phaser.Scene {
     }
     if (this.isAnimating) return;
     this.gameLogic.restart();
+    this.resetGhost();
     sound.playTap();
     this.syncVisualsWithState();
   }
@@ -1530,6 +1598,7 @@ export class GameScene extends Phaser.Scene {
 
     this.syncDoorsVisuals();
     this.syncLocksVisuals();
+    this.syncPhaseVisuals(false);
 
     this.updateLegalHighlights();
     this.config.onStateChange(this.gameLogic);
@@ -1538,6 +1607,106 @@ export class GameScene extends Phaser.Scene {
       (this.gameLogic.getLegalMoves().length === 0 ||
         !solveFromState(this.gameLogic, 30, 5000).solvable);
     this.config.onDeadlock?.(deadlocked);
+  }
+
+  private syncPhaseVisuals(animate: boolean): void {
+    if (this.phaseSprites.size === 0) return;
+    if (animate) {
+      sound.playPhaseShift();
+    }
+    for (const [key, entry] of this.phaseSprites.entries()) {
+      const solid = this.gameLogic.isPhaseTileSolid(key);
+      const tex =
+        entry.polarity === 'even'
+          ? solid
+            ? 'tile_phase_even_on'
+            : 'tile_phase_even_off'
+          : solid
+          ? 'tile_phase_odd_on'
+          : 'tile_phase_odd_off';
+      entry.sprite.setTexture(tex);
+      if (animate && !this.config.reducedMotion) {
+        this.tweens.killTweensOf(entry.sprite);
+        entry.sprite.setScale(this.baseTileScale * (solid ? 0.84 : 1.06));
+        this.tweens.add({
+          targets: entry.sprite,
+          scaleX: this.baseTileScale,
+          scaleY: this.baseTileScale,
+          duration: 160,
+          ease: 'Back.easeOut',
+        });
+      } else {
+        entry.sprite.setScale(this.baseTileScale);
+      }
+    }
+  }
+
+  private createGhostSprite(): void {
+    if (!this.config.showGhost || !this.config.ghostRun || this.config.ghostRun.length === 0) {
+      return;
+    }
+    const startCoord = { ...this.config.level.start };
+    this.ghostCoord = startCoord;
+    const pos = this.gridToScreen(startCoord);
+    this.ghostSprite = this.add.sprite(pos.x, pos.y - 6, 'char_ghost');
+    this.ghostSprite.setScale(this.basePlayerScale * 0.88);
+    this.ghostSprite.setAlpha(0.52);
+    this.ghostSprite.setDepth(8);
+  }
+
+  private startGhostPlayback(): void {
+    const frames = this.config.ghostRun;
+    if (!this.config.showGhost || !this.ghostSprite || !frames || frames.length === 0) return;
+    this.stopGhostPlayback();
+    this.ghostStarted = true;
+    this.ghostSprite.setVisible(true);
+    this.ghostSprite.setAlpha(0.62);
+
+    frames.forEach(([gx, gy, tMs], idx) => {
+      const delay = Math.max(0, tMs);
+      const timer = this.time.delayedCall(delay, () => {
+        if (!this.ghostSprite) return;
+        this.ghostCoord = { x: gx, y: gy };
+        const dest = this.gridToScreen(this.ghostCoord);
+        this.tweens.killTweensOf(this.ghostSprite);
+        if (this.config.reducedMotion) {
+          this.ghostSprite.setPosition(dest.x, dest.y - 6);
+        } else {
+          this.tweens.add({
+            targets: this.ghostSprite,
+            x: dest.x,
+            y: dest.y - 6,
+            duration: 140,
+            ease: 'Quad.easeOut',
+          });
+        }
+        if (idx === frames.length - 1) {
+          this.ghostSprite.setAlpha(0.85);
+        }
+      });
+      this.ghostTimers.push(timer);
+    });
+  }
+
+  private stopGhostPlayback(): void {
+    for (const timer of this.ghostTimers) {
+      timer.remove(false);
+    }
+    this.ghostTimers = [];
+  }
+
+  private resetGhost(): void {
+    this.stopGhostPlayback();
+    this.ghostStarted = false;
+    if (!this.ghostSprite) return;
+    const startCoord = { ...this.config.level.start };
+    this.ghostCoord = startCoord;
+    const pos = this.gridToScreen(startCoord);
+    this.tweens.killTweensOf(this.ghostSprite);
+    this.ghostSprite.setPosition(pos.x, pos.y - 6);
+    this.ghostSprite.setScale(this.basePlayerScale * 0.88);
+    this.ghostSprite.setAlpha(0.52);
+    this.ghostSprite.setVisible(Boolean(this.config.showGhost && this.config.ghostRun?.length));
   }
 
   private syncLocksVisuals(): void {

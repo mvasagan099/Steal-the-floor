@@ -156,6 +156,16 @@ const MECHANICS: MechanicEntry[] = [
     rule: 'Collect a floating Golden Key to carry it in your pocket. Stepping onto a Locked Vault consumes 1 Key and permanently turns the vault into solid ground!',
     tip: 'Once unlocked, a Vault Lock stays open forever, reclaims bridge tiles, and even lets pushable crates slide across it.',
   },
+  {
+    id: 'phase-tiles',
+    icon: '⏳',
+    title: 'Bridge-Parity Phase Tiles',
+    worldTag: 'World 11',
+    category: 'contraptions',
+    accent: 'border-cyan-400/40 bg-cyan-500/10 text-cyan-200',
+    rule: 'Cyan (0·2) Phase Tiles are solid when 0 or 2 bridge tiles are placed on the board; Magenta (1·3) Phase Tiles materialize solid when 1 or 3 bridge tiles are placed! Out-of-phase tiles act as open void.',
+    tip: 'Approach Magenta (1·3) pads across a 1-tile bridge, and reach Cyan (0·2) pads from an adjacent island (0 tiles) or across a 2-tile bridge!',
+  },
 ];
 
 interface CodexModalProps {

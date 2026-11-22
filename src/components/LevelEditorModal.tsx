@@ -10,7 +10,7 @@ import {
   FolderOpen,
   Dices,
 } from 'lucide-react';
-import { LevelDefinition, Coordinate } from '../engine/types';
+import { LevelDefinition, Coordinate, PhaseTile } from '../engine/types';
 import { solveLevel } from '../engine/solver';
 import { encodeLevelCode, decodeLevelCode } from '../utils/levelShare';
 import {
@@ -19,6 +19,7 @@ import {
 } from '../levels/studioBlueprints';
 import { storage } from '../storage/gameStorage';
 import { sound } from '../audio/soundManager';
+import { BoardThumbnail } from './BoardThumbnail';
 
 type BrushType =
   | 'void'
@@ -32,6 +33,8 @@ type BrushType =
   | 'spring'
   | 'key'
   | 'lock'
+  | 'phaseEven'
+  | 'phaseOdd'
   | 'crate'
   | 'bonus'
   | 'gem'
@@ -55,6 +58,8 @@ interface CellData {
     | 'spring'
     | 'key'
     | 'lock'
+    | 'phaseEven'
+    | 'phaseOdd'
     | 'crate'
     | 'switchA'
     | 'doorA'
@@ -73,6 +78,8 @@ const BRUSHES: Array<{ id: BrushType; label: string; badge: string; color: strin
   { id: 'spring', label: 'Spring', badge: '🦘', color: 'bg-teal-500/25 border-teal-300/60 text-teal-200' },
   { id: 'key', label: 'Key', badge: '🔑', color: 'bg-yellow-500/25 border-yellow-300/60 text-yellow-200' },
   { id: 'lock', label: 'Vault', badge: '🔒', color: 'bg-amber-700/35 border-amber-400/60 text-amber-200' },
+  { id: 'phaseEven', label: 'Phase 0·2', badge: '🔷', color: 'bg-cyan-500/25 border-cyan-300/60 text-cyan-200' },
+  { id: 'phaseOdd', label: 'Phase 1·3', badge: '🟪', color: 'bg-fuchsia-500/25 border-fuchsia-300/60 text-fuchsia-200' },
   { id: 'crate', label: 'Crate', badge: '📦', color: 'bg-amber-600/25 border-amber-400/60 text-amber-200' },
   { id: 'bonus', label: '+1 Tile', badge: '➕', color: 'bg-amber-500/20 border-amber-400/50 text-amber-200' },
   { id: 'switchA', label: 'Switch', badge: '🔘', color: 'bg-blue-500/20 border-blue-400/50 text-blue-200' },
@@ -106,6 +113,9 @@ function levelToGrid(level: LevelDefinition): CellData[][] {
   level.springs?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'spring'; });
   level.keys?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'key'; });
   level.locks?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'lock'; });
+  level.phaseTiles?.forEach((pt) => {
+    if (inBounds(pt)) grid[pt.y][pt.x].base = pt.polarity === 'odd' ? 'phaseOdd' : 'phaseEven';
+  });
   level.crates?.forEach((c) => { if (inBounds(c)) grid[c.y][c.x].base = 'crate'; });
   level.switches?.slice(0, 1).forEach((sw) => {
     if (inBounds(sw.switchPos)) grid[sw.switchPos.y][sw.switchPos.x].base = 'switchA';
@@ -218,6 +228,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
     const springs: Coordinate[] = [];
     const keys: Coordinate[] = [];
     const locks: Coordinate[] = [];
+    const phaseTiles: PhaseTile[] = [];
     const crates: Coordinate[] = [];
     const stars: Coordinate[] = [];
     const bonusTiles: Coordinate[] = [];
@@ -241,6 +252,8 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
           fixed.push(coord);
           keys.push(coord);
         } else if (cell.base === 'lock') locks.push(coord);
+        else if (cell.base === 'phaseEven') phaseTiles.push({ x, y, polarity: 'even' });
+        else if (cell.base === 'phaseOdd') phaseTiles.push({ x, y, polarity: 'odd' });
         else if (cell.base === 'crate') {
           fixed.push(coord);
           crates.push(coord);
@@ -288,6 +301,7 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
       springs: springs.length ? springs : undefined,
       keys: keys.length ? keys : undefined,
       locks: locks.length ? locks : undefined,
+      phaseTiles: phaseTiles.length ? phaseTiles : undefined,
       bonusTiles: bonusTiles.length ? bonusTiles : undefined,
       crates: crates.length ? crates : undefined,
       stars: stars.length ? stars : undefined,
@@ -408,6 +422,8 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
       spring: { bg: 'bg-teal-500/85 border-amber-300', icon: '🦘' },
       key: { bg: 'bg-yellow-500/80 border-yellow-200', icon: '🔑' },
       lock: { bg: 'bg-amber-800/90 border-amber-400', icon: '🔒' },
+      phaseEven: { bg: 'bg-cyan-500/80 border-cyan-200 text-slate-950 font-black', icon: '0·2' },
+      phaseOdd: { bg: 'bg-fuchsia-500/80 border-fuchsia-200 text-white font-black', icon: '1·3' },
       crate: { bg: 'bg-amber-600/85 border-amber-300', icon: '📦' },
       switchA: { bg: 'bg-blue-500/80 border-sky-300', icon: '🔘' },
       doorA: { bg: 'bg-rose-600/80 border-rose-300', icon: '🚧' },
@@ -460,8 +476,9 @@ export const LevelEditorModal: React.FC<LevelEditorModalProps> = ({
               savedLevels.map((lvl) => (
                 <div
                   key={lvl.id}
-                  className="flex items-center justify-between gap-2 bg-slate-950/70 px-3 py-2 rounded-xl border border-slate-800"
+                  className="flex items-center justify-between gap-2.5 bg-slate-950/70 px-2.5 py-2 rounded-xl border border-slate-800"
                 >
+                  <BoardThumbnail level={lvl} className="w-10 h-11 flex-none" />
                   <button
                     onClick={() => {
                       sound.playTap();

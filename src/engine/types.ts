@@ -22,6 +22,14 @@ export interface SwitchDoorPair {
   holdSwitch?: boolean;
 }
 
+export type PhasePolarity = 'even' | 'odd';
+
+export interface PhaseTile {
+  x: number;
+  y: number;
+  polarity: PhasePolarity;
+}
+
 export interface TeleporterPair {
   id: string;
   posA: Coordinate;
@@ -30,7 +38,7 @@ export interface TeleporterPair {
 
 export interface LevelDefinition {
   id: number;
-  world: number; // 1 to 10 (0 for daily/endless/custom)
+  world: number; // 1 to 11 (0 for daily/endless/custom)
   name: string;
   cols: number;
   rows: number;
@@ -45,6 +53,7 @@ export interface LevelDefinition {
   springs?: Coordinate[];
   keys?: Coordinate[];
   locks?: Coordinate[];
+  phaseTiles?: PhaseTile[];
   bonusTiles?: Coordinate[];
   crates?: Coordinate[];
   oneWay?: OneWayTile[];
@@ -87,6 +96,7 @@ export interface MoveResult {
   springPath?: Coordinate[];
   slidePath?: Coordinate[];
   doorToggled?: { id: string; open: boolean };
+  phaseShifted?: boolean;
 }
 
 export interface GameStateSnapshot {

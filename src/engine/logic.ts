@@ -5,6 +5,7 @@ import {
   MoveResult,
   MoveResultCode,
   GameStateSnapshot,
+  PhasePolarity,
 } from './types';
 
 export const coordToKey = (coord: Coordinate): string => `${coord.x},${coord.y}`;
@@ -60,6 +61,7 @@ export class PuzzleGame {
   private springSet: Set<string>;
   private keySet: Set<string>;
   private lockSet: Set<string>;
+  private phaseTileMap: Map<string, PhasePolarity>;
   private bonusTileSet: Set<string>;
   private oneWayMap: Map<string, Direction>;
   private switchMap: Map<string, string>; // coordKey -> switchDoorId
@@ -124,6 +126,11 @@ export class PuzzleGame {
 
     this.lockSet = new Set<string>();
     level.locks?.forEach((c) => this.lockSet.add(coordToKey(c)));
+
+    this.phaseTileMap = new Map<string, PhasePolarity>();
+    level.phaseTiles?.forEach((pt) => {
+      this.phaseTileMap.set(coordToKey(pt), pt.polarity);
+    });
 
     this.bonusTileSet = new Set<string>();
     level.bonusTiles?.forEach((c) => this.bonusTileSet.add(coordToKey(c)));
@@ -333,14 +340,26 @@ export class PuzzleGame {
   }
 
   /**
+   * Bridge-Parity Phase-Shift Tiles:
+   * - 'even' (Cyan E): solid when 0, 2, 4... bridge tiles are placed on the board.
+   * - 'odd' (Magenta O): solid when 1, 3, 5... bridge tiles are placed on the board.
+   */
+  public isPhaseTileSolid(coordKey: string): boolean {
+    const polarity = this.phaseTileMap.get(coordKey);
+    if (!polarity) return false;
+    return polarity === 'even' ? this.tiles.size % 2 === 0 : this.tiles.size % 2 === 1;
+  }
+
+  /**
    * Solid ground platforms reclaim all un-trapped bridge tiles when landed upon.
    * Includes start, exit, fixed islands, switches, one-way pads, teleporters,
-   * ice tiles, open gates, and intact (not yet crumbled) crumbling stones.
+   * ice tiles, open gates, unlocked vaults, active phase tiles, and intact crumbling stones.
    */
   public isSolidGround(coordKey: string): boolean {
     if (this.fixedSet.has(coordKey)) return true;
     if (this.crumblingSet.has(coordKey) && !this.crumbled.has(coordKey)) return true;
     if (this.lockSet.has(coordKey) && this.unlockedLocks.has(coordKey)) return true;
+    if (this.isPhaseTileSolid(coordKey)) return true;
     const doorId = this.doorMap.get(coordKey);
     if (doorId && this.openDoors.has(doorId)) return true;
     return false;
@@ -494,21 +513,22 @@ export class PuzzleGame {
     }
 
     // 0b. Unlock locked vault if stepping onto one while holding a Golden Key
+    const prevPhaseParity = this.tiles.size % 2;
     if (this.lockSet.has(targetKey) && !this.unlockedLocks.has(targetKey)) {
       this.unlockedLocks.add(targetKey);
       result.lockOpened = { ...target };
     }
 
-    // 1. Place bridge tile if target is empty void
+    // 1. Place bridge tile if target is empty void (evaluate solid/floor BEFORE dropping tile)
+    const targetWasSolid = this.isSolidGround(targetKey);
     const targetHadFloor = this.hasWalkableFloor(targetKey);
     if (!targetHadFloor) {
       this.tiles.add(targetKey);
       result.placedTile = { ...target };
     }
 
-    // 2. Step player onto target & advance move counter
+    // 2. Step player onto target (move counter increments at end of move)
     this.player = { ...target };
-    this.moves++;
 
     // 2b. Tick down any active timed gates (a gate does not snap shut while player is standing on it)
     const standingDoorId = this.doorMap.get(targetKey);
@@ -545,8 +565,9 @@ export class PuzzleGame {
     }
 
     // 4. Solid-Ground Reclamation
-    const reclaimOnSolid = (key: string) => {
-      if (this.isSolidGround(key) && this.tiles.size > 0) {
+    const reclaimOnSolid = (key: string, forceSolid?: boolean) => {
+      const isSolid = forceSolid !== undefined ? forceSolid : this.isSolidGround(key);
+      if (isSolid && this.tiles.size > 0) {
         const reclaimed: Coordinate[] = result.recoveredTiles || [];
         for (const tKey of Array.from(this.tiles)) {
           this.tiles.delete(tKey);
@@ -556,7 +577,7 @@ export class PuzzleGame {
         result.recoveredTile = reclaimed[0];
       }
     };
-    reclaimOnSolid(targetKey);
+    reclaimOnSolid(targetKey, targetWasSolid);
 
     // Helper to trigger collectibles, bonus tiles, keys, and toggle/timed switches at current cell
     const triggerCellEffects = () => {
@@ -685,6 +706,12 @@ export class PuzzleGame {
 
     // 7b. Sync weighted hold switches based on final crate & player positions
     this.syncHoldSwitches(result);
+
+    // 7c. Advance move counter & flag phase shift if bridge parity flipped
+    this.moves++;
+    if (this.phaseTileMap.size > 0 && this.tiles.size % 2 !== prevPhaseParity) {
+      result.phaseShifted = true;
+    }
 
     // 8. Win check
     if (areCoordsEqual(this.player, this.level.exit)) {

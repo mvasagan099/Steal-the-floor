@@ -14,6 +14,7 @@ import {
   storage,
   SKINS,
   Achievement,
+  GhostFrame,
   getLocalDateString,
   ACHIEVEMENT_REWARD_COINS,
   TOTAL_CAMPAIGN_LEVELS,
@@ -111,6 +112,11 @@ const MECHANIC_INTROS: Record<number, { icon: string; title: string; tip: string
     title: 'Golden Keys & Vault Locks',
     tip: 'Collect floating Golden Keys, then step onto a Locked Vault to unlock it permanently into solid ground!',
   },
+  201: {
+    icon: '⏳',
+    title: 'Bridge-Parity Phase Tiles',
+    tip: 'Cyan (0·2) islands are solid when 0 or 2 bridge tiles are out; Magenta (1·3) islands materialize when 1 or 3 bridge tiles are placed!',
+  },
 };
 
 export const App: React.FC = () => {
@@ -166,6 +172,7 @@ export const App: React.FC = () => {
   const [notice, setNotice] = useState('Tap or swipe to place a floor and walk.');
   const [elapsedMs, setElapsedMs] = useState(0);
   const [isDemoPlaying, setIsDemoPlaying] = useState(false);
+  const [activeGhostRun, setActiveGhostRun] = useState<GhostFrame[] | undefined>(undefined);
 
   // Customization, persisted audio & accessibility
   const [themeId, setThemeId] = useState(() => storage.getData().selectedTheme);
@@ -192,6 +199,7 @@ export const App: React.FC = () => {
   const usedUndoThisRunRef = useRef(false);
   const gemsCollectedRef = useRef(0);
   const elapsedMsRef = useRef(0);
+  const runFramesRef = useRef<GhostFrame[]>([]);
   const lastGauntletStageMovesRef = useRef(0);
   const lastGauntletStageTimeRef = useRef(0);
 
@@ -302,6 +310,7 @@ export const App: React.FC = () => {
           e.preventDefault();
           usedUndoThisRunRef.current = false;
           elapsedMsRef.current = 0;
+          runFramesRef.current = [];
           setElapsedMs(0);
           canvasRef.current?.restart();
           break;
@@ -392,6 +401,8 @@ export const App: React.FC = () => {
     usedUndoThisRunRef.current = false;
     gemsCollectedRef.current = 0;
     elapsedMsRef.current = 0;
+    runFramesRef.current = [];
+    setActiveGhostRun(mode === 'campaign' ? storage.getLevelProgress(target.id).bestRun : undefined);
     setElapsedMs(0);
     setWinElapsedMs(0);
     setWinIsNewBestTime(false);
@@ -418,6 +429,7 @@ export const App: React.FC = () => {
   const handleRestartBoard = () => {
     usedUndoThisRunRef.current = false;
     elapsedMsRef.current = 0;
+    runFramesRef.current = [];
     setElapsedMs(0);
     canvasRef.current?.stopDemo(false);
     canvasRef.current?.restart();
@@ -478,6 +490,19 @@ export const App: React.FC = () => {
     setStarsCollected(game.collectedStars.size);
     setKeysHeld(game.keysHeld);
     gemsCollectedRef.current = game.collectedStars.size;
+
+    if (game.moves === 0) {
+      runFramesRef.current = [];
+    } else if (!isDemoPlaying && runFramesRef.current.length < 80) {
+      const lastFrame = runFramesRef.current[runFramesRef.current.length - 1];
+      if (!lastFrame || lastFrame[0] !== game.player.x || lastFrame[1] !== game.player.y) {
+        runFramesRef.current.push([
+          game.player.x,
+          game.player.y,
+          Math.round(elapsedMsRef.current),
+        ]);
+      }
+    }
 
     const prevTrapped = prevTrappedRef.current;
     prevTrappedRef.current = game.trapped.size;
@@ -567,11 +592,17 @@ export const App: React.FC = () => {
       setWinIsNewBestTime(false);
       setDailyShareText(undefined);
     } else {
+      const finalFrames: GhostFrame[] = [
+        ...runFramesRef.current,
+        [currentLevel.exit.x, currentLevel.exit.y, Math.round(clearTimeMs)],
+      ];
       const victory = storage.recordLevelVictory(currentLevel.id, movesUsed, starsEarned, {
         usedUndo: usedUndoThisRunRef.current,
         gemsCollected: gemsCollectedRef.current,
         elapsedMs: clearTimeMs,
+        runFrames: finalFrames,
       });
+      setActiveGhostRun(storage.getLevelProgress(currentLevel.id).bestRun);
       setWinCoins(victory.coinsAwarded);
       setWinIsNewBestTime(victory.isNewBestTime);
       setDailyShareText(undefined);
@@ -875,6 +906,8 @@ export const App: React.FC = () => {
         tileSkinId={tileSkinId}
         reducedMotion={reducedMotion}
         highContrast={highContrast}
+        ghostRun={activeGhostRun}
+        showGhost={speedrunTimer && playMode === 'campaign'}
         onDemoStateChange={setIsDemoPlaying}
         onStateChange={handleStateChange}
         onWin={handleWin}

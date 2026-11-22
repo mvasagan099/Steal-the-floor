@@ -146,6 +146,19 @@ export const THEME_PALETTES: Record<string, ThemeColors> = {
     bgGradBottom: '#030712',
     accent: '#fde047',
   },
+  'chrono-prism': {
+    name: 'Chrono Prism',
+    tileFixed: '#22d3ee',
+    tileFixedSide: '#0e7490',
+    tileBridge: '#e879f9',
+    tileBridgeSide: '#a21caf',
+    tileSticky: '#c084fc',
+    tileCrumbling: '#cbd5e1',
+    tileRock: '#312e81',
+    bgGradTop: '#164e63',
+    bgGradBottom: '#2e1065',
+    accent: '#22d3ee',
+  },
 };
 
 const PAIR_COLORS = [
@@ -276,7 +289,7 @@ export function generateAllTextures(
     ctx.fillText('S', 64, 54);
   }, palette.tileFixedSide);
 
-  // 2. Bridge / Reusable Tile (supports 6 custom procedural Bridge Tile Skins!)
+  // 2. Bridge / Reusable Tile (supports 7 custom procedural Bridge Tile Skins!)
   const bridgeSideMap: Record<string, string> = {
     'tile-classic': palette.tileBridgeSide,
     'tile-bamboo': '#78350f',
@@ -284,11 +297,35 @@ export function generateAllTextures(
     'tile-crystal': '#6366f1',
     'tile-obsidian': '#9a3412',
     'tile-celestial': '#1e1b4b',
+    'tile-prism': '#86198f',
   };
   const activeBridgeSide = bridgeSideMap[tileSkinId] || palette.tileBridgeSide;
 
   createTile('tile_bridge', (ctx) => {
-    if (tileSkinId === 'tile-bamboo') {
+    if (tileSkinId === 'tile-prism') {
+      const grad = ctx.createLinearGradient(0, 0, S, S);
+      grad.addColorStop(0, '#22d3ee');
+      grad.addColorStop(0.5, '#818cf8');
+      grad.addColorStop(1, '#e879f9');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, S, S);
+
+      // Prismatic hourglass lattice
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(26, 20);
+      ctx.lineTo(S - 26, 20);
+      ctx.lineTo(26, 88);
+      ctx.lineTo(S - 26, 88);
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(64, 54, 7, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (tileSkinId === 'tile-bamboo') {
       const grad = ctx.createLinearGradient(0, 0, 0, S);
       grad.addColorStop(0, '#fcd34d');
       grad.addColorStop(0.5, '#d97706');
@@ -1145,6 +1182,116 @@ export function generateAllTextures(
     // Specular glint
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, -2, 18, 2);
+    ctx.restore();
+  });
+
+  // 21. Bridge-Parity Phase-Shift Tiles (Cyan Even 0/2 & Magenta Odd 1/3)
+  const drawPhaseSolid = (
+    key: string,
+    topColor: string,
+    bottomColor: string,
+    sideColor: string,
+    label: string
+  ) => {
+    createTile(
+      key,
+      (ctx) => {
+        const grad = ctx.createLinearGradient(0, 0, S, S);
+        grad.addColorStop(0, topColor);
+        grad.addColorStop(1, bottomColor);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, S, S);
+
+        // Inner crystalline diamond
+        ctx.strokeStyle = highContrast ? '#ffffff' : 'rgba(255, 255, 255, 0.72)';
+        ctx.lineWidth = highContrast ? 6 : 4;
+        ctx.beginPath();
+        ctx.moveTo(S / 2, 16);
+        ctx.lineTo(S - 18, 52);
+        ctx.lineTo(S / 2, 88);
+        ctx.lineTo(18, 52);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Crisp parity glyph ("0/2" or "1/3" -> clean "E" / "O" with dot cues)
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+        ctx.beginPath();
+        ctx.arc(S / 2, 52, 20, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, S / 2, 53);
+      },
+      sideColor
+    );
+  };
+
+  const drawPhaseGhost = (key: string, strokeColor: string, label: string) => {
+    createCanvas(key, S, S, (ctx) => {
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+      ctx.beginPath();
+      ctx.roundRect(12, 12, S - 24, S - 34, 22);
+      ctx.fill();
+
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = highContrast ? 5 : 4;
+      ctx.setLineDash([10, 8]);
+      ctx.beginPath();
+      ctx.roundRect(14, 14, S - 28, S - 38, 20);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = strokeColor;
+      ctx.globalAlpha = 0.75;
+      ctx.font = '900 22px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, S / 2, 52);
+      ctx.globalAlpha = 1;
+    });
+  };
+
+  drawPhaseSolid('tile_phase_even_on', '#67e8f9', '#0891b2', '#155e75', '0·2');
+  drawPhaseGhost('tile_phase_even_off', '#22d3ee', '0·2');
+  drawPhaseSolid('tile_phase_odd_on', '#f0abfc', '#c026d3', '#701a75', '1·3');
+  drawPhaseGhost('tile_phase_odd_off', '#e879f9', '1·3');
+
+  // 22. Translucent Spectral Speedrun Ghost Puff
+  createCanvas('char_ghost', 96, 96, (ctx) => {
+    ctx.save();
+    // Spectral cyan-gold glow ring
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 14;
+
+    const grad = ctx.createRadialGradient(38, 34, 8, 48, 48, 36);
+    grad.addColorStop(0, 'rgba(255, 255, 255, 0.92)');
+    grad.addColorStop(0.55, 'rgba(103, 232, 249, 0.65)');
+    grad.addColorStop(1, 'rgba(56, 189, 248, 0.25)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(48, 48, 34, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = 'rgba(253, 224, 71, 0.9)';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Cute ghost eyes
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+    ctx.beginPath();
+    ctx.arc(38, 44, 4.5, 0, Math.PI * 2);
+    ctx.arc(58, 44, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Lightning badge on forehead
+    ctx.fillStyle = '#fde047';
+    ctx.font = '900 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('⚡', 48, 28);
     ctx.restore();
   });
 }

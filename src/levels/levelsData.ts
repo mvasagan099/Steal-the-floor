@@ -1,5 +1,5 @@
 // AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 200 Handcrafted levels across 10 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 220 Handcrafted levels across 11 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = [
@@ -19693,6 +19693,1741 @@ export const ALL_LEVELS: LevelDefinition[] = [
       }
     ],
     "star2Moves": 30
+  },
+  {
+    "id": 201,
+    "world": 11,
+    "name": "First Phase",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 2
+    },
+    "exit": {
+      "x": 5,
+      "y": 5
+    },
+    "parMoves": 8,
+    "hint": "Drop 1 bridge tile (odd) to materialize Magenta Q! Landing reclaims to 0 (even) so adjacent Cyan P glows solid!",
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 2,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "polarity": "even"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "polarity": "odd"
+      },
+      {
+        "x": 5,
+        "y": 3,
+        "polarity": "even"
+      }
+    ],
+    "star2Moves": 10
+  },
+  {
+    "id": 202,
+    "world": 11,
+    "name": "Two-Step Resonance",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 6
+    },
+    "parMoves": 9,
+    "hint": "Cyan P is solid at 0 or 2 bridge tiles! Bridge 2 void cells in a row so Cyan P materializes right as you reach it!",
+    "phaseTiles": [
+      {
+        "x": 3,
+        "y": 0,
+        "polarity": "even"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "polarity": "even"
+      }
+    ],
+    "star2Moves": 12
+  },
+  {
+    "id": 203,
+    "world": 11,
+    "name": "Prism Hopscotch",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Use 1-tile hops onto Magenta Q and 2-tile bridges onto Cyan P to hopscotch across the prism!",
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "polarity": "odd"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "polarity": "even"
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 204,
+    "world": 11,
+    "name": "Mirror Parity",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Curve 2 bridge tiles down to Cyan P (so 2 tiles = even!), then 1-bridge to Magenta Q, 2-bridge to Cyan P, and hop via Magenta Q to E!",
+    "rocks": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 1,
+        "y": 2,
+        "polarity": "even"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "polarity": "odd"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "polarity": "odd"
+      }
+    ],
+    "stars": [
+      {
+        "x": 1,
+        "y": 2
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 205,
+    "world": 11,
+    "name": "Ruby Refraction",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Chain 1-tile hops to Magenta Q, reclaim to 0, then step straight onto adjacent Cyan P gems!",
+    "rocks": [
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 2,
+        "y": 1,
+        "polarity": "even"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "polarity": "even"
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 206,
+    "world": 11,
+    "name": "Prism Canyon",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 1,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "Bridge 2 cells to Cyan P, hop 1 bridge south to Magenta Q, reclaim on Cyan P, and curve 2 tiles west onto the lower Cyan P!",
+    "rocks": [
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 5
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 3,
+        "y": 0,
+        "polarity": "even"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "polarity": "even"
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 207,
+    "world": 11,
+    "name": "Crumbling Phase",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Crumbling islands reclaim your bridge to 0 — chain them with 1-tile Magenta Q and 0-tile Cyan P pads!",
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "crumbling": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 4
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "polarity": "odd"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "polarity": "even"
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 208,
+    "world": 11,
+    "name": "Honey Shift",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 4,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Sticky honey traps 1 tile forever, leaving you with 1 tile — rely on Magenta Q (1 tile) and Cyan P (0 tiles) to finish!",
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      }
+    ],
+    "sticky": [
+      {
+        "x": 1,
+        "y": 0
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 2,
+        "y": 1,
+        "polarity": "even"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "polarity": "odd"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "polarity": "even"
+      },
+      {
+        "x": 2,
+        "y": 6,
+        "polarity": "odd"
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 1
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 209,
+    "world": 11,
+    "name": "One-Way Spectrum",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Ride the one-way prism circuit: 2 tiles to Cyan P, 1 tile to Magenta Q, exit south to Cyan P, and bridge 2 tiles west!",
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 3,
+        "y": 0,
+        "polarity": "even"
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "polarity": "odd"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 5,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "polarity": "odd"
+      },
+      {
+        "x": 2,
+        "y": 6,
+        "polarity": "even"
+      }
+    ],
+    "oneWay": [
+      {
+        "x": 4,
+        "y": 0,
+        "direction": "right"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "direction": "down"
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 210,
+    "world": 11,
+    "name": "Frozen Phase",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Ice is solid ground (0 tiles out), so you glide right onto Cyan P! Then bridge 2 tiles south to the next Cyan P.",
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      }
+    ],
+    "ice": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 3,
+        "y": 0,
+        "polarity": "even"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "polarity": "odd"
+      },
+      {
+        "x": 4,
+        "y": 6,
+        "polarity": "even"
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 211,
+    "world": 11,
+    "name": "Parity Spark",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 11,
+    "hint": "With 1 tile you can only reach Magenta Q to grab the +1 Spark — with 2 tiles you unlock the 2-bridge Cyan P leaps!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "polarity": "even"
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "star2Moves": 14
+  },
+  {
+    "id": 212,
+    "world": 11,
+    "name": "Portal Shift",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Bridge 2 tiles to Cyan P and step into Portal 1, then descend through Magenta Q and Cyan P to the flag!",
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 3,
+        "y": 0,
+        "polarity": "even"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "polarity": "odd"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "polarity": "odd"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 6,
+        "polarity": "odd"
+      }
+    ],
+    "teleporters": [
+      {
+        "id": "tp-1",
+        "posA": {
+          "x": 4,
+          "y": 0
+        },
+        "posB": {
+          "x": 0,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 213,
+    "world": 11,
+    "name": "Phase Gatekeeper",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 5
+    },
+    "parMoves": 15,
+    "hint": "Hop via Magenta Q to Switch a, pass through Gate A onto Cyan P, then cross Magenta Q and Cyan P to the exit!",
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "polarity": "odd"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "polarity": "even"
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 5,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 2
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 214,
+    "world": 11,
+    "name": "Clockwork Prism",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 15,
+    "hint": "Hit Timed Switch a, step across Cyan P into Gate A before the 3-move timer closes, then finish across the prism!",
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 4,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 1,
+        "polarity": "even"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "polarity": "even"
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "polarity": "even"
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 3,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 2
+        },
+        "timedDuration": 3
+      }
+    ],
+    "star2Moves": 19
+  },
+  {
+    "id": 215,
+    "world": 11,
+    "name": "Sanctum Resonance",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 2,
+      "y": 6
+    },
+    "parMoves": 12,
+    "hint": "While standing on solid ground (0 tiles), Cyan P is solid — shove Crate M right across Cyan P onto Hold Plate a!",
+    "fixed": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 2
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 3,
+        "y": 0,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "polarity": "odd"
+      },
+      {
+        "x": 4,
+        "y": 6,
+        "polarity": "even"
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 0
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 4,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 4,
+          "y": 2
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "star2Moves": 15
+  },
+  {
+    "id": 216,
+    "world": 11,
+    "name": "Prism Vault",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 10,
+    "hint": "Springboards reclaim tiles to 0, so Cyan P catches your aerial vault! Bridge south, hop via Q to P, and springboard west to E!",
+    "rocks": [
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ],
+    "springs": [
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 5
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 3,
+        "y": 0,
+        "polarity": "even"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "polarity": "odd"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "polarity": "even"
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "star2Moves": 13
+  },
+  {
+    "id": 217,
+    "world": 11,
+    "name": "Gilded Phase",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 16,
+    "hint": "Cross Magenta Q & Cyan P for the Golden Key, hop south via Q & P to unlock Vault L into solid ground, and head west to E!",
+    "fixed": [
+      {
+        "x": 5,
+        "y": 0
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "keys": [
+      {
+        "x": 5,
+        "y": 0
+      }
+    ],
+    "locks": [
+      {
+        "x": 3,
+        "y": 4
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "polarity": "even"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "polarity": "odd"
+      },
+      {
+        "x": 5,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "polarity": "even"
+      },
+      {
+        "x": 1,
+        "y": 6,
+        "polarity": "even"
+      }
+    ],
+    "stars": [
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "star2Moves": 20
+  },
+  {
+    "id": 218,
+    "world": 11,
+    "name": "Double Spectrum",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 2,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 5,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Toggle both prism laser gates while chaining Magenta Q (1-bridge) and Cyan P (0/2-bridge) islands!",
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "polarity": "even"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "polarity": "odd"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 6,
+        "polarity": "odd"
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 3,
+          "y": 0
+        },
+        "doorPos": {
+          "x": 3,
+          "y": 1
+        }
+      },
+      {
+        "id": "g2",
+        "switchPos": {
+          "x": 2,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 2,
+          "y": 3
+        }
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 4
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 219,
+    "world": 11,
+    "name": "Prism Gauntlet",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 3,
+      "y": 6
+    },
+    "parMoves": 13,
+    "hint": "Grab +1 Spark and the Key via Magenta Q, bridge 2 tiles south to Cyan P, unlock Vault L, springboard west onto Cyan P, and hop to E!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "rocks": [
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 3
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "springs": [
+      {
+        "x": 2,
+        "y": 3
+      }
+    ],
+    "keys": [
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "locks": [
+      {
+        "x": 3,
+        "y": 3
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "polarity": "even"
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "polarity": "odd"
+      },
+      {
+        "x": 0,
+        "y": 6,
+        "polarity": "even"
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "stars": [
+      {
+        "x": 4,
+        "y": 3
+      }
+    ],
+    "star2Moves": 17
+  },
+  {
+    "id": 220,
+    "world": 11,
+    "name": "Chrono Prism Finale",
+    "cols": 6,
+    "rows": 7,
+    "maxTiles": 1,
+    "start": {
+      "x": 0,
+      "y": 0
+    },
+    "exit": {
+      "x": 0,
+      "y": 6
+    },
+    "parMoves": 24,
+    "hint": "The 220th Finale! Claim +1 & Key, hop via Magenta Q to unlock Vault L, push Crate M across Cyan P onto Plate a, descend Gate A, and claim the Prism!",
+    "fixed": [
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "rocks": [
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 2,
+        "y": 1
+      },
+      {
+        "x": 3,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 2,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 3
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 2,
+        "y": 4
+      },
+      {
+        "x": 3,
+        "y": 4
+      },
+      {
+        "x": 4,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 0,
+        "y": 5
+      }
+    ],
+    "keys": [
+      {
+        "x": 4,
+        "y": 0
+      }
+    ],
+    "locks": [
+      {
+        "x": 4,
+        "y": 2
+      }
+    ],
+    "phaseTiles": [
+      {
+        "x": 2,
+        "y": 0,
+        "polarity": "odd"
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "polarity": "odd"
+      },
+      {
+        "x": 1,
+        "y": 2,
+        "polarity": "even"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "polarity": "odd"
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "polarity": "even"
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "polarity": "odd"
+      },
+      {
+        "x": 5,
+        "y": 6,
+        "polarity": "even"
+      }
+    ],
+    "bonusTiles": [
+      {
+        "x": 3,
+        "y": 0
+      }
+    ],
+    "crates": [
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "switches": [
+      {
+        "id": "g1",
+        "switchPos": {
+          "x": 0,
+          "y": 2
+        },
+        "doorPos": {
+          "x": 1,
+          "y": 3
+        },
+        "holdSwitch": true
+      }
+    ],
+    "stars": [
+      {
+        "x": 5,
+        "y": 6
+      }
+    ],
+    "star2Moves": 30
   }
 ];
 
@@ -19707,4 +21442,5 @@ export const WORLDS = [
   { id: 8, name: 'Obsidian Sanctum', levels: [141, 160], theme: 'crate-sanctum', description: 'Push heavy crates onto weighted pressure plates to unlock ancient sanctum gates.' },
   { id: 9, name: 'Skyward Spire', levels: [161, 180], theme: 'skyward-spire', description: 'Vault 2 tiles over walls and chasms with golden springboard launch pads.' },
   { id: 10, name: 'Celestial Crown', levels: [181, 200], theme: 'celestial-crown', description: 'Collect golden keys to unlock sealed vaults permanently into solid ground.' },
+  { id: 11, name: 'Chrono Prism', levels: [201, 220], theme: 'chrono-prism', description: 'Master Bridge-Parity Phase Tiles that materialize on even or odd bridge counts.' },
 ];

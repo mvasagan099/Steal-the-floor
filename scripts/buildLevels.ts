@@ -6,6 +6,7 @@ import {
   OneWayTile,
   SwitchDoorPair,
   TeleporterPair,
+  PhaseTile,
 } from '../src/engine/types';
 import { PuzzleGame } from '../src/engine/logic';
 import { solveLevel } from '../src/engine/solver';
@@ -25,7 +26,13 @@ interface GridLevelInput {
    *  H = sticky honey (void that traps placed bridge tile permanently)
    *  C = crumbling stone (one-use solid reclaim island)
    *  I = ice sliding platform (glides across consecutive walkable tiles)
+   *  J = golden springboard (vaults 2 tiles forward)
+   *  K = fixed island with a Golden Key
+   *  L = locked vault (unlocks into solid ground with a Golden Key)
+   *  P = Cyan Even Phase Tile (solid when 0/2/4 bridge tiles placed)
+   *  Q = Magenta Odd Phase Tile (solid when 1/3/5 bridge tiles placed)
    *  + = fixed island containing a +1 Bonus Tile pickup
+   *  M = fixed island with a pushable crate
    *  ^ v < > = one-way arrow platform
    *  a / A = switch 'g1' / closed door 'g1' (O = initially open door 'g1')
    *  b / B = switch 'g2' / closed door 'g2'
@@ -58,6 +65,7 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   const springs: Coordinate[] = [];
   const keys: Coordinate[] = [];
   const locks: Coordinate[] = [];
+  const phaseTiles: PhaseTile[] = [];
   const bonusTiles: Coordinate[] = [...(input.bonusTiles || [])];
   const crates: Coordinate[] = [];
   const oneWay: OneWayTile[] = [];
@@ -108,6 +116,12 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
           break;
         case 'L':
           locks.push(coord);
+          break;
+        case 'P':
+          phaseTiles.push({ x, y, polarity: 'even' });
+          break;
+        case 'Q':
+          phaseTiles.push({ x, y, polarity: 'odd' });
           break;
         case '+':
           fixed.push(coord);
@@ -212,6 +226,7 @@ function parseGridLevel(input: GridLevelInput): LevelDefinition {
   if (springs.length) level.springs = springs;
   if (keys.length) level.keys = keys;
   if (locks.length) level.locks = locks;
+  if (phaseTiles.length) level.phaseTiles = phaseTiles;
   if (bonusTiles.length) level.bonusTiles = bonusTiles;
   if (crates.length) level.crates = crates;
   if (oneWay.length) level.oneWay = oneWay;
@@ -3662,11 +3677,301 @@ const world10Drafts: GridLevelInput[] = [
 
 drafts.push(...world10Drafts);
 
+// =========================================================================
+// WORLD 11: CHRONO PRISM (Levels 201 - 220) — Bridge-Parity Phase-Shift Tiles
+//   P = Cyan Even Phase Tile (solid when 0, 2, 4... bridge tiles placed)
+//   Q = Magenta Odd Phase Tile (solid when 1, 3, 5... bridge tiles placed)
+// =========================================================================
+const world11Drafts: GridLevelInput[] = [
+  {
+    id: 201, world: 11, name: 'First Phase', maxTiles: 1,
+    grid: [
+      '......',
+      '......',
+      'S.QP.Q',
+      '.....P',
+      '......',
+      '.....E',
+      '......',
+    ],
+    hint: 'Drop 1 bridge tile (odd) to materialize Magenta Q! Landing reclaims to 0 (even) so adjacent Cyan P glows solid!',
+  },
+  {
+    id: 202, world: 11, name: 'Two-Step Resonance', maxTiles: 2,
+    grid: [
+      'S..P..',
+      '......',
+      '......',
+      '...P..',
+      '......',
+      '......',
+      '...E..',
+    ],
+    hint: 'Cyan P is solid at 0 or 2 bridge tiles! Bridge 2 void cells in a row so Cyan P materializes right as you reach it!',
+  },
+  {
+    id: 203, world: 11, name: 'Prism Hopscotch', maxTiles: 2,
+    grid: [
+      'S.Q...',
+      '......',
+      '......',
+      '..P.Q.',
+      '......',
+      '....P.',
+      '....E.',
+    ],
+    stars: [{ x: 2, y: 3 }],
+    hint: 'Use 1-tile hops onto Magenta Q and 2-tile bridges onto Cyan P to hopscotch across the prism!',
+  },
+  {
+    id: 204, world: 11, name: 'Mirror Parity', maxTiles: 2,
+    grid: [
+      'S.X...',
+      '..X...',
+      '.PX...',
+      '..Q...',
+      '....P.',
+      '...XQ.',
+      '....E.',
+    ],
+    stars: [{ x: 1, y: 2 }],
+    hint: 'Curve 2 bridge tiles down to Cyan P (so 2 tiles = even!), then 1-bridge to Magenta Q, 2-bridge to Cyan P, and hop via Magenta Q to E!',
+  },
+  {
+    id: 205, world: 11, name: 'Ruby Refraction', maxTiles: 1,
+    grid: [
+      'S.Q...',
+      '..P...',
+      '......',
+      '..QP..',
+      '....X.',
+      '...Q..',
+      '...PE.',
+    ],
+    stars: [{ x: 2, y: 1 }, { x: 3, y: 3 }],
+    hint: 'Chain 1-tile hops to Magenta Q, reclaim to 0, then step straight onto adjacent Cyan P gems!',
+  },
+  {
+    id: 206, world: 11, name: 'Prism Canyon', maxTiles: 2,
+    grid: [
+      'S..PX.',
+      'XXX.X.',
+      '...QX.',
+      '...P..',
+      '.PXX..',
+      '...X..',
+      '.E.X..',
+    ],
+    stars: [{ x: 3, y: 2 }],
+    hint: 'Bridge 2 cells to Cyan P, hop 1 bridge south to Magenta Q, reclaim on Cyan P, and curve 2 tiles west onto the lower Cyan P!',
+  },
+  {
+    id: 207, world: 11, name: 'Crumbling Phase', maxTiles: 1,
+    grid: [
+      'S.QC..',
+      'XXX...',
+      '...Q..',
+      '...P..',
+      'XXC.Q.',
+      '....P.',
+      '....E.',
+    ],
+    stars: [{ x: 3, y: 3 }],
+    hint: 'Crumbling islands reclaim your bridge to 0 — chain them with 1-tile Magenta Q and 0-tile Cyan P pads!',
+  },
+  {
+    id: 208, world: 11, name: 'Honey Shift', maxTiles: 2,
+    grid: [
+      'SHQ...',
+      'XXP...',
+      '......',
+      '..Q...',
+      '..P...',
+      '......',
+      '..Q.E.',
+    ],
+    stars: [{ x: 2, y: 1 }],
+    hint: 'Sticky honey traps 1 tile forever, leaving you with 1 tile — rely on Magenta Q (1 tile) and Cyan P (0 tiles) to finish!',
+  },
+  {
+    id: 209, world: 11, name: 'One-Way Spectrum', maxTiles: 2,
+    grid: [
+      'S..P>.',
+      'XXXX.Q',
+      '.....v',
+      '..P..P',
+      'XX....',
+      '..Q...',
+      'E.P...',
+    ],
+    stars: [{ x: 2, y: 3 }],
+    hint: 'Ride the one-way prism circuit: 2 tiles to Cyan P, 1 tile to Magenta Q, exit south to Cyan P, and bridge 2 tiles west!',
+  },
+  {
+    id: 210, world: 11, name: 'Frozen Phase', maxTiles: 2,
+    grid: [
+      'SIIP..',
+      'XXX...',
+      '......',
+      '...P..',
+      '..Q...',
+      '..I...',
+      '..I.PE',
+    ],
+    stars: [{ x: 3, y: 3 }],
+    hint: 'Ice is solid ground (0 tiles out), so you glide right onto Cyan P! Then bridge 2 tiles south to the next Cyan P.',
+  },
+  {
+    id: 211, world: 11, name: 'Parity Spark', maxTiles: 1,
+    grid: [
+      'S.Q+..',
+      'XXX...',
+      '......',
+      '...P..',
+      '......',
+      '......',
+      '...P.E',
+    ],
+    stars: [{ x: 3, y: 3 }],
+    hint: 'With 1 tile you can only reach Magenta Q to grab the +1 Spark — with 2 tiles you unlock the 2-bridge Cyan P leaps!',
+  },
+  {
+    id: 212, world: 11, name: 'Portal Shift', maxTiles: 2,
+    grid: [
+      'S..P1.',
+      'XXXXXX',
+      '1.Q...',
+      '..P.Q.',
+      '....P.',
+      '......',
+      '....QE',
+    ],
+    stars: [{ x: 2, y: 3 }],
+    hint: 'Bridge 2 tiles to Cyan P and step into Portal 1, then descend through Magenta Q and Cyan P to the flag!',
+  },
+  {
+    id: 213, world: 11, name: 'Phase Gatekeeper', maxTiles: 2,
+    grid: [
+      'S.Q..a',
+      '......',
+      'XXXXAX',
+      '..Q.P.',
+      '..P...',
+      'E.....',
+      '......',
+    ],
+    stars: [{ x: 4, y: 3 }],
+    hint: 'Hop via Magenta Q to Switch a, pass through Gate A onto Cyan P, then cross Magenta Q and Cyan P to the exit!',
+  },
+  {
+    id: 214, world: 11, name: 'Clockwork Prism', maxTiles: 2,
+    grid: [
+      'S.Qa..',
+      '...P..',
+      'XXXAXX',
+      '...Q..',
+      '...P..',
+      '......',
+      '...P.E',
+    ],
+    timedDurations: { g1: 3 },
+    hint: 'Hit Timed Switch a, step across Cyan P into Gate A before the 3-move timer closes, then finish across the prism!',
+  },
+  {
+    id: 215, world: 11, name: 'Sanctum Resonance', maxTiles: 2,
+    grid: [
+      'S#MPa.',
+      '......',
+      'XXXXAX',
+      '....P.',
+      '......',
+      '....Q.',
+      '..E.P.',
+    ],
+    holdSwitches: ['g1'],
+    stars: [{ x: 4, y: 3 }],
+    hint: 'While standing on solid ground (0 tiles), Cyan P is solid — shove Crate M right across Cyan P onto Hold Plate a!',
+  },
+  {
+    id: 216, world: 11, name: 'Prism Vault', maxTiles: 2,
+    grid: [
+      'SJXP..',
+      '..X...',
+      '......',
+      '...P..',
+      '....Q.',
+      '.PXJP.',
+      'E.X...',
+    ],
+    stars: [{ x: 3, y: 3 }],
+    hint: 'Springboards reclaim tiles to 0, so Cyan P catches your aerial vault! Bridge south, hop via Q to P, and springboard west to E!',
+  },
+  {
+    id: 217, world: 11, name: 'Gilded Phase', maxTiles: 2,
+    grid: [
+      'S.QP.K',
+      'XXXX..',
+      '.....Q',
+      '...Q.P',
+      'XXXLXX',
+      '.Q.P..',
+      'EP....',
+    ],
+    stars: [{ x: 3, y: 3 }],
+    hint: 'Cross Magenta Q & Cyan P for the Golden Key, hop south via Q & P to unlock Vault L into solid ground, and head west to E!',
+  },
+  {
+    id: 218, world: 11, name: 'Double Spectrum', maxTiles: 2,
+    grid: [
+      'S.Qa..',
+      'XXXAXX',
+      '..bP..',
+      'XXBXXX',
+      '..P.Q.',
+      '....P.',
+      '....QE',
+    ],
+    stars: [{ x: 4, y: 4 }],
+    hint: 'Toggle both prism laser gates while chaining Magenta Q (1-bridge) and Cyan P (0/2-bridge) islands!',
+  },
+  {
+    id: 219, world: 11, name: 'Prism Gauntlet', maxTiles: 1,
+    grid: [
+      'S.Q+K.',
+      'XXXX..',
+      '......',
+      'PXJLP.',
+      '.XXXXX',
+      'Q.....',
+      'P..E..',
+    ],
+    stars: [{ x: 4, y: 3 }],
+    hint: 'Grab +1 Spark and the Key via Magenta Q, bridge 2 tiles south to Cyan P, unlock Vault L, springboard west onto Cyan P, and hop to E!',
+  },
+  {
+    id: 220, world: 11, name: 'Chrono Prism Finale', maxTiles: 1,
+    grid: [
+      'S.Q+KX',
+      'XXXX.Q',
+      'aPM#LX',
+      'XAXXXX',
+      'X.XXXX',
+      'XQ.P..',
+      'E..Q.P',
+    ],
+    holdSwitches: ['g1'],
+    stars: [{ x: 5, y: 6 }],
+    hint: 'The 220th Finale! Claim +1 & Key, hop via Magenta Q to unlock Vault L, push Crate M across Cyan P onto Plate a, descend Gate A, and claim the Prism!',
+  },
+];
+
+drafts.push(...world11Drafts);
+
 console.log(`Validating all ${drafts.length} levels with Solid-Ground Reclamation & Quality Gates...\n`);
 
 const validatedLevels: LevelDefinition[] = [];
 const failures: string[] = [];
-const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [] };
+const worldPars: Record<number, number[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [] };
 
 for (const draft of drafts) {
   const level = parseGridLevel(draft);
@@ -3770,6 +4075,15 @@ for (const draft of drafts) {
     }
   }
 
+  if (level.phaseTiles?.length) {
+    const noPhaseSol = solveLevel({ ...level, phaseTiles: undefined }, 45);
+    if (noPhaseSol.solvable && noPhaseSol.minMoves <= solution.minMoves) {
+      failures.push(
+        `Level ${level.id} ("${level.name}"): Phase-Shift tiles NOT needed (par=${solution.minMoves}, withoutPhase=${noPhaseSol.minMoves})!`
+      );
+    }
+  }
+
   if (level.crates?.length && !usedCrate) {
     failures.push(`Level ${level.id} ("${level.name}"): Pushable crate UNUSED in optimal solution!`);
   }
@@ -3828,7 +4142,7 @@ for (const draft of drafts) {
 }
 
 console.log('\n--- World Par Curve ---');
-for (const w of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+for (const w of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
   const arr = worldPars[w];
   if (arr.length) {
     const avg = (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
@@ -3842,13 +4156,13 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-if (validatedLevels.length !== 200) {
-  console.error(`Expected 200 levels, got ${validatedLevels.length}`);
+if (validatedLevels.length !== 220) {
+  console.error(`Expected 220 levels, got ${validatedLevels.length}`);
   process.exit(1);
 }
 
 const fileContent = `// AUTO-GENERATED & SOLVER-VALIDATED LEVELS DATA
-// 200 Handcrafted levels across 10 worlds — verified with Solid-Ground Reclamation & Quality Gates
+// 220 Handcrafted levels across 11 worlds — verified with Solid-Ground Reclamation & Quality Gates
 import { LevelDefinition } from '../engine/types';
 
 export const ALL_LEVELS: LevelDefinition[] = ${JSON.stringify(validatedLevels, null, 2)};
@@ -3864,9 +4178,10 @@ export const WORLDS = [
   { id: 8, name: 'Obsidian Sanctum', levels: [141, 160], theme: 'crate-sanctum', description: 'Push heavy crates onto weighted pressure plates to unlock ancient sanctum gates.' },
   { id: 9, name: 'Skyward Spire', levels: [161, 180], theme: 'skyward-spire', description: 'Vault 2 tiles over walls and chasms with golden springboard launch pads.' },
   { id: 10, name: 'Celestial Crown', levels: [181, 200], theme: 'celestial-crown', description: 'Collect golden keys to unlock sealed vaults permanently into solid ground.' },
+  { id: 11, name: 'Chrono Prism', levels: [201, 220], theme: 'chrono-prism', description: 'Master Bridge-Parity Phase Tiles that materialize on even or odd bridge counts.' },
 ];
 `;
 
 const outputPath = path.resolve(process.cwd(), 'src/levels/levelsData.ts');
 fs.writeFileSync(outputPath, fileContent, 'utf-8');
-console.log(`\n✅ ALL 200 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);
+console.log(`\n✅ ALL 220 LEVELS PASSED EVERY QUALITY GATE! Generated ${outputPath}`);

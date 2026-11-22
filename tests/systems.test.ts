@@ -411,8 +411,8 @@ describe('Game Systems QA Test Suite', () => {
     }
   });
 
-  it('validates all 5 Master Gauntlets, medal thresholds, anti-farming coin deltas, Trial Champion badge, and backup persistence', () => {
-    expect(MASTER_GAUNTLETS).toHaveLength(5);
+  it('validates all 6 Master Gauntlets, medal thresholds, anti-farming coin deltas, Trial Champion badge, and backup persistence', () => {
+    expect(MASTER_GAUNTLETS).toHaveLength(6);
 
     for (const gauntlet of MASTER_GAUNTLETS) {
       const stages = getGauntletStages(gauntlet.id);
@@ -453,11 +453,11 @@ describe('Game Systems QA Test Suite', () => {
     expect(storage.getData().gauntletProgress[firstId].bestTimeMs).toBe(32000);
     expect(storage.getData().gauntletProgress[firstId].bestMoves).toBe(totalPar);
 
-    // Complete remaining 4 gauntlets to unlock Trial Champion (gauntlet_champion)
-    for (let i = 1; i < MASTER_GAUNTLETS.length; i++) {
+    // Complete 4 more gauntlets (5 total) to unlock Trial Champion (gauntlet_champion)
+    for (let i = 1; i < 5; i++) {
       const gId = MASTER_GAUNTLETS[i].id;
       const res = storage.recordGauntletCompletion(gId, 40, 30000, 'bronze');
-      if (i === MASTER_GAUNTLETS.length - 1) {
+      if (i === 4) {
         expect(res.newlyUnlockedAchievements.map((a) => a.id)).toContain('gauntlet_champion');
       }
     }
@@ -476,7 +476,7 @@ describe('Game Systems QA Test Suite', () => {
   });
 
   it('validates Bridge Tile Skins purchase/equip, Style Icon badge, backup persistence, and Player Mastery Ranks', () => {
-    expect(TILE_SKINS).toHaveLength(6);
+    expect(TILE_SKINS).toHaveLength(7);
     expect(getPlayerRank(storage.getData()).title).toBe('Novice Bridger');
 
     storage.getData().coins = 1000;
@@ -527,5 +527,59 @@ describe('Game Systems QA Test Suite', () => {
     expect(randomPuzzle.cols).toBe(6);
     expect(randomPuzzle.rows).toBe(7);
     expect(solveLevel(randomPuzzle, 35).solvable).toBe(true);
+  });
+
+  it('tracks World 11 Chrono Master achievement, STF1 Phase-Shift share codes, and Speedrun Ghost bestRun persistence', () => {
+    for (let id = 201; id <= 220; id++) {
+      storage.recordLevelVictory(id, 12, 3, { usedUndo: false });
+    }
+    expect(storage.getData().achievements['world11_cleared'].unlocked).toBe(true);
+
+    // Speedrun Ghost bestRun updates only when beating bestTimeMs and survives backup/restore
+    const fastFrames: [number, number, number][] = [
+      [1, 0, 400],
+      [2, 0, 900],
+      [3, 0, 1400],
+    ];
+    const slowFrames: [number, number, number][] = [
+      [1, 0, 900],
+      [2, 0, 1800],
+      [3, 0, 2600],
+    ];
+    storage.recordLevelVictory(1, 3, 3, { elapsedMs: 1400, runFrames: fastFrames });
+    expect(storage.getData().levelProgress[1].bestRun).toEqual(fastFrames);
+
+    // Slower run does not overwrite faster ghost
+    storage.recordLevelVictory(1, 3, 3, { elapsedMs: 2600, runFrames: slowFrames });
+    expect(storage.getData().levelProgress[1].bestRun).toEqual(fastFrames);
+
+    const backup = storage.exportSaveCode();
+    storage.resetProgress();
+    expect(storage.importSaveCode(backup).ok).toBe(true);
+    expect(storage.getData().levelProgress[1].bestRun).toEqual(fastFrames);
+
+    // STF1 share code preserves phaseTiles
+    const phaseLevel: LevelDefinition = {
+      id: 30005,
+      world: 0,
+      name: 'Phase Share Test',
+      cols: 6,
+      rows: 3,
+      maxTiles: 2,
+      start: { x: 0, y: 0 },
+      exit: { x: 5, y: 0 },
+      phaseTiles: [
+        { x: 2, y: 0, polarity: 'odd' },
+        { x: 3, y: 0, polarity: 'even' },
+      ],
+      parMoves: 5,
+    };
+    const code = encodeLevelCode(phaseLevel);
+    const dec = decodeLevelCode(code);
+    expect(dec.ok).toBe(true);
+    if (dec.ok) {
+      expect(dec.level.phaseTiles).toEqual(phaseLevel.phaseTiles);
+      expect(dec.parMoves).toBe(5);
+    }
   });
 });

@@ -57,6 +57,15 @@ export const MASTER_GAUNTLETS: GauntletDefinition[] = [
     description: 'Conquer sealed vaults, crate-lock chains, and Level 200 back-to-back!',
     levelIds: [183, 194, 198, 200],
   },
+  {
+    id: 'chrono-prism-trial',
+    name: 'Chrono Prism Trial',
+    icon: '⏳',
+    accent: 'from-cyan-500/25 to-fuchsia-500/20 border-cyan-400/50 text-cyan-200',
+    subtitle: 'World 11 · Bridge-Parity Phase Mastery',
+    description: 'Chain even & odd phase islands, sanctum crates, and Level 220 back-to-back!',
+    levelIds: [203, 209, 215, 220],
+  },
 ];
 
 export function getGauntletById(id: string): GauntletDefinition | undefined {
